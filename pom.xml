@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+        <groupId>sc.fiji</groupId>
+        <artifactId>pom-fiji</artifactId>
+        <version>22.2.0</version>
+        <relativePath />
+    </parent>
+    
+    <artifactId>Kappa</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <name>Kappa</name>
+    <description>A Fiji plugin for Curvature Analysis.</description>
+    <url>http://imagej.net/KymographBuilder</url>
+    <inceptionYear>2016</inceptionYear>
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://choosealicense.com/licenses/mit/</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>hadim</id>
+            <name>Hadrien Mary</name>
+            <url>http://imagej.net/User:Hadim</url>
+            <roles>
+                <role>lead</role>
+                <role>developer</role>
+                <role>debugger</role>
+                <role>reviewer</role>
+                <role>support</role>
+                <role>maintainer</role>
+            </roles>
+            <timezone>-5</timezone>
+        </developer>
+        <developer>
+            <id>kevanlu</id>
+            <name>Kevan Lu</name>
+            <roles>
+                <role>founder</role>
+            </roles>
+        </developer>
+    </developers>
+    <contributors>
+        <!--
+        NB: Need a least one element to override the parent.
+        See: https://issues.apache.org/jira/browse/MNG-5220
+        -->
+        <contributor>
+            <name>None</name>
+        </contributor>
+    </contributors>
+
+    <scm>
+        <connection>scm:git:git://github.com/hadim/Kappa</connection>
+        <developerConnection>scm:git:git@github.com:hadim/Kappa</developerConnection>
+        <tag>HEAD</tag>
+        <url>https://github.com/hadim/Kappa</url>
+    </scm>
+    <issueManagement>
+        <system>GitHub Issues</system>
+        <url>https://github.com/hadim/Kappa/issues</url>
+    </issueManagement>
+
+    <repositories>
+        <repository>
+            <id>imagej.public</id>
+            <url>http://maven.imagej.net/content/groups/public</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+
+        <!--ImageJ-->
+        <dependency>
+            <groupId>net.imagej</groupId>
+            <artifactId>imagej</artifactId>
+        </dependency>
+
+        <!--IJ1 dependencies-->
+        <dependency>
+            <groupId>net.imagej</groupId>
+            <artifactId>ij</artifactId>
+        </dependency>
+
+        <!-- Enable IJ1 interface at runtime -->
+        <dependency>
+            <groupId>net.imagej</groupId>
+            <artifactId>imagej-legacy</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <configuration>
+                    <licenseName>mit</licenseName>
+                    <projectName>${project.description}</projectName>
+                    <organizationName>Hadrien Mary</organizationName>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
