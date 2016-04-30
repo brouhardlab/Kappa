@@ -2,7 +2,7 @@
 
 # Kappa
 
-`Kappa` is **A Fiji plugin for Curvature Analysis.**.
+`Kappa` is **A Fiji plugin for Curvature Analysis**.
 
 ![Kappa Screenshot](screenshot.png)
 
