@@ -58,7 +58,7 @@ public class Settings {
     public String imageFolder = "";
     @Parameter(label = "Filename of the dataset")
     public String imageFileName = "";
-
+    
     public void fromDataset(Dataset dataset) {
         this.dataset = dataset;
 
