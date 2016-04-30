@@ -89,6 +89,7 @@ class Utils {
         long zDim = dataset.dimension(zIdx);
 
         if (timeDim < zDim) {
+            ij.log().info("Swapping TIME and Z axis.");
             if (zIdx != -1) {
                 dataset.axis(zIdx).setType(Axes.TIME);
             }

@@ -50,8 +50,9 @@ class Kappa {
     
     private Settings settings;
     
-    public Kappa(Context context, ImageDisplay image){
-        context.inject(this);
+    public Kappa(ImageJ ij, ImageDisplay image){
+        this.ij = ij;
+        this.ij.context().inject(this);
         this.image = image;
         this.dataset = (Dataset) this.image.getActiveView().getData();
     }
@@ -59,7 +60,7 @@ class Kappa {
     void init() {
         
         // Check if T and Z need to be swapped.
-        Utils.swapTimeAndZDimensions(ij, dataset);
+        Utils.swapTimeAndZDimensions(this.ij, dataset);
         
         // Create a settings object and fill it with dataset
         this.settings = new Settings(context);

@@ -36,7 +36,7 @@ public class KappaPlugin implements Command {
 
         log.info("Running " + PLUGIN_NAME + " version " + VERSION);
 
-        Kappa kappa = new Kappa(ij.context(), imageDisplay);
+        Kappa kappa = new Kappa(ij, imageDisplay);
         kappa.init();
     }
 
