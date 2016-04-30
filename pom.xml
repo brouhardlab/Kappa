@@ -42,6 +42,7 @@
         <developer>
             <id>kevanlu</id>
             <name>Kevan Lu</name>
+            <url>http://www.kevan.lu/</url>
             <roles>
                 <role>founder</role>
             </roles>
@@ -88,6 +89,10 @@
             <groupId>net.imagej</groupId>
             <artifactId>ij</artifactId>
         </dependency>
+        <dependency>
+            <groupId>net.imagej</groupId>
+            <artifactId>ij1-patcher</artifactId>
+        </dependency>
 
         <!-- Enable IJ1 interface at runtime -->
         <dependency>
@@ -97,6 +102,16 @@
             <optional>true</optional>
         </dependency>
 
+        <!--Third party libs-->
+        <dependency>
+            <groupId>gov.nist.math</groupId>
+            <artifactId>jama</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+        </dependency>
+        
     </dependencies>
 
     <build>

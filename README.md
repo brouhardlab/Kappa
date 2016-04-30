@@ -11,7 +11,7 @@ TODO
 ## Install
 
 - Download the plugin at https://github.com/hadim/Kappa/releases
-- You can run the plugin with `Plugins ► Analyze ► Kappa`.
+- You can run the plugin with `Plugins ► Analyze ► Kappa - Curvature Analysis`.
 
 ## Authors
 
