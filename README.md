@@ -4,6 +4,8 @@
 
 `Kappa` is **A Fiji plugin for Curvature Analysis.**.
 
+![Kappa Screenshot](screenshot.png)
+
 ## Features
 
 See documentation at https://dl.dropboxusercontent.com/u/157117/Kappa%20User%20Manual.pdf.
