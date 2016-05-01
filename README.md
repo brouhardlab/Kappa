@@ -19,6 +19,7 @@ See documentation at https://dl.dropboxusercontent.com/u/157117/Kappa%20User%20M
 
 The goal of this fork is to use the IJ2 ecosystem and integrate the plugin into Fiji.
 
+- Use JavaFX for the interface.
 - Separate logic form the user interface.
 - Port data structure to ImageJ2.
 - Integrate image display to ImageJ.
