@@ -4,6 +4,8 @@
 
 `Kappa` is **A Fiji plugin for Curvature Analysis**.
 
+It allows a user to measure curvature in images in a convenient way. You can trace an initial shape with a B-Spline curve in just a few clicks and then fit that curve to image data with a minimization algorithm. It’s fast and robust.
+
 ![Kappa Screenshot](screenshot.png)
 
 ## Documentation
