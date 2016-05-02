@@ -6,24 +6,15 @@
 
 ![Kappa Screenshot](screenshot.png)
 
-## Features
+## Documentation
 
 See documentation at https://dl.dropboxusercontent.com/u/157117/Kappa%20User%20Manual.pdf.
 
-## Install
+## Usage
 
 - Download the plugin at https://github.com/hadim/Kappa/releases
+- Put the JAR file to the `plugins` folder of your Fiji installation.
 - You can run the plugin with `Plugins ► Analyze ► Kappa - Curvature Analysis`.
-
-## TODO
-
-The goal of this fork is to use the IJ2 ecosystem and integrate the plugin into Fiji.
-
-- Use JavaFX for the interface.
-- Separate logic form the user interface.
-- Port data structure to ImageJ2.
-- Integrate image display to ImageJ.
-- Write documentation on the ImageJ Wiki.
 
 ## Authors
 
