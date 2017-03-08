@@ -1,5 +1,7 @@
 ![Kappa logo](logo.png)
 
+[![](https://travis-ci.org/hadim/kappa.svg?branch=master)](https://travis-ci.org/hadim/kappa)
+
 # Kappa
 
 `Kappa` is **A Fiji plugin for Curvature Analysis**.
@@ -14,7 +16,7 @@ See documentation [here](./doc/Kappa User Manual.pdf).
 
 ## Usage
 
-- Download the plugin at https://github.com/hadim/Kappa/releases
+- Download the plugin at https://github.com/hadim/kappa/releases
 - Put the JAR file to the `plugins` folder of your Fiji installation.
 - You can run the plugin with `Plugins ► Analyze ► Kappa - Curvature Analysis`.
 
