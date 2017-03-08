@@ -3,9 +3,9 @@
     <modelVersion>4.0.0</modelVersion>
     
     <parent>
-        <groupId>sc.fiji</groupId>
-        <artifactId>pom-fiji</artifactId>
-        <version>22.2.0</version>
+        <groupId>org.scijava</groupId>
+        <artifactId>pom-scijava</artifactId>
+        <version>14.0.0</version>
         <relativePath />
     </parent>
     
@@ -14,8 +14,15 @@
 
     <name>Kappa</name>
     <description>A Fiji plugin for Curvature Analysis.</description>
-    <url>http://imagej.net/KymographBuilder</url>
+    <url>https://github.com/hadim/kappa</url>
+    
     <inceptionYear>2016</inceptionYear>
+    
+    <organization>
+        <name>Fiji</name>
+        <url>http://fiji.sc/</url>
+    </organization>
+    
     <licenses>
         <license>
             <name>MIT License</name>
@@ -57,6 +64,23 @@
             <name>None</name>
         </contributor>
     </contributors>
+    
+    <mailingLists>
+        <mailingList>
+            <name>ImageJ Forum</name>
+            <archive>http://forum.imagej.net/</archive>
+        </mailingList>
+    </mailingLists>
+    
+    <ciManagement>
+        <system>Travis CI</system>
+        <url>https://travis-ci.org/hadim/kappa</url>
+    </ciManagement>
+    
+    <properties>
+        <license.licenseName>mit</license.licenseName>
+        <license.copyrightOwners>Fiji developers.</license.copyrightOwners>
+    </properties>
 
     <scm>
         <connection>scm:git:git://github.com/hadim/Kappa</connection>
