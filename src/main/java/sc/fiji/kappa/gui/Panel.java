@@ -47,8 +47,8 @@ public class Panel {
     private boolean expanded;
     private boolean visible;
     private ArrayList<Component> components;
-    public static final Image VISIBLE_BUTTON = new ImageIcon(Panel.class.getResource("/icons/opened_panel.png").getPath()).getImage();
-    public static final Image HIDDEN_BUTTON = new ImageIcon(Panel.class.getResource("/icons/closed_panel.png").getPath()).getImage();
+    public static final Image VISIBLE_BUTTON = new ImageIcon(Panel.class.getResource("/icons/opened_panel.png")).getImage();
+    public static final Image HIDDEN_BUTTON = new ImageIcon(Panel.class.getResource("/icons/closed_panel.png")).getImage();
 
     /**
      * Draws a header for the info panel

@@ -99,7 +99,7 @@ public class ControlPanel extends JPanel {
 
         //Creates the toggle buttons for the image channels
         for (int i = 0; i < channelButtons.length; i++) {
-            ImageIcon channelIcon = new ImageIcon(Panel.class.getResource("/icons/" + CHANNEL_FILENAMES[i]).getPath());
+            ImageIcon channelIcon = new ImageIcon(Panel.class.getResource("/icons/" + CHANNEL_FILENAMES[i]));
             channelButtons[i] = new JToggleButton(channelIcon);
             channelButtons[i].setEnabled(false);
             channelButtons[i].setToolTipText(CHANNEL_TOOLTIPS[i]);

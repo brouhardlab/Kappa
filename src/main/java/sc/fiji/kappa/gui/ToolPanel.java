@@ -54,8 +54,8 @@ public class ToolPanel extends JPanel {
     final static String[] OTHER_FILENAMES = {"zoom-in", "zoom-out"};
     private JButton[] otherButtons = new JButton[NO_OTHER_BUTTONS];
     private ImageIcon[] otherIcons = new ImageIcon[NO_OTHER_BUTTONS];
-    protected JToggleButton export = new JToggleButton(new ImageIcon(ToolPanel.class.getResource("/icons/export.png").getPath()));
-    protected JToggleButton inspector = new JToggleButton(new ImageIcon(ToolPanel.class.getResource("/icons/inspector.png").getPath()));
+    protected JToggleButton export = new JToggleButton(new ImageIcon(ToolPanel.class.getResource("/icons/export.png")));
+    protected JToggleButton inspector = new JToggleButton(new ImageIcon(ToolPanel.class.getResource("/icons/inspector.png")));
 
     private static final long serialVersionUID = 1L;
 
@@ -85,7 +85,7 @@ public class ToolPanel extends JPanel {
         //Adds all the tool buttons
         this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
         for (int i = 0; i < NO_TOOLS; i++) {
-            toolIcons[i] = new ImageIcon(ToolPanel.class.getResource("/icons/" + TOOL_FILENAMES[i] + ".png").getPath());
+            toolIcons[i] = new ImageIcon(ToolPanel.class.getResource("/icons/" + TOOL_FILENAMES[i] + ".png"));
             toolButtons[i] = new JToggleButton(toolIcons[i]);
             toolButtons[i].setToolTipText(TOOL_TOOLTIPS[i]);
             toolButtons[i].setEnabled(false);
@@ -100,7 +100,7 @@ public class ToolPanel extends JPanel {
         }
 
         for (int i = 0; i < NO_OTHER_BUTTONS; i++) {
-            otherIcons[i] = new ImageIcon(ToolPanel.class.getResource("/icons/" + OTHER_FILENAMES[i] + ".png").getPath());
+            otherIcons[i] = new ImageIcon(ToolPanel.class.getResource("/icons/" + OTHER_FILENAMES[i] + ".png"));
             otherButtons[i] = new JButton(otherIcons[i]);
             otherButtons[i].setToolTipText(OTHER_TOOLTIPS[i]);
             otherButtons[i].setEnabled(false);
