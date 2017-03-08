@@ -28,4 +28,4 @@ mvn clean install -Dimagej.app.directory=$IJ_PATH -Ddelete.other.versions=true
 
 # Deploy the package
 $IJ_LAUNCHER --update edit-update-site $UPDATE_SITE $URL "webdav:$USER:$WIKI_UPLOAD_PASS" .
-$IJ_LAUNCHER --update upload --update-site $UPDATE_SITE --force-shadow jars/kappa.jar
+$IJ_LAUNCHER --update upload --update-site $UPDATE_SITE --force-shadow jars/Kappa.jar
