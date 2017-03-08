@@ -1,0 +1,16 @@
+language: java
+sudo: false
+jdk: oraclejdk8
+
+cache:
+  directories:
+    - $HOME/.m2/
+
+install:
+  - mvn install
+
+deploy:
+  script: .travis/deploy.sh
+  skip_cleanup: true
+  on:
+    tags: true
