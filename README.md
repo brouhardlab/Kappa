@@ -10,7 +10,7 @@ It allows a user to measure curvature in images in a convenient way. You can tra
 
 ## Documentation
 
-See documentation at https://dl.dropboxusercontent.com/u/157117/Kappa%20User%20Manual.pdf.
+See documentation [here](./doc/Kappa User Manual.pdf).
 
 ## Usage
 
