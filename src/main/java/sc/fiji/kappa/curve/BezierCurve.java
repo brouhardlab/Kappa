@@ -23,11 +23,11 @@
  * THE SOFTWARE.
  * #L%
  */
-package fiji.plugin.kappa.curve;
+package sc.fiji.kappa.curve;
 
-import fiji.plugin.kappa.gui.InfoPanel;
-import fiji.plugin.kappa.gui.KappaFrame;
-import fiji.plugin.kappa.gui.MenuBar;
+import sc.fiji.kappa.gui.InfoPanel;
+import sc.fiji.kappa.gui.KappaFrame;
+import sc.fiji.kappa.gui.MenuBar;
 import java.util.ArrayList;
 import java.awt.BasicStroke;
 import java.awt.Color;

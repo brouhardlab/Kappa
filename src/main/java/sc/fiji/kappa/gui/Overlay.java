@@ -23,7 +23,7 @@
  * THE SOFTWARE.
  * #L%
  */
-package fiji.plugin.kappa.gui;
+package sc.fiji.kappa.gui;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;

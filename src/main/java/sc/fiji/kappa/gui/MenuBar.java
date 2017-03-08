@@ -23,11 +23,11 @@
  * THE SOFTWARE.
  * #L%
  */
-package fiji.plugin.kappa.gui;
+package sc.fiji.kappa.gui;
 
-import fiji.plugin.kappa.curve.BSpline;
-import fiji.plugin.kappa.curve.Curve;
-import fiji.plugin.kappa.curve.Curve.BControlPoints;
+import sc.fiji.kappa.curve.BSpline;
+import sc.fiji.kappa.curve.Curve;
+import sc.fiji.kappa.curve.Curve.BControlPoints;
 import ij.*;
 import ij.plugin.ChannelSplitter;
 import ij.plugin.RGBStackMerge;

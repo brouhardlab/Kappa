@@ -23,26 +23,42 @@
  * THE SOFTWARE.
  * #L%
  */
-package fiji.plugin.kappa.gui;
+package sc.fiji.kappa.curve;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.geom.*;
 
-public class ZoomOutListener implements ActionListener {
+public class BezierPoint extends Point2D.Double {
 
-    public void actionPerformed(ActionEvent e) {
-        double scale = ControlPanel.scaleSlider.getValue() / 100.0;
+    private static final long serialVersionUID = 1L;
 
-        //If we are at the min scaling increment or lower, we can't zoom out
-        if (scale <= ControlPanel.SCALE_INCREMENTS[0]) {
-            return;
+    //Curvature values for a given point along a bezier curve
+    public double k;
+    protected int sign;
+
+    /**
+     * Constructs a Bezier Point object
+     *
+     * @param x	The x-coordinate of the point
+     * @param y	The y-coordinate of the point
+     * @param k	The curvature of the point
+     */
+    public BezierPoint(double x, double y, double k) {
+        super(x, y);
+        if (k >= 0) {
+            this.sign = 1;
+        } else {
+            this.sign = -1;
         }
+        this.k = Math.abs(k);
+    }
 
-        //Finds the next smallest scaling increment and sets the scale to that.
-        int i = 1;
-        while (i < ControlPanel.SCALE_INCREMENTS.length && ControlPanel.SCALE_INCREMENTS[i] < scale) {
-            i++;
-        }
-        ControlPanel.scaleSlider.setValue((int) Math.floor(100.0 * ControlPanel.SCALE_INCREMENTS[--i]));
+    /**
+     * Returns a String representing this Bezier Point. This contains its x-coordinate, y-coordinate
+     * and curvature value
+     *
+     * @return	The string representing the Bezier Point
+     */
+    public String toString() {
+        return String.format("x = %f, y = %f, k = %f", x, y, k);
     }
 }

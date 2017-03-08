@@ -23,7 +23,7 @@
  * THE SOFTWARE.
  * #L%
  */
-package fiji.plugin.kappa.curve;
+package sc.fiji.kappa.curve;
 
 import java.awt.Graphics2D;
 import java.awt.Polygon;

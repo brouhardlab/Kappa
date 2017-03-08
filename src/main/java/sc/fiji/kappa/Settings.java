@@ -23,7 +23,7 @@
  * THE SOFTWARE.
  * #L%
  */
-package fiji.plugin.kappa;
+package sc.fiji.kappa;
 
 import com.google.gson.Gson;
 

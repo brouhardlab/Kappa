@@ -23,7 +23,7 @@
  * THE SOFTWARE.
  * #L%
  */
-package fiji.plugin.kappa.curve;
+package sc.fiji.kappa.curve;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -34,8 +34,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import Jama.*;
-import fiji.plugin.kappa.gui.KappaFrame;
-import fiji.plugin.kappa.gui.MenuBar;
+import sc.fiji.kappa.gui.KappaFrame;
+import sc.fiji.kappa.gui.MenuBar;
 
 public class BSpline extends Curve {
     //We define the knot intervals to be uniform size, ie [0,1], [1,2] etc.

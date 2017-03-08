@@ -23,13 +23,13 @@
  * THE SOFTWARE.
  * #L%
  */
-package fiji.plugin.kappa.gui;
+package sc.fiji.kappa.gui;
 
-import fiji.plugin.kappa.curve.BSpline;
-import fiji.plugin.kappa.curve.BezierCurve;
-import fiji.plugin.kappa.curve.BezierGroup;
-import fiji.plugin.kappa.curve.BezierPoint;
-import fiji.plugin.kappa.curve.Curve;
+import sc.fiji.kappa.curve.BSpline;
+import sc.fiji.kappa.curve.BezierCurve;
+import sc.fiji.kappa.curve.BezierGroup;
+import sc.fiji.kappa.curve.BezierPoint;
+import sc.fiji.kappa.curve.Curve;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Point2D;

@@ -23,10 +23,10 @@
  * THE SOFTWARE.
  * #L%
  */
-package fiji.plugin.kappa.curve;
+package sc.fiji.kappa.curve;
 
-import fiji.plugin.kappa.Settings;
-import fiji.plugin.kappa.gui.KappaFrame;
+import sc.fiji.kappa.Settings;
+import sc.fiji.kappa.gui.KappaFrame;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;

@@ -24,7 +24,7 @@
  * #L%
  */
 
-package fiji.plugin.kappa;
+package sc.fiji.kappa;
 
 import net.imagej.Dataset;
 import net.imagej.ImageJ;

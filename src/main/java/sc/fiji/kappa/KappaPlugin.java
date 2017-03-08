@@ -23,11 +23,11 @@
  * THE SOFTWARE.
  * #L%
  */
-package fiji.plugin.kappa;
+package sc.fiji.kappa;
 
-import fiji.plugin.kappa.gui.KappaFrame;
-import static fiji.plugin.kappa.gui.KappaFrame.APP_MIN_HEIGHT;
-import static fiji.plugin.kappa.gui.KappaFrame.APP_MIN_WIDTH;
+import sc.fiji.kappa.gui.KappaFrame;
+import static sc.fiji.kappa.gui.KappaFrame.APP_MIN_HEIGHT;
+import static sc.fiji.kappa.gui.KappaFrame.APP_MIN_WIDTH;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.io.IOException;

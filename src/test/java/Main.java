@@ -24,7 +24,7 @@
  * #L%
  */
 
-import fiji.plugin.kappa.KappaPlugin;
+import sc.fiji.kappa.KappaPlugin;
 
 import java.io.IOException;
 
