@@ -16,8 +16,7 @@ See documentation [here](./doc/Kappa User Manual.pdf).
 
 ## Usage
 
-- Download the plugin at https://github.com/hadim/kappa/releases
-- Put the JAR file to the `plugins` folder of your Fiji installation.
+- Add the following update site to your Fiji installation `http://sites.imagej.net/Kappa_site/`.
 - You can run the plugin with `Plugins ► Analyze ► Kappa - Curvature Analysis`.
 
 ## Authors
