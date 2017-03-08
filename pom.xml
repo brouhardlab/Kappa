@@ -114,18 +114,4 @@
         
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-                <configuration>
-                    <licenseName>mit</licenseName>
-                    <projectName>${project.description}</projectName>
-                    <organizationName>Hadrien Mary</organizationName>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
 </project>
