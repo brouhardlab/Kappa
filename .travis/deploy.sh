@@ -1,6 +1,12 @@
 #!/usr/bin/env sh
 set -e
 
+if [ -z ${TRAVIS_TAG} ];
+then
+	echo "Not a release. Cancel deployment.";
+	exit 0;
+fi
+
 # Define some variables
 export USER="Kappa_site"
 export UPDATE_SITE="Kappa_site"
