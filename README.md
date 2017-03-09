@@ -12,7 +12,7 @@ It allows a user to measure curvature in images in a convenient way. You can tra
 
 ## Installation
 
-- Add the *Kappa-curvature* update site to your Fiji installation in `Help ► Update Fiji ► Manage update sites`.
+- Add the **Kappa** update site to your Fiji installation in `Help ► Update Fiji ► Manage update sites`.
 - You can run the plugin with `Plugins ► Analyze ► Kappa - Curvature Analysis`.
 
 ## Documentation
