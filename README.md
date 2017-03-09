@@ -16,7 +16,7 @@ See documentation [here](./doc/Kappa User Manual.pdf).
 
 ## Usage
 
-- Add the following update site to your Fiji installation `http://sites.imagej.net/Kappa_site/`.
+- Add the *Kappa-curvature* update site to your Fiji installation in `Help ► Update Fiji ► Manage update sites`.
 - You can run the plugin with `Plugins ► Analyze ► Kappa - Curvature Analysis`.
 
 ## Authors
