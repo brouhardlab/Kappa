@@ -8,8 +8,8 @@ then
 fi
 
 # Define some variables
-export USER="Kappa_site"
-export UPDATE_SITE="Kappa_site"
+export USER="Kappa-curvature"
+export UPDATE_SITE="Kappa-curvature"
 
 export IJ_PATH="$HOME/Fiji.app"
 export URL="http://sites.imagej.net/$UPDATE_SITE/"
