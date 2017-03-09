@@ -10,14 +10,14 @@ It allows a user to measure curvature in images in a convenient way. You can tra
 
 ![Kappa Screenshot](screenshot.png)
 
-## Documentation
-
-See documentation [here](./doc/Kappa User Manual.pdf).
-
-## Usage
+## Installation
 
 - Add the *Kappa-curvature* update site to your Fiji installation in `Help ► Update Fiji ► Manage update sites`.
 - You can run the plugin with `Plugins ► Analyze ► Kappa - Curvature Analysis`.
+
+## Documentation
+
+See documentation [here](./doc/Kappa User Manual.pdf).
 
 ## Authors
 
