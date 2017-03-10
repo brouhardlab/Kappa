@@ -86,7 +86,7 @@ public class KappaFrame extends JFrame {
     public static final int B_SPLINE = 1;
     public static final int DEFAULT_INPUT_CURVE = B_SPLINE;
     public static final String[] BSPLINE_TYPES = {"Open", "Closed"};
-    
+
     public static int bsplineType;
     public static int inputType;
 
@@ -94,7 +94,7 @@ public class KappaFrame extends JFrame {
     //1 = Squared Distance Minimization
     public static final int DEFAULT_FITTING_ALGORITHM = 0;
     public static String fittingAlgorithm;
-    
+
     public static Overlay overlay;
 
     //Bezier Curve information
@@ -205,7 +205,8 @@ public class KappaFrame extends JFrame {
     }
 
     /**
-     * Modifies a composite image that is both scaled and has all Bezier Curves drawn onto it
+     * Modifies a composite image that is both scaled and has all Bezier Curves
+     * drawn onto it
      *
      * @param scale	The scale factor to scale the image by
      */
@@ -402,9 +403,9 @@ public class KappaFrame extends JFrame {
     }
 
     /**
-     * Takes an (x, y) coordinate and translates it into the equivalent (x, y) coordinate for the
-     * *scaled* image with respect to the position of the image (ie. the top left corner of the
-     * image will correspond to (0,0)
+     * Takes an (x, y) coordinate and translates it into the equivalent (x, y)
+     * coordinate for the *scaled* image with respect to the position of the
+     * image (ie. the top left corner of the image will correspond to (0,0)
      *
      * @param p The original (x,y) point
      * @return	The translated (x,y) point
@@ -431,13 +432,15 @@ public class KappaFrame extends JFrame {
     }
 
     /**
-     * Takes an input number and returns the number with the given number of digits (or more). In
-     * other words, this will prepend '0's until the number is the required number of digits If it
-     * is already has more digits, this does nothing.
+     * Takes an input number and returns the number with the given number of
+     * digits (or more). In other words, this will prepend '0's until the number
+     * is the required number of digits If it is already has more digits, this
+     * does nothing.
      *
      * @param number	The input number
      * @param noDigits	The desired number of digits
-     * @return	The number modified so that it has at least the desired number of digits.
+     * @return	The number modified so that it has at least the desired number of
+     * digits.
      */
     public static String formatNumber(int number, int noDigits) {
         if (number == 0) {
@@ -457,8 +460,8 @@ public class KappaFrame extends JFrame {
     }
 
     /**
-     * Gets the weight of the data points depending on their intensity and whether we are looking
-     * for dark spots or bright spots.
+     * Gets the weight of the data points depending on their intensity and
+     * whether we are looking for dark spots or bright spots.
      *
      * @param dataPoints	The data points, in an ArrayList with n elements
      * @return	An ArrayList with n elements with corresponding weight values.
@@ -671,6 +674,7 @@ public class KappaFrame extends JFrame {
 
         /**
          * Constructs a new DrawingPanel object
+         *
          * @param imageLabel
          */
         public ScrollDrawingPane(JLabel imageLabel) {
@@ -1115,7 +1119,7 @@ public class KappaFrame extends JFrame {
     }
 
     public static KappaFrame frame;
-    
+
     public static void main(String[] args) {
         //Use the pinned menubar for Mac OS X
         //Also changes the default font on OS X to something a bit smaller.
@@ -1134,10 +1138,10 @@ public class KappaFrame extends JFrame {
                 frame.setMinimumSize(new Dimension(APP_MIN_WIDTH, APP_MIN_HEIGHT));
                 try {
                     Image im = ImageIO.read(KappaFrame.class.getResource("/logo.png"));
-                frame.setIconImage(im);
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.setLocationRelativeTo(null);
-                frame.setVisible(true);
+                    frame.setIconImage(im);
+                    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    frame.setLocationRelativeTo(null);
+                    frame.setVisible(true);
                 } catch (IOException ex) {
                     Logger.getLogger(KappaFrame.class.getName()).log(Level.SEVERE, null, ex);
                 }

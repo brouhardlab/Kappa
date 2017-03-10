@@ -245,19 +245,19 @@ public class ExportPanel extends JPanel {
         private void printHeaders(PrintWriter out) {
             //Prints the headers for all the values that we're exporting. Namely, x, y, k, and the dimer angle.
             //In CSV format, so the columns are separated by commas, and rows are separated by new lines.
-            
+
             out.print("Curve Name");
-            
+
             if (exportAllDataPoints.isSelected()) {
-                                
+
                 out.print(",X-Coordinate (um)");
                 out.print(",Y-Coordinate (um)");
                 out.print(",Curvature (um-1)");
-                
+
                 out.print(",Curve Length (um)");
                 out.print(",Curvature (um-1)");
                 out.print(",Curvature Std (um-1)");
-                
+
                 out.print(",Red Intensity");
                 out.print(",Green Intensity");
                 out.print(",Blue Intensity");
@@ -267,11 +267,11 @@ public class ExportPanel extends JPanel {
                 out.print(",Average X-Coordinate (um)");
                 out.print(",Average Y-Coordinate (um)");
                 out.print(",Average Curvature (um-1)");
-                
+
                 out.print(",Curve Length (um)");
                 out.print(",Curvature (um-1)");
                 out.print(",Curvature Std (um-1)");
-                
+
                 out.print(",Average Red Intensity");
                 out.print(",Average Green Intensity");
                 out.print(",Average Blue Intensity");

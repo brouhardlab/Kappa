@@ -374,14 +374,15 @@ public class BSpline extends Curve {
     }
 
     /**
-     * Performs one iteration of the fitting algorithm on this curve (either the Point Distance
-     * Minimization Algorithm or the Squared Distance Minimization Algorithm, depending on the
-     * selected algorithm in the UI). Require that the number of data points is equal to the number
-     * of weights
+     * Performs one iteration of the fitting algorithm on this curve (either the
+     * Point Distance Minimization Algorithm or the Squared Distance
+     * Minimization Algorithm, depending on the selected algorithm in the UI).
+     * Require that the number of data points is equal to the number of weights
      *
      * @param dataPoints	The collection of data points to be fit to.
      * @param weights	The weights of each of the data points
-     * @param t	The frame in the imageStack that this fitting will be performed on.
+     * @param t	The frame in the imageStack that this fitting will be performed
+     * on.
      * @return	The error of the fitting.
      */
     public double fittingIteration(ArrayList<Point2D> dataPoints, ArrayList<Double> weights, int t) {

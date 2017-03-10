@@ -81,12 +81,12 @@ public class BezierCurve extends Curve {
         double curveLength = this.getApproxCurveLength();
         double curvature = this.getAverageCurvature();
         double curvatureStd = this.getCurvatureStdDev();
-        
+
         //We export all the unique pixel data points if this is the case.
         if (exportAllDataPoints) {
             //We bin all points on the curve that evaluate to the same pixel coordinate into one averaged point
             int i = 0;
-            
+
             while (i < curvePoints.size()) {
                 BezierPoint p = curvePoints.get(i);
                 int n = 1;
@@ -106,22 +106,22 @@ public class BezierCurve extends Curve {
                     totalGreen += RGBvals.get(i)[1];
                     totalBlue += RGBvals.get(i)[2];
                 }
-                
+
                 out.print(this.name + ",");
-                
+
                 //Now we print out the averaged point.
                 out.print(totalX / n);
                 out.print("," + totalY / n);
                 out.print("," + totalK / n);
-                
+
                 out.print("," + curveLength);
                 out.print("," + curvature);
                 out.print("," + curvatureStd);
-                
+
                 out.print("," + totalRed / n);
                 out.print("," + totalGreen / n);
                 out.print("," + totalBlue / n);
-                
+
                 if ((int) p.getX() >= 0 && (int) p.getX() < averaged.length && (int) p.getY() >= 0 && (int) p.getY() < averaged[0].length) {
                     out.print("," + averaged[(int) p.getX()][(int) p.getY()]);
                 } else {
@@ -147,17 +147,17 @@ public class BezierCurve extends Curve {
                     totalAveraged += averaged[(int) p.getX()][(int) p.getY()];
                 }
             }
-            
+
             out.print(this.name + ",");
-            
+
             out.print(totalX / curvePoints.size());
             out.print("," + totalY / curvePoints.size());
             out.print("," + totalK / curvePoints.size());
-            
+
             out.print("," + curveLength);
             out.print("," + curvature);
             out.print("," + curvatureStd);
-            
+
             out.print("," + totalRed / curvePoints.size());
             out.print("," + totalGreen / curvePoints.size());
             out.print("," + totalBlue / curvePoints.size());
@@ -346,8 +346,8 @@ public class BezierCurve extends Curve {
     }
 
     /**
-     * Obtains the curvature at the starting point of the B�zier Curve defined by the given list of
-     * control points
+     * Obtains the curvature at the starting point of the B�zier Curve defined
+     * by the given list of control points
      *
      * @param p	A list of the control points that define the B�zier Curve
      * @return	The curvature at the starting point of this B�zier Curve.
@@ -417,8 +417,9 @@ public class BezierCurve extends Curve {
     }
 
     /**
-     * Returns a String representing this Bezier Curve. This prints out all the points defined along
-     * the curve that we have calculated, and their curvature
+     * Returns a String representing this Bezier Curve. This prints out all the
+     * points defined along the curve that we have calculated, and their
+     * curvature
      *
      * @return	The string representing the Bezier Curve
      */
@@ -604,8 +605,8 @@ public class BezierCurve extends Curve {
     }
 
     /**
-     * Gets the approximate curve length of the Bezier Curve, approximated by the sum of the line
-     * segments lengths between all the points in the curve
+     * Gets the approximate curve length of the Bezier Curve, approximated by
+     * the sum of the line segments lengths between all the points in the curve
      *
      * @param segment	The point you want to stop at. At most curves.size() - 1
      * @return	The approximate curve length of the Bezier Curve
@@ -625,7 +626,8 @@ public class BezierCurve extends Curve {
     /**
      * Returns the Standard Deviation for all the obtained curvature values
      *
-     * @return	The Standard Deviation of all curvature values along the Bezier Curve
+     * @return	The Standard Deviation of all curvature values along the Bezier
+     * Curve
      */
     public double getCurvatureStdDev() {
         double variance = 0;

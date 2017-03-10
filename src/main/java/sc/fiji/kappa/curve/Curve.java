@@ -200,7 +200,8 @@ public abstract class Curve {
     }
 
     /**
-     * Translates the curve points with respect to the previous and subsequent keyframes
+     * Translates the curve points with respect to the previous and subsequent
+     * keyframes
      *
      * @param t	The layer we are currently at
      */
