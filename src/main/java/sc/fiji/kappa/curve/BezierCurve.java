@@ -103,7 +103,9 @@ public class BezierCurve extends Curve {
                     totalGreen += RGBvals.get(i)[1];
                     totalBlue += RGBvals.get(i)[2];
                 }
-
+                
+                out.print(this.name + ",");
+                
                 //Now we print out the averaged point.
                 if (exportX) {
                     out.print(totalX / n);
@@ -142,6 +144,9 @@ public class BezierCurve extends Curve {
                     totalAveraged += averaged[(int) p.getX()][(int) p.getY()];
                 }
             }
+            
+            out.print(this.name + ",");
+            
             if (exportX) {
                 out.print(totalX / curvePoints.size());
             }
