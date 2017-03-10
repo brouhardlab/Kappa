@@ -76,14 +76,17 @@ public class BezierCurve extends Curve {
         evaluateThresholdedPixels();
     }
 
-    public void printValues(PrintWriter out, double[][] averaged, boolean exportAllDataPoints, boolean exportX,
-            boolean exportY, boolean exportK) {
+    public void printValues(PrintWriter out, double[][] averaged, boolean exportAllDataPoints) {
 
+        double curveLength = this.getApproxCurveLength();
+        double curvature = this.getAverageCurvature();
+        double curvatureStd = this.getCurvatureStdDev();
+        
         //We export all the unique pixel data points if this is the case.
         if (exportAllDataPoints) {
             //We bin all points on the curve that evaluate to the same pixel coordinate into one averaged point
             int i = 0;
-
+            
             while (i < curvePoints.size()) {
                 BezierPoint p = curvePoints.get(i);
                 int n = 1;
@@ -107,18 +110,18 @@ public class BezierCurve extends Curve {
                 out.print(this.name + ",");
                 
                 //Now we print out the averaged point.
-                if (exportX) {
-                    out.print(totalX / n);
-                }
-                if (exportY) {
-                    out.print("," + totalY / n);
-                }
-                if (exportK) {
-                    out.print("," + totalK / n);
-                }
+                out.print(totalX / n);
+                out.print("," + totalY / n);
+                out.print("," + totalK / n);
+                
+                out.print("," + curveLength);
+                out.print("," + curvature);
+                out.print("," + curvatureStd);
+                
                 out.print("," + totalRed / n);
                 out.print("," + totalGreen / n);
                 out.print("," + totalBlue / n);
+                
                 if ((int) p.getX() >= 0 && (int) p.getX() < averaged.length && (int) p.getY() >= 0 && (int) p.getY() < averaged[0].length) {
                     out.print("," + averaged[(int) p.getX()][(int) p.getY()]);
                 } else {
@@ -147,15 +150,14 @@ public class BezierCurve extends Curve {
             
             out.print(this.name + ",");
             
-            if (exportX) {
-                out.print(totalX / curvePoints.size());
-            }
-            if (exportY) {
-                out.print("," + totalY / curvePoints.size());
-            }
-            if (exportK) {
-                out.print("," + totalK / curvePoints.size());
-            }
+            out.print(totalX / curvePoints.size());
+            out.print("," + totalY / curvePoints.size());
+            out.print("," + totalK / curvePoints.size());
+            
+            out.print("," + curveLength);
+            out.print("," + curvature);
+            out.print("," + curvatureStd);
+            
             out.print("," + totalRed / curvePoints.size());
             out.print("," + totalGreen / curvePoints.size());
             out.print("," + totalBlue / curvePoints.size());

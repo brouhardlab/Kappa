@@ -823,11 +823,10 @@ public class BSpline extends Curve {
         }
     }
 
-    public void printValues(PrintWriter out, double[][] averaged, boolean exportAllDataPoints, boolean exportX,
-            boolean exportY, boolean exportK) {
+    public void printValues(PrintWriter out, double[][] averaged, boolean exportAllDataPoints) {
         //Exports in CSV format for import into Excel
         for (BezierCurve c : spline) {
-            c.printValues(out, averaged, exportAllDataPoints, exportX, exportY, exportK);
+            c.printValues(out, averaged, exportAllDataPoints);
         }
     }
 

@@ -353,8 +353,7 @@ public abstract class Curve {
 
     public abstract int getSign(int footpointIndex);
 
-    public abstract void printValues(PrintWriter out, double[][] averaged, boolean exportAllDataPoints, boolean exportX,
-            boolean exportY, boolean exportK);
+    public abstract void printValues(PrintWriter out, double[][] averaged, boolean exportAllDataPoints);
 
     public abstract double getMaximum(double start, double end);
 

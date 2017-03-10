@@ -47,18 +47,6 @@ public class ExportPanel extends JPanel {
     //File Handling
     JFileChooser kappaExport;
 
-    //Export Panel Checkboxes- Per Point
-    static JCheckBox exportX;
-    static JCheckBox exportY;
-    static JCheckBox exportK;
-    static JCheckBox exportDimerAngle;
-    final static Rectangle EXPORT_X_BOUNDS = new Rectangle(5, 27, 25, 25);
-    final static Rectangle EXPORT_X_LABEL_BOUNDS = new Rectangle(35, 25, 200, 25);
-    final static Rectangle EXPORT_Y_BOUNDS = new Rectangle(5, 45, 25, 25);
-    final static Rectangle EXPORT_Y_LABEL_BOUNDS = new Rectangle(35, 43, 200, 25);
-    final static Rectangle EXPORT_K_BOUNDS = new Rectangle(5, 63, 25, 25);
-    final static Rectangle EXPORT_K_LABEL_BOUNDS = new Rectangle(35, 61, 200, 25);
-
     //Export Panel Checkboxes- Per Curve
     static JCheckBox exportAllDataPoints;
     static JCheckBox exportAveragesOnly;
@@ -120,28 +108,6 @@ public class ExportPanel extends JPanel {
         setPreferredSize(new Dimension(KappaFrame.PANEL_WIDTH, 0));
         setBorder(BorderFactory.createLineBorder(Color.GRAY));
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
-
-        Panel perPointPanel = new Panel(0, 30, 90, "PER DATA POINT OPTIONS:");
-        exportPanels.addPanel(perPointPanel);
-        addLabelComponent("Export X Coordinate", perPointPanel, EXPORT_X_LABEL_BOUNDS);
-        addLabelComponent("Export Y Coordinate", perPointPanel, EXPORT_Y_LABEL_BOUNDS);
-        addLabelComponent("Export Curvature (κ)", perPointPanel, EXPORT_K_LABEL_BOUNDS);
-        //addLabelComponent ("Export MT Dimer Angle", perPointPanel, EXPORT_DIMER_ANGLE_LABEL_BOUNDS);
-        exportX = new JCheckBox();
-        exportX.setBounds(EXPORT_X_BOUNDS);
-        exportX.setSelected(true);
-        this.add(exportX);
-        perPointPanel.addComponent(exportX);
-        exportY = new JCheckBox();
-        exportY.setBounds(EXPORT_Y_BOUNDS);
-        exportY.setSelected(true);
-        this.add(exportY);
-        perPointPanel.addComponent(exportY);
-        exportK = new JCheckBox();
-        exportK.setBounds(EXPORT_K_BOUNDS);
-        exportK.setSelected(true);
-        this.add(exportK);
-        perPointPanel.addComponent(exportK);
 
         Panel perCurvePanel = new Panel(118, "PER CURVE OPTIONS:");
         exportPanels.addPanel(perCurvePanel);
@@ -283,34 +249,33 @@ public class ExportPanel extends JPanel {
             out.print("Curve Name");
             
             if (exportAllDataPoints.isSelected()) {
-                if (exportX.isSelected()) {
-                    out.print(",X-Coordinate");
-                }
-                if (exportY.isSelected()) {
-                    out.print(",Y-Coordinate");
-                }
-                if (exportK.isSelected()) {
-                    out.print(",Curvature 1/um");
-                }
+                                
+                out.print(",X-Coordinate (um)");
+                out.print(",Y-Coordinate (um)");
+                out.print(",Curvature (um-1)");
+                
+                out.print(",Curve Length (um)");
+                out.print(",Curvature (um-1)");
+                out.print(",Curvature Std (um-1)");
+                
                 out.print(",Red Intensity");
                 out.print(",Green Intensity");
                 out.print(",Blue Intensity");
                 out.print(",Background Intensity");
                 out.println();
             } else {
-                if (exportX.isSelected()) {
-                    out.print(",avg. X-Coordinate");
-                }
-                if (exportY.isSelected()) {
-                    out.print(",avg. Y-Coordinate");
-                }
-                if (exportK.isSelected()) {
-                    out.print(",avg. Curvature 1/um");
-                }
-                out.print(",avg. Red Intensity");
-                out.print(",avg. Green Intensity");
-                out.print(",avg. Blue Intensity");
-                out.print(",avg. Background Intensity");
+                out.print(",Average X-Coordinate (um)");
+                out.print(",Average Y-Coordinate (um)");
+                out.print(",Average Curvature (um-1)");
+                
+                out.print(",Curve Length (um)");
+                out.print(",Curvature (um-1)");
+                out.print(",Curvature Std (um-1)");
+                
+                out.print(",Average Red Intensity");
+                out.print(",Average Green Intensity");
+                out.print(",Average Blue Intensity");
+                out.print(",Average Background Intensity");
                 out.println();
             }
 
@@ -321,8 +286,7 @@ public class ExportPanel extends JPanel {
             out.println(c.getName());
             printHeaders(out);
 
-            c.printValues(out, averaged, exportAllDataPoints.isSelected(), exportX.isSelected(), exportY.isSelected(),
-                    exportK.isSelected());
+            c.printValues(out, averaged, exportAllDataPoints.isSelected());
             out.println();
         }
 
@@ -459,13 +423,11 @@ public class ExportPanel extends JPanel {
                         printHeaders(out);
                         if (exportAllCurves.isSelected()) {
                             for (Curve c : curves) {
-                                c.printValues(out, averaged, exportAllDataPoints.isSelected(), exportX.isSelected(),
-                                        exportY.isSelected(), exportK.isSelected());
+                                c.printValues(out, averaged, exportAllDataPoints.isSelected());
                             }
                         } else {
                             for (Curve c : curves.getSelected()) {
-                                c.printValues(out, averaged, exportAllDataPoints.isSelected(), exportX.isSelected(),
-                                        exportY.isSelected(), exportK.isSelected());
+                                c.printValues(out, averaged, exportAllDataPoints.isSelected());
                             }
                         }
                     }
