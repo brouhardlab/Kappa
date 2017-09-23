@@ -81,21 +81,20 @@ public class BezierCurve extends Curve {
 
 	public void printValues(PrintWriter out, double[][] averaged, boolean exportAllDataPoints) {
 
-		double curveLength = this.getApproxCurveLength();
-		double curvature = this.getAverageCurvature();
-		double curvatureStd = this.getCurvatureStdDev();
-
 		// We export all the unique pixel data points if this is the case.
 		if (exportAllDataPoints) {
 			// We bin all points on the curve that evaluate to the same pixel coordinate
 			// into one averaged point
-			int i = 0;
 
-			while (i < curvePoints.size()) {
+			for (int i = 0; i < curvePoints.size(); i++) {
 				BezierPoint p = curvePoints.get(i);
 				int n = 1;
-				double totalX = p.getX(), totalY = p.getY(), totalK = p.k, totalRed = RGBvals.get(i)[0],
-						totalGreen = RGBvals.get(i)[1], totalBlue = RGBvals.get(i)[2];
+				double totalX = p.getX();
+				double totalY = p.getY();
+				double totalK = p.k;
+				double totalRed = RGBvals.get(i)[0];
+				double totalGreen = RGBvals.get(i)[1];
+				double totalBlue = RGBvals.get(i)[2];
 
 				// Keeps adding to the total while successive points in our curve round to the
 				// same pixel coordinate.
@@ -111,29 +110,15 @@ public class BezierCurve extends Curve {
 					totalBlue += RGBvals.get(i)[2];
 				}
 
-				out.print(this.name + ",");
-
 				// Now we print out the averaged point.
-				out.print(totalX / n);
-				out.print("," + totalY / n);
+				out.print("," + (totalX / n) * micronPixelFactor);
+				out.print("," + (totalY / n) * micronPixelFactor);
 				out.print("," + totalK / n);
-
-				out.print("," + curveLength);
-				out.print("," + curvature);
-				out.print("," + curvatureStd);
 
 				out.print("," + totalRed / n);
 				out.print("," + totalGreen / n);
 				out.print("," + totalBlue / n);
 
-				if ((int) p.getX() >= 0 && (int) p.getX() < averaged.length && (int) p.getY() >= 0
-						&& (int) p.getY() < averaged[0].length) {
-					out.print("," + averaged[(int) p.getX()][(int) p.getY()]);
-				} else {
-					out.print("," + 0.0);
-				}
-				out.println();
-				i++;
 			}
 		} // Otherwise, we only export averages
 		else {
@@ -147,26 +132,58 @@ public class BezierCurve extends Curve {
 				totalRed += RGBvals.get(i)[0];
 				totalGreen += RGBvals.get(i)[1];
 				totalBlue += RGBvals.get(i)[2];
-				if ((int) p.getX() >= 0 && (int) p.getX() < averaged.length && (int) p.getY() >= 0
-						&& (int) p.getY() < averaged.length) {
-					totalAveraged += averaged[(int) p.getX()][(int) p.getY()];
-				}
 			}
 
-			out.print(this.name + ",");
-
-			out.print(totalX / curvePoints.size());
-			out.print("," + totalY / curvePoints.size());
+			out.print("," + (totalX / curvePoints.size()) * micronPixelFactor);
+			out.print("," + (totalY / curvePoints.size()) * micronPixelFactor);
 			out.print("," + totalK / curvePoints.size());
+
+			out.print("," + totalRed / curvePoints.size());
+			out.print("," + totalGreen / curvePoints.size());
+			out.print("," + totalBlue / curvePoints.size());
+		}
+	}
+
+	public void printValuesAll(PrintWriter out, double curveLength, double curvature, double curvatureStd) {
+		for (int i = 0; i < curvePoints.size(); i++) {
+			BezierPoint p = curvePoints.get(i);
+			int n = 1;
+			double totalX = p.getX();
+			double totalY = p.getY();
+			double totalK = p.k;
+			double totalRed = RGBvals.get(i)[0];
+			double totalGreen = RGBvals.get(i)[1];
+			double totalBlue = RGBvals.get(i)[2];
+
+			// Keeps adding to the total while successive points in our curve round to the
+			// same pixel coordinate.
+			while (i + 1 < curvePoints.size() && (int) curvePoints.get(i + 1).getX() == (int) p.getX()
+					&& (int) curvePoints.get(i + 1).getY() == (int) p.getY()) {
+				n++;
+				p = curvePoints.get(++i);
+				totalX += p.getX();
+				totalY += p.getY();
+				totalK += p.sign * p.k;
+				totalRed += RGBvals.get(i)[0];
+				totalGreen += RGBvals.get(i)[1];
+				totalBlue += RGBvals.get(i)[2];
+			}
+
+			out.print(this.name);
 
 			out.print("," + curveLength);
 			out.print("," + curvature);
 			out.print("," + curvatureStd);
 
-			out.print("," + totalRed / curvePoints.size());
-			out.print("," + totalGreen / curvePoints.size());
-			out.print("," + totalBlue / curvePoints.size());
-			out.print("," + totalAveraged / curvePoints.size());
+			// Now we print out the averaged point.
+			out.print("," + (totalX / n) * micronPixelFactor);
+			out.print("," + (totalY / n) * micronPixelFactor);
+			out.print("," + totalK / n);
+
+			out.print("," + totalRed / n);
+			out.print("," + totalGreen / n);
+			out.print("," + totalBlue / n);
+			
 			out.println();
 		}
 	}

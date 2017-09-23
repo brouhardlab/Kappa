@@ -270,10 +270,10 @@ public class ExportPanel extends JPanel {
 
 				out.print(",X-Coordinate (um)");
 				out.print(",Y-Coordinate (um)");
-				out.print(",Curvature (um-1)");
+				out.print(",Point Curvature (um-1)");
 
 				out.print(",Curve Length (um)");
-				out.print(",Curvature (um-1)");
+				out.print(",Average Curvature (um-1)");
 				out.print(",Curvature Std (um-1)");
 
 				out.print(",Red Intensity");
@@ -284,10 +284,10 @@ public class ExportPanel extends JPanel {
 			} else {
 				out.print(",Average X-Coordinate (um)");
 				out.print(",Average Y-Coordinate (um)");
-				out.print(",Average Curvature (um-1)");
+				out.print(",Point Curvature (um-1)");
 
 				out.print(",Curve Length (um)");
-				out.print(",Curvature (um-1)");
+				out.print(",Average Curvature (um-1)");
 				out.print(",Curvature Std (um-1)");
 
 				out.print(",Average Red Intensity");

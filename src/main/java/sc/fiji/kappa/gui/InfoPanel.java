@@ -61,6 +61,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import ij.ImagePlus;
 import sc.fiji.kappa.curve.BezierCurve;
 import sc.fiji.kappa.curve.BezierGroup;
 import sc.fiji.kappa.curve.Curve;
@@ -175,16 +176,34 @@ public class InfoPanel extends JPanel {
 	public static JSlider thresholdSlider;
 
 	public static void updateHistograms() {
+
 		// Updates the histograms
 		if (KappaFrame.curves.getNoSelected() == 0) {
 			return;
 		}
 		Curve currEditedCurve = KappaFrame.curves.getSelected()[0];
 		currEditedCurve.updateIntensities();
+
+		ArrayList<Point2D> redIntensities = currEditedCurve.getIntensityDataRed();
+		ArrayList<Point2D> greenIntensities = currEditedCurve.getIntensityDataGreen();
+		ArrayList<Point2D> blueIntensities = currEditedCurve.getIntensityDataBlue();
+
+		double maxRedValue = redIntensities.stream().map(u -> u.getY()).max(Double::compareTo).get();
+		double maxGreenValue = redIntensities.stream().map(u -> u.getY()).max(Double::compareTo).get();
+		double maxBlueValue = redIntensities.stream().map(u -> u.getY()).max(Double::compareTo).get();
+
+		double maxValue = Math.max(maxRedValue, maxGreenValue);
+		maxValue = Math.max(maxValue, maxBlueValue);
+
+		intensityChartRed.setMaxY(maxValue);
+		intensityChartGreen.setMaxY(maxValue);
+		intensityChartBlue.setMaxY(maxValue);
+
 		curvatureChart.setData(currEditedCurve.getCurveData());
-		intensityChartRed.setData(currEditedCurve.getIntensityDataRed());
-		intensityChartGreen.setData(currEditedCurve.getIntensityDataGreen());
-		intensityChartBlue.setData(currEditedCurve.getIntensityDataBlue());
+		intensityChartRed.setData(redIntensities);
+		intensityChartGreen.setData(greenIntensities);
+		intensityChartBlue.setData(blueIntensities);
+
 		if (KappaFrame.DEBUG_MODE) {
 			debugCurvatureChart.setData(currEditedCurve.getDebugCurveData());
 		}
@@ -238,8 +257,8 @@ public class InfoPanel extends JPanel {
 						MenuBar.delete.setEnabled(false);
 
 						// Hides the Histogram Panels when no curves are selected
-						panels.hide("CURVATURE DISTRIBUTION");
-						panels.hide("INTENSITY DISTRIBUTION");
+						panels.hide("Curvature Distribution (absolute values)");
+						panels.hide("Intensity Distribution");
 					} else {
 						KappaFrame.curves.setSelected(selectedIndices);
 						MenuBar.delete.setEnabled(true);
@@ -247,8 +266,8 @@ public class InfoPanel extends JPanel {
 							updateHistograms();
 
 							// Shows the Histogram Panels when curves are selected
-							panels.show("CURVATURE DISTRIBUTION");
-							panels.show("INTENSITY DISTRIBUTION");
+							panels.show("Curvature Distribution (absolute values)");
+							panels.show("Intensity Distribution");
 						}
 					}
 					KappaFrame.drawImageOverlay();
@@ -592,7 +611,7 @@ public class InfoPanel extends JPanel {
 			}
 		});
 
-		curvaturePanel = new Panel(110, "CURVATURE DISTRIBUTION");
+		curvaturePanel = new Panel(110, "Curvature Distribution (absolute values)");
 		curvatureChart = new Chart(new ArrayList<Point2D>());
 		if (KappaFrame.DEBUG_MODE) {
 			debugCurvatureChart = new Chart(new ArrayList<Point2D>());
@@ -604,19 +623,20 @@ public class InfoPanel extends JPanel {
 		intensityChartRed = new Chart(new ArrayList<Point2D>());
 		intensityChartGreen = new Chart(new ArrayList<Point2D>());
 		intensityChartBlue = new Chart(new ArrayList<Point2D>());
+
 		intensityChartRed.setMaxY(256);
 		intensityChartGreen.setMaxY(256);
 		intensityChartBlue.setMaxY(256);
 
-		intensityPanel = new Panel(110, "INTENSITY DISTRIBUTION");
+		intensityPanel = new Panel(110, "Intensity Distribution");
 		intensityPanel.addComponent(intensityChartRed);
 		intensityPanel.addComponent(intensityChartGreen);
 		intensityPanel.addComponent(intensityChartBlue);
 		panels.addPanel(intensityPanel);
 
 		// Hides the Histogram Panels by default
-		panels.hide("CURVATURE DISTRIBUTION");
-		panels.hide("INTENSITY DISTRIBUTION");
+		panels.hide("Curvature Distribution (absolute values)");
+		panels.hide("Intensity Distribution");
 	}
 
 	/**

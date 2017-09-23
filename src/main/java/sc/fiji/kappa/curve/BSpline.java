@@ -895,8 +895,29 @@ public class BSpline extends Curve {
 
 	public void printValues(PrintWriter out, double[][] averaged, boolean exportAllDataPoints) {
 		// Exports in CSV format for import into Excel
+		int i = 0;
 		for (BezierCurve c : spline) {
-			c.printValues(out, averaged, exportAllDataPoints);
+
+			double curveLength = this.getApproxCurveLength();
+			double curvature = this.getAverageCurvature();
+			double curvatureStd = this.getCurvatureStdDev();
+
+			if (!exportAllDataPoints) {
+
+				out.print(this.name);
+
+				out.print("," + curveLength);
+				out.print("," + curvature);
+				out.print("," + curvatureStd);
+
+				c.printValues(out, averaged, exportAllDataPoints);
+
+				out.println();
+			} else {
+				c.printValuesAll(out, curveLength, curvature, curvatureStd);
+			}
+
+			i++;
 		}
 	}
 

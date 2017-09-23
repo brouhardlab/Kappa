@@ -32,6 +32,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -65,7 +66,8 @@ public class ToolPanel extends JPanel {
 	final static String[] OTHER_FILENAMES = { "zoom-in", "zoom-out" };
 	private JButton[] otherButtons = new JButton[NO_OTHER_BUTTONS];
 	private ImageIcon[] otherIcons = new ImageIcon[NO_OTHER_BUTTONS];
-	protected JToggleButton export = new JToggleButton(new ImageIcon(ToolPanel.class.getResource("/icons/export.png")));
+	protected JButton export = new JButton(new ImageIcon(ToolPanel.class.getResource("/icons/export.png")));
+	protected JButton exportAverage = new JButton(new ImageIcon(ToolPanel.class.getResource("/icons/export.png")));
 	protected JToggleButton inspector = new JToggleButton(
 			new ImageIcon(ToolPanel.class.getResource("/icons/inspector.png")));
 
@@ -127,10 +129,12 @@ public class ToolPanel extends JPanel {
 
 		// The inspector and export toggles.
 		this.add(Box.createHorizontalGlue());
-		export.setToolTipText("Export");
-		export.setSelected(false);
+		export.setToolTipText("Export All Points");
 		export.addActionListener(new ExportListener());
+		exportAverage.setToolTipText("Export Averages Points");
+		exportAverage.addActionListener(new ExportAverageListener());
 		this.add(export);
+		this.add(exportAverage);
 
 		inspector.setToolTipText("Inspector");
 		inspector.setSelected(true);
@@ -156,13 +160,23 @@ public class ToolPanel extends JPanel {
 	private class ExportListener implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {
-			if (export.isSelected()) {
-				KappaFrame.frame.add(KappaFrame.exportPanel, BorderLayout.EAST);
+			CurvesExporter exporter = new CurvesExporter();
+			try {
+				exporter.export(false);
+			} catch (IOException e1) {
+				e1.printStackTrace();
 			}
-			KappaFrame.exportPanel.setVisible(export.isSelected());
-			if (export.isSelected() && inspector.isSelected()) {
-				inspector.setSelected(false);
-				KappaFrame.infoPanel.setVisible(false);
+		}
+	}
+	
+	private class ExportAverageListener implements ActionListener {
+
+		public void actionPerformed(ActionEvent e) {
+			CurvesExporter exporter = new CurvesExporter();
+			try {
+				exporter.export(true);
+			} catch (IOException e1) {
+				e1.printStackTrace();
 			}
 		}
 	}
@@ -174,10 +188,6 @@ public class ToolPanel extends JPanel {
 				KappaFrame.frame.add(KappaFrame.infoPanel, BorderLayout.EAST);
 			}
 			KappaFrame.infoPanel.setVisible(inspector.isSelected());
-			if (inspector.isSelected() && export.isSelected()) {
-				export.setSelected(false);
-				KappaFrame.exportPanel.setVisible(false);
-			}
 		}
 	}
 

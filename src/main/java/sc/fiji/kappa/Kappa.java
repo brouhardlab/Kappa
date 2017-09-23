@@ -35,6 +35,7 @@ import net.imagej.ImageJ;
 import net.imagej.display.ImageDisplay;
 
 /**
+ * This class is currently not used.
  *
  * @author Hadrien Mary <hadrien.mary@gmail.com>
  */
