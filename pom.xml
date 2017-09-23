@@ -1,141 +1,139 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    
-    <parent>
-        <groupId>org.scijava</groupId>
-        <artifactId>pom-scijava</artifactId>
-        <version>14.0.0</version>
-        <relativePath />
-    </parent>
-    
-    <artifactId>Kappa</artifactId>
-    <version>1.4.1-SNAPSHOT</version>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-    <name>Kappa</name>
-    <description>A Fiji plugin for Curvature Analysis.</description>
-    <url>https://github.com/hadim/kappa</url>
-    
-    <inceptionYear>2016</inceptionYear>
-    
-    <organization>
-        <name>Fiji</name>
-        <url>http://fiji.sc/</url>
-    </organization>
-    
-    <licenses>
-        <license>
-            <name>MIT License</name>
-            <url>http://choosealicense.com/licenses/mit/</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+	<parent>
+		<groupId>org.scijava</groupId>
+		<artifactId>pom-scijava</artifactId>
+		<version>17.0.0</version>
+		<relativePath />
+	</parent>
 
-    <developers>
-        <developer>
-            <id>hadim</id>
-            <name>Hadrien Mary</name>
-            <url>http://imagej.net/User:Hadim</url>
-            <roles>
-                <role>lead</role>
-                <role>developer</role>
-                <role>debugger</role>
-                <role>reviewer</role>
-                <role>support</role>
-                <role>maintainer</role>
-            </roles>
-            <timezone>-5</timezone>
-        </developer>
-        <developer>
-            <id>kevanlu</id>
-            <name>Kevan Lu</name>
-            <url>http://www.kevan.lu/</url>
-            <roles>
-                <role>founder</role>
-            </roles>
-        </developer>
-    </developers>
-    <contributors>
-        <!--
-        NB: Need a least one element to override the parent.
-        See: https://issues.apache.org/jira/browse/MNG-5220
-        -->
-        <contributor>
-            <name>None</name>
-        </contributor>
-    </contributors>
-    
-    <mailingLists>
-        <mailingList>
-            <name>ImageJ Forum</name>
-            <archive>http://forum.imagej.net/</archive>
-        </mailingList>
-    </mailingLists>
-    
-    <ciManagement>
-        <system>Travis CI</system>
-        <url>https://travis-ci.org/hadim/kappa</url>
-    </ciManagement>
-    
-    <properties>
-        <license.licenseName>mit</license.licenseName>
-        <license.copyrightOwners>Fiji developers.</license.copyrightOwners>
-    </properties>
+	<artifactId>Kappa</artifactId>
+	<version>1.4.1-SNAPSHOT</version>
 
-    <scm>
-        <connection>scm:git:git://github.com/hadim/Kappa</connection>
-        <developerConnection>scm:git:git@github.com:hadim/Kappa</developerConnection>
-        <tag>HEAD</tag>
-        <url>https://github.com/hadim/Kappa</url>
-    </scm>
-    <issueManagement>
-        <system>GitHub Issues</system>
-        <url>https://github.com/hadim/Kappa/issues</url>
-    </issueManagement>
+	<name>Kappa</name>
+	<description>A Fiji plugin for Curvature Analysis.</description>
+	<url>https://github.com/hadim/kappa</url>
 
-    <repositories>
-        <repository>
-            <id>imagej.public</id>
-            <url>http://maven.imagej.net/content/groups/public</url>
-        </repository>
-    </repositories>
+	<inceptionYear>2016</inceptionYear>
 
-    <dependencies>
+	<organization>
+		<name>Fiji</name>
+		<url>http://fiji.sc/</url>
+	</organization>
 
-        <!--ImageJ-->
-        <dependency>
-            <groupId>net.imagej</groupId>
-            <artifactId>imagej</artifactId>
-        </dependency>
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>http://choosealicense.com/licenses/mit/</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 
-        <!--IJ1 dependencies-->
-        <dependency>
-            <groupId>net.imagej</groupId>
-            <artifactId>ij</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.imagej</groupId>
-            <artifactId>ij1-patcher</artifactId>
-        </dependency>
+	<developers>
+		<developer>
+			<id>hadim</id>
+			<name>Hadrien Mary</name>
+			<url>http://imagej.net/User:Hadim</url>
+			<roles>
+				<role>lead</role>
+				<role>developer</role>
+				<role>debugger</role>
+				<role>reviewer</role>
+				<role>support</role>
+				<role>maintainer</role>
+			</roles>
+			<timezone>-5</timezone>
+		</developer>
+		<developer>
+			<id>kevanlu</id>
+			<name>Kevan Lu</name>
+			<url>http://www.kevan.lu/</url>
+			<roles>
+				<role>founder</role>
+			</roles>
+		</developer>
+	</developers>
+	<contributors>
+		<!-- NB: Need a least one element to override the parent. See: https://issues.apache.org/jira/browse/MNG-5220 -->
+		<contributor>
+			<name>None</name>
+		</contributor>
+	</contributors>
 
-        <!-- Enable IJ1 interface at runtime -->
-        <dependency>
-            <groupId>net.imagej</groupId>
-            <artifactId>imagej-legacy</artifactId>
-            <scope>runtime</scope>
-            <optional>true</optional>
-        </dependency>
+	<mailingLists>
+		<mailingList>
+			<name>ImageJ Forum</name>
+			<archive>http://forum.imagej.net/</archive>
+		</mailingList>
+	</mailingLists>
 
-        <!--Third party libs-->
-        <dependency>
-            <groupId>gov.nist.math</groupId>
-            <artifactId>jama</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-        </dependency>
-        
-    </dependencies>
+	<ciManagement>
+		<system>Travis CI</system>
+		<url>https://travis-ci.org/hadim/kappa</url>
+	</ciManagement>
+
+	<properties>
+		<license.licenseName>mit</license.licenseName>
+		<license.copyrightOwners>Fiji developers.</license.copyrightOwners>
+	</properties>
+
+	<scm>
+		<connection>scm:git:git://github.com/hadim/kappa</connection>
+		<developerConnection>scm:git:git@github.com:hadim/kappa</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/hadim/kappa</url>
+	</scm>
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/hadim/kappa/issues</url>
+	</issueManagement>
+
+	<repositories>
+		<repository>
+			<id>imagej.public</id>
+			<url>http://maven.imagej.net/content/groups/public</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+
+		<!--ImageJ -->
+		<dependency>
+			<groupId>net.imagej</groupId>
+			<artifactId>imagej</artifactId>
+		</dependency>
+
+		<!--IJ1 dependencies -->
+		<dependency>
+			<groupId>net.imagej</groupId>
+			<artifactId>ij</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.imagej</groupId>
+			<artifactId>ij1-patcher</artifactId>
+		</dependency>
+
+		<!-- Enable IJ1 interface at runtime -->
+		<dependency>
+			<groupId>net.imagej</groupId>
+			<artifactId>imagej-legacy</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+		</dependency>
+
+		<!--Third party libs -->
+		<dependency>
+			<groupId>gov.nist.math</groupId>
+			<artifactId>jama</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+		</dependency>
+
+	</dependencies>
 
 </project>
