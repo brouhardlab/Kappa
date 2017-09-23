@@ -21,6 +21,8 @@ It allows a user to measure curvature in images in a convenient way. You can tra
 
 See documentation [here](./doc/Kappa_User_Manual.pdf).
 
+**Note** that the documentation has been written for the first version of Kappa. The software has evolved a bit since that time so you might see some features that are not available anymore.
+
 ## Authors
 
 `Kappa` has been created originally by [**Kevan Lu**](http://www.kevan.lu/) and converted as a Fiji plugin by [Hadrien Mary](mailto:hadrien.mary@gmail.com).
