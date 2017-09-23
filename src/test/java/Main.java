@@ -38,7 +38,7 @@ public class Main {
 		final ImageJ ij = net.imagej.Main.launch(args);
 
 		// Load image and rois test data
-		Main.loadTestData(ij);
+		//Main.loadTestData(ij);
 
 		// Launch the command.
 		ij.command().run(KappaPlugin.class, true);
