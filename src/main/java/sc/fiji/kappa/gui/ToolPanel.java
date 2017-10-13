@@ -168,7 +168,7 @@ public class ToolPanel extends JPanel {
 			}
 		}
 	}
-	
+
 	private class ExportAverageListener implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {

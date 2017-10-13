@@ -61,7 +61,6 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import ij.ImagePlus;
 import sc.fiji.kappa.curve.BezierCurve;
 import sc.fiji.kappa.curve.BezierGroup;
 import sc.fiji.kappa.curve.Curve;

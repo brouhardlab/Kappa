@@ -49,15 +49,15 @@ public class CurvesExporter {
 			// Write headers
 			List<String> headers = new ArrayList<String>();
 			headers.add("Curve Name");
-			
+
 			headers.add("Curve Length (um)");
 			headers.add("Average Curvature (um-1)");
 			headers.add("Curvature Std (um-1)");
-			
+
 			headers.add("X-Coordinate (um)");
 			headers.add("Y-Coordinate (um)");
 			headers.add("Point Curvature (um-1)");
-			
+
 			headers.add("Red Intensity");
 			headers.add("Green Intensity");
 			headers.add("Blue Intensity");

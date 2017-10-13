@@ -183,7 +183,7 @@ public class BezierCurve extends Curve {
 			out.print("," + totalRed / n);
 			out.print("," + totalGreen / n);
 			out.print("," + totalBlue / n);
-			
+
 			out.println();
 		}
 	}
