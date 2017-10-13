@@ -6,3 +6,6 @@ branches:
   - "/.*-[0-9]+\\..*/"
 install: true
 script: ".travis/build.sh"
+env:
+  global:
+    secure: BRqWoz6X5BbPjcjloyRxPbzha/TmQBttPzceBrVUfWg7sqHpZcmzaZWUH+YP51HuYRbyzGZL0ni+Rg/lQeFkD5HJRLTG3bboS2eqVCcXUGjaa5raVvRX6GfqPRG4YBM7SPOWxgH6RnBG1QocXdUjylSU4KDFvatZa0kljcpzLcuLX4n5xejXxNf2L7TCvsgiH5MEPePYRc3qGMXdDj+TV+6FUyR75fv1pft3KqzVlVEk6sfX7YQejN0bCJvmj7ibXtOPDTnK687Bub5SrF37fQ7Cwg2kURGukcKpESYWkCqB0sYX5cRCHNYbEUM+uHD+gaBIsiKUB6QcxxTpk8e0n+es6oD/PJbKdn6aAknnx1K63xbcRDFpXiglJ+owwUYrJYGHJ3g9VfeIkf5eTQlnO22QxpgPAPW0/LYHRrL9KRe9K6fPz19bMQPPDaYy4k73OAgu6bUC3kCdolXzwmzwSOPmsOATHiMLIijdoMv7/1IVC/zVnc6BweRHqiPnLYG+saZQc1QYd+tVqzYCXZEHzcmbA8xdA0ANP92qO1+/Or/mMF4KYqUH5Guvl+oFamtqJiH6z8m20kyRymALrFBysg0Cjd82V1hacYc0Vt8Vl06wzDcmkY7Lc2mUZ1Aaulz9Xx2mkz9MyzTwWDL3ZE8t3q03Gh+fcNAQLMywurbBnqE=
