@@ -60,9 +60,6 @@ public class BezierCurve extends Curve {
 	public static final double STEP_SIZE_ANGLE = 0.2;
 	public static final int STEP_SIZE_CURVE = Math.max(RECURSE_DEPTH - 3, 1);
 
-	/**
-	 * Generates a Bezier Curve from an array of Control Points
-	 */
 	public BezierCurve(ArrayList<Point2D> ctrlPts, int t, int noCtrlPts, String name, int dataRadius) {
 		super(ctrlPts, t, noCtrlPts, name, dataRadius);
 		fillPoints(ctrlPts, t);

@@ -741,11 +741,6 @@ public class KappaFrame extends JFrame {
 		Point startPoint;
 		Point startOrigin;
 
-		/**
-		 * Constructs a new DrawingPanel object
-		 *
-		 * @param imageLabel
-		 */
 		public ScrollDrawingPane(JLabel imageLabel) {
 			super(imageLabel);
 			this.getViewport().setBackground(DRAWING_PANEL_COLOR);
