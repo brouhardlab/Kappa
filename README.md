@@ -1,6 +1,6 @@
 ![Kappa logo](logo.png)
 
-[![](https://travis-ci.org/hadim/kappa.svg?branch=master)](https://travis-ci.org/hadim/kappa)
+[![](https://travis-ci.org/brouhardlab/kappa.svg?branch=master)](https://travis-ci.org/brouhardlab/kappa)
 
 # Kappa
 
@@ -12,7 +12,7 @@ It allows a user to measure curvature in images in a convenient way. You can tra
 
 ## Installation
 
-- Download the last release of the plugin here : https://github.com/hadim/kappa/releases
+- Download the last release of the plugin here : https://github.com/brouhardlab/kappa/releases
 - Copy the .jar file to your Fiji plugins directory.
 - Launch Fiji.
 - You can run the plugin with `Plugins ► Analyze ► Kappa - Curvature Analysis`.

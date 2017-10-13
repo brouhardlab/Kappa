@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
-		<version>17.0.0</version>
+		<version>17.1.1</version>
 		<relativePath />
 	</parent>
 
@@ -15,7 +15,7 @@
 
 	<name>Kappa</name>
 	<description>A Fiji plugin for Curvature Analysis.</description>
-	<url>https://github.com/hadim/kappa</url>
+	<url>https://github.com/brouhardlab/kappa</url>
 
 	<inceptionYear>2016</inceptionYear>
 
@@ -72,7 +72,7 @@
 
 	<ciManagement>
 		<system>Travis CI</system>
-		<url>https://travis-ci.org/hadim/kappa</url>
+		<url>https://travis-ci.org/brouhardlab/kappa</url>
 	</ciManagement>
 
 	<properties>
@@ -81,14 +81,14 @@
 	</properties>
 
 	<scm>
-		<connection>scm:git:git://github.com/hadim/kappa</connection>
-		<developerConnection>scm:git:git@github.com:hadim/kappa</developerConnection>
+		<connection>scm:git:git://github.com/brouhardlab/kappa</connection>
+		<developerConnection>scm:git:git@github.com:brouhardlab/kappa</developerConnection>
 		<tag>HEAD</tag>
-		<url>https://github.com/hadim/kappa</url>
+		<url>https://github.com/brouhardlab/kappa</url>
 	</scm>
 	<issueManagement>
 		<system>GitHub Issues</system>
-		<url>https://github.com/hadim/kappa/issues</url>
+		<url>https://github.com/brouhardlab/kappa/issues</url>
 	</issueManagement>
 
 	<repositories>
