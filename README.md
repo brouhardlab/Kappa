@@ -12,10 +12,14 @@ It allows a user to measure curvature in images in a convenient way. You can tra
 
 ## Installation
 
-- Download the last released version [here](http://maven.imagej.net/service/local/artifact/maven/redirect?r=releases&g=org.scijava&a=Kappa&v=RELEASE&e=jar).
-- Copy the .jar file to your Fiji plugins directory.
-- Launch Fiji.
-- You can run the plugin with `Plugins ► Analyze ► Kappa - Curvature Analysis`.
+- Start [Fiji](https://imagej.net/Fiji/Downloads).
+- Click on `Help ▶ Update...`.
+- In the new window, click on `Manage update sites`.
+- Scroll to find `Kappa` in the column `Name`. Click on it.
+- Click `Close` and then `Apply changes`.
+- Restart Fiji.
+- Open your image.
+- Then you can start the plugin with `Plugins ► Analyze ► Kappa - Curvature Analysis`.
 
 ## Documentation
 
