@@ -1,5 +1,3 @@
-[![](https://travis-ci.org/brouhardlab/Kappa.git.svg?branch=master)](https://travis-ci.org/brouhardlab/Kappa.git)
-
 ![Kappa logo](logo.png)
 
 [![](https://travis-ci.org/brouhardlab/Kappa.svg?branch=master)](https://travis-ci.org/brouhardlab/Kappa)
