@@ -70,7 +70,7 @@ public class KappaPlugin implements Command {
 		log.info("Running " + PLUGIN_NAME + " version " + VERSION);
 
 		// Launch old IJ1 and not integrated Kappa GUI
-		KappaFrame.frame = new KappaFrame();
+		KappaFrame.frame = new KappaFrame(ij.context());
 		KappaFrame.frame.setMinimumSize(new Dimension(APP_MIN_WIDTH, APP_MIN_HEIGHT));
 		KappaFrame.frame.setTitle(PLUGIN_NAME + " version " + VERSION);
 		

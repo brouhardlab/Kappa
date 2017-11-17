@@ -29,13 +29,10 @@ import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
@@ -57,10 +54,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -69,6 +63,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
+
+import org.scijava.Context;
+import org.scijava.plugin.Parameter;
 
 import ij.ImagePlus;
 import ij.ImageStack;
@@ -158,6 +155,122 @@ public class KappaFrame extends JFrame {
 	public static ExportPanel exportPanel;
 	public static ControlPanel controlPanel;
 	public static ToolPanel toolPanel;
+
+	@Parameter
+	private Context context;
+
+	public static KappaFrame frame;
+
+	public KappaFrame(Context context) {
+
+		// Set up the original frame
+		super(APPLICATION_NAME);
+		context.inject(this);
+
+		setSize(APP_DEFAULT_WIDTH, APP_DEFAULT_HEIGHT);
+		setLocation(APP_DEFAULT_X, APP_DEFAULT_Y);
+
+		setLayout(new BorderLayout());
+		infoPanel = new InfoPanel();
+		exportPanel = new ExportPanel();
+		controlPanel = new ControlPanel();
+		toolPanel = new ToolPanel();
+		add(infoPanel, BorderLayout.EAST);
+		add(controlPanel, BorderLayout.SOUTH);
+		add(toolPanel, BorderLayout.NORTH);
+
+		// Sets the glass pane up for notifications
+		overlay = new Overlay();
+		this.setGlassPane(overlay);
+		overlay.setOpaque(false);
+
+		// Default Curve input
+		inputType = DEFAULT_INPUT_CURVE;
+		bsplineType = BSpline.DEFAULT_BSPLINE_TYPE;
+		fittingAlgorithm = FITTING_ALGORITHMS[DEFAULT_FITTING_ALGORITHM];
+
+		// We define the currentImage as a label so the centering and scaling can be
+		// done by the layout manager
+		currImageLabel = new JLabel();
+		currImageLabel.setHorizontalAlignment(JLabel.CENTER);
+
+		// We add the JScrollPane containing the desired Image
+		scrollPane = new ScrollDrawingPane(currImageLabel);
+		scrollPane.setVisible(true);
+		add(scrollPane);
+
+		// Key Bindings for the Hand Tool
+		scrollPane.getInputMap().put(KeyStroke.getKeyStroke("SPACE"), "space pressed");
+		scrollPane.getInputMap().put(KeyStroke.getKeyStroke("released SPACE"), "space released");
+		scrollPane.getActionMap().put("space pressed", (new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				if (!toolPanel.isEnabled(1) || toolPanel.isSelected(1)) {
+					return;
+				}
+				prevIndex = 0;
+				while (!toolPanel.isSelected(prevIndex)) {
+					prevIndex++;
+				}
+				toolPanel.setSelected(1, true);
+				scrollPane.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+		}));
+		scrollPane.getActionMap().put("space released", (new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				if (!toolPanel.isEnabled(1)) {
+					return;
+				}
+				toolPanel.setSelected(prevIndex, true);
+				scrollPane.setCursor(ToolPanel.TOOL_CURSORS[prevIndex]);
+			}
+		}));
+
+		// Key Bindings for the SHIFT key
+		scrollPane.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, InputEvent.SHIFT_DOWN_MASK),
+				"shift pressed");
+		scrollPane.getInputMap().put(KeyStroke.getKeyStroke("released SHIFT"), "shift released");
+		scrollPane.getActionMap().put("shift pressed", (new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				shiftPressed = true;
+			}
+		}));
+		scrollPane.getActionMap().put("shift released", (new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				shiftPressed = false;
+			}
+		}));
+		imageStack = null;
+
+		// Adds the menubar
+		this.setJMenuBar(new MenuBar(context));
+
+		// Moves the export button position when the window is resized.
+		this.getRootPane().addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent e) {
+				if (System.getProperty("os.name").equals("Mac OS X")) {
+					exportPanel.exportButton.setBounds(new Rectangle(20, getHeight() - 150, PANEL_WIDTH - 40, 25));
+				} else {
+					exportPanel.exportButton.setBounds(new Rectangle(20, getHeight() - 200, PANEL_WIDTH - 40, 25));
+				}
+			}
+		});
+
+		this.setFocusable(true);
+		this.requestFocusInWindow();
+	}
 
 	public static void fitCurves() {
 		// If no curves are selected, no fitting is done
@@ -624,114 +737,6 @@ public class KappaFrame extends JFrame {
 		controlPanel.repaint();
 	}
 
-	public KappaFrame() {
-		// Set up the original frame
-		super(APPLICATION_NAME);
-		setSize(APP_DEFAULT_WIDTH, APP_DEFAULT_HEIGHT);
-		setLocation(APP_DEFAULT_X, APP_DEFAULT_Y);
-
-		setLayout(new BorderLayout());
-		infoPanel = new InfoPanel();
-		exportPanel = new ExportPanel();
-		controlPanel = new ControlPanel();
-		toolPanel = new ToolPanel();
-		add(infoPanel, BorderLayout.EAST);
-		add(controlPanel, BorderLayout.SOUTH);
-		add(toolPanel, BorderLayout.NORTH);
-
-		// Sets the glass pane up for notifications
-		overlay = new Overlay();
-		this.setGlassPane(overlay);
-		overlay.setOpaque(false);
-
-		// Default Curve input
-		inputType = DEFAULT_INPUT_CURVE;
-		bsplineType = BSpline.DEFAULT_BSPLINE_TYPE;
-		fittingAlgorithm = FITTING_ALGORITHMS[DEFAULT_FITTING_ALGORITHM];
-
-		// We define the currentImage as a label so the centering and scaling can be
-		// done by the layout manager
-		currImageLabel = new JLabel();
-		currImageLabel.setHorizontalAlignment(JLabel.CENTER);
-
-		// We add the JScrollPane containing the desired Image
-		scrollPane = new ScrollDrawingPane(currImageLabel);
-		scrollPane.setVisible(true);
-		add(scrollPane);
-
-		// Key Bindings for the Hand Tool
-		scrollPane.getInputMap().put(KeyStroke.getKeyStroke("SPACE"), "space pressed");
-		scrollPane.getInputMap().put(KeyStroke.getKeyStroke("released SPACE"), "space released");
-		scrollPane.getActionMap().put("space pressed", (new AbstractAction() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void actionPerformed(ActionEvent event) {
-				if (!toolPanel.isEnabled(1) || toolPanel.isSelected(1)) {
-					return;
-				}
-				prevIndex = 0;
-				while (!toolPanel.isSelected(prevIndex)) {
-					prevIndex++;
-				}
-				toolPanel.setSelected(1, true);
-				scrollPane.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-			}
-		}));
-		scrollPane.getActionMap().put("space released", (new AbstractAction() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void actionPerformed(ActionEvent event) {
-				if (!toolPanel.isEnabled(1)) {
-					return;
-				}
-				toolPanel.setSelected(prevIndex, true);
-				scrollPane.setCursor(ToolPanel.TOOL_CURSORS[prevIndex]);
-			}
-		}));
-
-		// Key Bindings for the SHIFT key
-		scrollPane.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, InputEvent.SHIFT_DOWN_MASK),
-				"shift pressed");
-		scrollPane.getInputMap().put(KeyStroke.getKeyStroke("released SHIFT"), "shift released");
-		scrollPane.getActionMap().put("shift pressed", (new AbstractAction() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void actionPerformed(ActionEvent event) {
-				shiftPressed = true;
-			}
-		}));
-		scrollPane.getActionMap().put("shift released", (new AbstractAction() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void actionPerformed(ActionEvent event) {
-				shiftPressed = false;
-			}
-		}));
-		imageStack = null;
-
-		// Adds the menubar
-		this.setJMenuBar(new MenuBar());
-
-		// Moves the export button position when the window is resized.
-		this.getRootPane().addComponentListener(new ComponentAdapter() {
-			@Override
-			public void componentResized(ComponentEvent e) {
-				if (System.getProperty("os.name").equals("Mac OS X")) {
-					exportPanel.exportButton.setBounds(new Rectangle(20, getHeight() - 150, PANEL_WIDTH - 40, 25));
-				} else {
-					exportPanel.exportButton.setBounds(new Rectangle(20, getHeight() - 200, PANEL_WIDTH - 40, 25));
-				}
-			}
-		});
-
-		this.setFocusable(true);
-		this.requestFocusInWindow();
-	}
-
 	// Inner class for the drawing pane. We make it scrollable but also make it so
 	// that it can detect
 	// mouse events
@@ -1136,7 +1141,7 @@ public class KappaFrame extends JFrame {
 			b = (2 * Math.PI) / currImage.getWidth();
 
 			System.out.println("SNR: " + snr);
-			MenuBar.loadFile(new File("test-curves/newtestcurves.kapp"));
+			MenuBar.loadCurveFile(new File("test-curves/newtestcurves.kapp"));
 
 			// Scale the testing curves so that they span the entire image.
 			// The testing curves were originally drawn on a 82px x 82px image, so that's
@@ -1191,7 +1196,7 @@ public class KappaFrame extends JFrame {
 			// Scale the testing curves so that they span the entire image.
 			// The testing curves were originally drawn on a 82px x 82px image, so that's
 			// the reference for our scaling.
-			MenuBar.loadFile(new File("test-curves/newtestcurves.kapp"));
+			MenuBar.loadCurveFile(new File("test-curves/newtestcurves.kapp"));
 			for (Curve c : curves) {
 				c.scale(currImage.getWidth() / 82.0, ControlPanel.currentLayerSlider.getValue());
 			}
@@ -1208,34 +1213,4 @@ public class KappaFrame extends JFrame {
 		out3.close();
 	}
 
-	public static KappaFrame frame;
-
-	public static void main(String[] args) {
-		// Use the pinned menubar for Mac OS X
-		// Also changes the default font on OS X to something a bit smaller.
-		if (System.getProperty("os.name").equals("Mac OS X")) {
-			System.setProperty("apple.laf.useScreenMenuBar", "true");
-			System.setProperty("com.apple.mrj.application.apple.menu.about.name", APPLICATION_NAME);
-			setUIFont(new javax.swing.plaf.FontUIResource("Sans Serif", Font.PLAIN, 12));
-		}
-
-		// Schedule a job for the event-dispatching thread:
-		// creating and showing this application's GUI.
-		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				frame = new KappaFrame();
-				frame.setMinimumSize(new Dimension(APP_MIN_WIDTH, APP_MIN_HEIGHT));
-				try {
-					Image im = ImageIO.read(KappaFrame.class.getResource("/logo.png"));
-					frame.setIconImage(im);
-					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-					frame.setLocationRelativeTo(null);
-					frame.setVisible(true);
-				} catch (IOException ex) {
-					Logger.getLogger(KappaFrame.class.getName()).log(Level.SEVERE, null, ex);
-				}
-			}
-		});
-	}
 }

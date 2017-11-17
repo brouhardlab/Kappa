@@ -50,11 +50,16 @@ import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.scijava.Context;
+import org.scijava.convert.ConvertService;
+
 import ij.ImagePlus;
 import ij.plugin.ChannelSplitter;
 import ij.plugin.RGBStackMerge;
 import ij.process.ImageConverter;
 import ij.process.StackConverter;
+import net.imagej.display.ImageDisplay;
+import net.imagej.display.ImageDisplayService;
 import sc.fiji.kappa.curve.BSpline;
 import sc.fiji.kappa.curve.Curve;
 
@@ -97,8 +102,8 @@ public class MenuBar extends JMenuBar {
 	/**
 	 * Creates a menu-bar and adds menu items to it
 	 */
-	@SuppressWarnings("unused")
-	public MenuBar() {
+	public MenuBar(Context context) {
+		context.inject(this);
 
 		// Creates a new file chooser. Same native image support as ImageJ since ImageJ
 		// libraries are used.
@@ -121,19 +126,53 @@ public class MenuBar extends JMenuBar {
 		fileMenu.setMnemonic('F');
 
 		// Menu Items for file operations
-		JMenuItem openMenu = new JMenuItem("Open Image", 'O');
-		JMenuItem loadMenu = new JMenuItem("Load Curve Data");
-		JMenuItem saveMenu = new JMenuItem("Save Curve Data");
+		JMenuItem openMenu = new JMenuItem("Open Image File");
 		openMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, DEFAULT_MASK));
-		loadMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, DEFAULT_MASK));
-		saveMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, DEFAULT_MASK));
-		openMenu.addActionListener(new FileActionListener());
-		loadMenu.addActionListener(new LoadActionListener());
-		saveMenu.addActionListener(new SaveActionListener());
+		openMenu.addActionListener(e -> {
+			int returnVal = kappaOpen.showOpenDialog(KappaFrame.frame);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				openFile(kappaOpen.getSelectedFile());
+			}
+		});
+
 		fileMenu.add(openMenu);
+
+		JMenuItem openActiveMenu = new JMenuItem("Open Active Image");
+		openActiveMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, DEFAULT_MASK));
+		openActiveMenu.addActionListener(e -> {
+			openActiveImage(context);
+		});
+		fileMenu.add(openActiveMenu);
 		fileMenu.addSeparator();
+
+		JMenuItem loadMenu = new JMenuItem("Load Curve Data");
+		loadMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, DEFAULT_MASK));
+		loadMenu.addActionListener(e -> {
+			// Handle open button action.
+			int returnVal = kappaLoad.showOpenDialog(KappaFrame.frame);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				file = kappaLoad.getSelectedFile();
+				loadCurveFile(file);
+			}
+		});
 		fileMenu.add(loadMenu);
+
+		JMenuItem saveMenu = new JMenuItem("Save Curve Data");
+		saveMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, DEFAULT_MASK));
+		saveMenu.addActionListener(e -> {
+			// Handles save button action.
+			int returnVal = kappaSave.showSaveDialog(KappaFrame.frame);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				file = kappaSave.getSelectedFile();
+				// Appends a .kapp
+				if (!file.getPath().toLowerCase().endsWith(".kapp")) {
+					file = new File(file.getPath() + ".kapp");
+				}
+				saveCurveFile(file);
+			}
+		});
 		fileMenu.add(saveMenu);
+
 		this.add(fileMenu);
 
 		// Menu Items for all the tools
@@ -155,6 +194,7 @@ public class MenuBar extends JMenuBar {
 		// We also add a menu item for deleting Bezier Curves via the Backspace key.
 		delete = new JMenuItem("Delete Curves");
 		delete.addActionListener(new ActionListener() {
+
 			public void actionPerformed(ActionEvent event) {
 				KappaFrame.deleteCurve();
 			}
@@ -465,7 +505,7 @@ public class MenuBar extends JMenuBar {
 		scaleCurvesMenu.setEnabled(false);
 
 		// Menu Item for image antialiasing
-		antialiasingMenu = new JCheckBoxMenuItem("Antialias Microscopy Imagery");
+		antialiasingMenu = new JCheckBoxMenuItem("Enable Antialiasing");
 		antialiasingMenu.setState(false);
 		antialiasingMenu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent a) {
@@ -505,8 +545,7 @@ public class MenuBar extends JMenuBar {
 		aboutMenuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				JOptionPane.showMessageDialog(KappaFrame.frame,
-						"Developed by the Brouhard lab, 2016-2017.",
+				JOptionPane.showMessageDialog(KappaFrame.frame, "Developed by the Brouhard lab, 2016-2017.",
 						KappaFrame.APPLICATION_NAME, JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
@@ -535,8 +574,20 @@ public class MenuBar extends JMenuBar {
 	}
 
 	static void openFile(File file) {
-		// Opens the file using ImageJ libraries.
-		KappaFrame.imageStack = new ImagePlus(file.getPath());
+		ImagePlus imp = new ImagePlus(file.getPath());
+		openImage(imp);
+	}
+
+	static void openActiveImage(Context context) {
+		ImageDisplayService imds = context.getService(ImageDisplayService.class);
+		ConvertService convert = context.getService(ConvertService.class);
+		ImageDisplay imd = imds.getActiveImageDisplay();
+		ImagePlus imp = convert.convert(imd, ImagePlus.class);
+		openImage(imp);
+	}
+
+	static void openImage(ImagePlus imp) {
+		KappaFrame.imageStack = imp;
 
 		// Splits the image into the R, G, and B channels, but only if the image is in
 		// RGB color
@@ -645,10 +696,10 @@ public class MenuBar extends JMenuBar {
 		adjustBrightnessContrast.setEnabled(true);
 
 		// Adds file name to the frame.
-		KappaFrame.frame.setTitle(KappaFrame.APPLICATION_NAME + "- " + file.getName());
+		KappaFrame.frame.setTitle(KappaFrame.APPLICATION_NAME + "- " + imp.getTitle());
 	}
 
-	static void loadFile(File file) {
+	static void loadCurveFile(File file) {
 		// Tries opening the file
 		try {
 			KappaFrame.resetCurves();
@@ -732,100 +783,63 @@ public class MenuBar extends JMenuBar {
 		}
 	}
 
-	private class FileActionListener implements ActionListener {
+	static void saveCurveFile(File file) {
 
-		public void actionPerformed(ActionEvent e) {
-			// Handle open button action.
-			int returnVal = kappaOpen.showOpenDialog(KappaFrame.frame);
-			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				openFile(kappaOpen.getSelectedFile());
-			} else
-				;
-		}
-	}
+		try {
+			PrintWriter out = new PrintWriter(new FileWriter(file));
+			out.println(KappaFrame.curves.size());
 
-	private class LoadActionListener implements ActionListener {
+			for (Curve c : KappaFrame.curves) {
+				// Outputs the curve properties: it's type, the number of keyframes, the number
+				// of control points, etc.
+				if (c instanceof BSpline) {
+					out.println(KappaFrame.B_SPLINE);
+				} else {
+					out.println(KappaFrame.BEZIER_CURVE);
+				}
+				out.println(c.getNoKeyframes());
 
-		public void actionPerformed(ActionEvent e) {
-			// Handle open button action.
-			int returnVal = kappaLoad.showOpenDialog(KappaFrame.frame);
-			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				file = kappaLoad.getSelectedFile();
-				loadFile(file);
-			}
-		}
-	}
-
-	private class SaveActionListener implements ActionListener {
-
-		public void actionPerformed(ActionEvent e) {
-			// Handles save button action.
-			int returnVal = kappaSave.showSaveDialog(KappaFrame.frame);
-			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				file = kappaSave.getSelectedFile();
-
-				// Appends a .kapp
-				if (!file.getPath().toLowerCase().endsWith(".kapp")) {
-					file = new File(file.getPath() + ".kapp");
+				// Print out the correct number of control points depending on the curve type.
+				if (c instanceof BSpline && !((BSpline) c).isOpen()) {
+					out.println(c.getNoCtrlPts() - BSpline.B_SPLINE_DEGREE);
+				} else {
+					out.println(c.getNoCtrlPts());
 				}
 
-				try {
-					PrintWriter out = new PrintWriter(new FileWriter(file));
-					out.println(KappaFrame.curves.size());
+				if (c instanceof BSpline) {
+					if (((BSpline) c).isOpen()) {
+						out.println(BSpline.OPEN);
+					} else {
+						out.println(BSpline.CLOSED);
+					}
+				}
 
-					for (Curve c : KappaFrame.curves) {
-						// Outputs the curve properties: it's type, the number of keyframes, the number
-						// of control points, etc.
-						if (c instanceof BSpline) {
-							out.println(KappaFrame.B_SPLINE);
-						} else {
-							out.println(KappaFrame.BEZIER_CURVE);
+				// Writes the control points and what keyframe they are at for each curve.
+				for (Curve.BControlPoints b : c.keyframes) {
+					out.println(b.t);
+
+					// If it's a closed B-Spline, we don't output the last redundant points that
+					// make it closed
+					if (c instanceof BSpline && !((BSpline) c).isOpen()) {
+						for (int i = 0; i < b.defPoints.length - BSpline.B_SPLINE_DEGREE; i++) {
+							Point2D p = b.defPoints[i];
+							out.println(p.getX());
+							out.println(p.getY());
 						}
-						out.println(c.getNoKeyframes());
-
-						// Print out the correct number of control points depending on the curve type.
-						if (c instanceof BSpline && !((BSpline) c).isOpen()) {
-							out.println(c.getNoCtrlPts() - BSpline.B_SPLINE_DEGREE);
-						} else {
-							out.println(c.getNoCtrlPts());
-						}
-
-						if (c instanceof BSpline) {
-							if (((BSpline) c).isOpen()) {
-								out.println(BSpline.OPEN);
-							} else {
-								out.println(BSpline.CLOSED);
-							}
-						}
-
-						// Writes the control points and what keyframe they are at for each curve.
-						for (Curve.BControlPoints b : c.keyframes) {
-							out.println(b.t);
-
-							// If it's a closed B-Spline, we don't output the last redundant points that
-							// make it closed
-							if (c instanceof BSpline && !((BSpline) c).isOpen()) {
-								for (int i = 0; i < b.defPoints.length - BSpline.B_SPLINE_DEGREE; i++) {
-									Point2D p = b.defPoints[i];
-									out.println(p.getX());
-									out.println(p.getY());
-								}
-							} // Otherwise, we output all the points
-							else {
-								for (Point2D p : b.defPoints) {
-									out.println(p.getX());
-									out.println(p.getY());
-								}
-							}
+					} // Otherwise, we output all the points
+					else {
+						for (Point2D p : b.defPoints) {
+							out.println(p.getX());
+							out.println(p.getY());
 						}
 					}
-					out.close();
-				} catch (Exception err) {
-					KappaFrame.overlay.setVisible(true);
-					KappaFrame.overlay.drawNotification("There was an error saving the curve data",
-							KappaFrame.scrollPane.getVisibleRect());
 				}
 			}
+			out.close();
+		} catch (Exception err) {
+			KappaFrame.overlay.setVisible(true);
+			KappaFrame.overlay.drawNotification("There was an error saving the curve data",
+					KappaFrame.scrollPane.getVisibleRect());
 		}
 	}
 }

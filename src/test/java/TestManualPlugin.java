@@ -1,3 +1,4 @@
+
 /*
  * #%L
  * A Fiji plugin for Curvature Analysis.
@@ -36,9 +37,9 @@ public class TestManualPlugin {
 		// Launch ImageJ as usual.
 		final ImageJ ij = new ImageJ();
 		ij.launch(args);
-				
+
 		// Load image and rois test data
-		// Main.loadTestData(ij);
+		loadTestData(ij);
 
 		// Launch the command.
 		ij.command().run(KappaPlugin.class, true);
