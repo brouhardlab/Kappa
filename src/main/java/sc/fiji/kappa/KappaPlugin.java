@@ -72,6 +72,7 @@ public class KappaPlugin implements Command {
 		// Launch old IJ1 and not integrated Kappa GUI
 		KappaFrame.frame = new KappaFrame();
 		KappaFrame.frame.setMinimumSize(new Dimension(APP_MIN_WIDTH, APP_MIN_HEIGHT));
+		KappaFrame.frame.setTitle(PLUGIN_NAME + " version " + VERSION);
 		
 		try {
 			Image im = ImageIO.read(KappaFrame.class.getResource("/logo.png"));

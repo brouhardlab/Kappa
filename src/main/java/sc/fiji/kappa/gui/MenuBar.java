@@ -506,7 +506,7 @@ public class MenuBar extends JMenuBar {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				JOptionPane.showMessageDialog(KappaFrame.frame,
-						"Developed by Kevan Lu, \u00a9 2013\n2011-2013 Brouhard Lab, Doublecortin Project",
+						"Developed by the Brouhard lab, 2016-2017.",
 						KappaFrame.APPLICATION_NAME, JOptionPane.INFORMATION_MESSAGE);
 			}
 		});

@@ -29,9 +29,9 @@ See documentation [here](./doc/Kappa_User_Manual.pdf).
 
 ## Authors
 
-`Kappa` has been created originally by [**Kevan Lu**](http://www.kevan.lu/) and converted as a Fiji plugin by [Hadrien Mary](mailto:hadrien.mary@gmail.com).
+`Kappa` has been created originally by [**Kevan Lu**](http://www.kevan.lu/) and is now maintained by [Hadrien Mary](mailto:hadrien.mary@gmail.com).
 
-This work started in 2013 at the [Gary Brouhard laboratory](http://brouhardlab.mcgill.ca/) at the University of McGill.
+This work started in 2013 in the [Gary Brouhard laboratory](http://brouhardlab.mcgill.ca/) at the University of McGill.
 
 ## License
 
