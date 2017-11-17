@@ -60,9 +60,7 @@ public class KappaPlugin implements Command {
 
 	@Parameter
 	private LogService log;
-
-	// @Parameter(type = ItemIO.INPUT)
-	// private ImageDisplay imageDisplay;
+	
 	public static final String PLUGIN_NAME = "Kappa";
 	public static final String VERSION = version();
 
@@ -71,29 +69,20 @@ public class KappaPlugin implements Command {
 
 		log.info("Running " + PLUGIN_NAME + " version " + VERSION);
 
-		// Kappa kappa = new Kappa(ij, imageDisplay);
-		// kappa.init();
-
-		// Launch Old IJ1 and not integrated Kappa GUI
+		// Launch old IJ1 and not integrated Kappa GUI
 		KappaFrame.frame = new KappaFrame();
 		KappaFrame.frame.setMinimumSize(new Dimension(APP_MIN_WIDTH, APP_MIN_HEIGHT));
+		
 		try {
 			Image im = ImageIO.read(KappaFrame.class.getResource("/logo.png"));
 			KappaFrame.frame.setIconImage(im);
 			KappaFrame.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			KappaFrame.frame.setLocationRelativeTo(null);
 			KappaFrame.frame.setVisible(true);
+			
 		} catch (IOException ex) {
 			Logger.getLogger(KappaFrame.class.getName()).log(Level.SEVERE, null, ex);
 		}
-	}
-
-	public static void main(final String... args) throws Exception {
-		// Launch ImageJ as usual.
-		final ImageJ ij = net.imagej.Main.launch(args);
-
-		// Launch the command.
-		ij.command().run(KappaPlugin.class, true);
 	}
 
 	private static String version() {
