@@ -53,6 +53,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
@@ -127,7 +128,7 @@ public class KappaFrame extends JFrame {
 
 	// Bezier Curve information
 	public static BezierGroup curves = new BezierGroup();
-	public static ArrayList<Point2D> points = new ArrayList<Point2D>(DEFAULT_NO_CTRL_PTS);
+	public static List<Point2D> points = new ArrayList<Point2D>(DEFAULT_NO_CTRL_PTS);
 	public Curve currEditedCurve;
 	public static int currCtrlPt = 0;
 	public boolean controlPointSelected;
@@ -293,8 +294,8 @@ public class KappaFrame extends JFrame {
 				// Performs curve fitting with the current B-Spline
 				double error = Double.MAX_VALUE;
 				double oldError;
-				ArrayList<Point2D> dataPoints;
-				ArrayList<Double> weights;
+				List<Point2D> dataPoints;
+				List<Double> weights;
 
 				// Sets the x and y coordinate to (x-1, y-1), because the image is zero-indexed
 				// in java,
@@ -642,8 +643,8 @@ public class KappaFrame extends JFrame {
 	 *            The data points, in an ArrayList with n elements
 	 * @return An ArrayList with n elements with corresponding weight values.
 	 */
-	private static ArrayList<Double> getWeights(ArrayList<Point2D> dataPoints) {
-		ArrayList<Double> weights = new ArrayList<>(dataPoints.size());
+	private static List<Double> getWeights(List<Point2D> dataPoints) {
+		List<Double> weights = new ArrayList<>(dataPoints.size());
 		for (Point2D p : dataPoints) {
 			int[] rgb = BezierCurve.getRGB((int) p.getX(), (int) p.getY());
 
@@ -1055,7 +1056,7 @@ public class KappaFrame extends JFrame {
 	// Computes the Pearson's Correlation Coefficient between a fitted b-spline's
 	// curvature and the true curvature
 	public static double computePearsonR(Curve c, double a, double b) {
-		ArrayList<BezierPoint> points = c.getDigitizedPoints();
+		List<BezierPoint> points = c.getDigitizedPoints();
 
 		// Computes the mean of the b-spline curvature and the mean of the true
 		// curvature

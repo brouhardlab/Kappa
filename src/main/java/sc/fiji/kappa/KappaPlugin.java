@@ -60,7 +60,7 @@ public class KappaPlugin implements Command {
 
 	@Parameter
 	private LogService log;
-	
+
 	public static final String PLUGIN_NAME = "Kappa";
 	public static final String VERSION = version();
 
@@ -73,14 +73,14 @@ public class KappaPlugin implements Command {
 		KappaFrame.frame = new KappaFrame(ij.context());
 		KappaFrame.frame.setMinimumSize(new Dimension(APP_MIN_WIDTH, APP_MIN_HEIGHT));
 		KappaFrame.frame.setTitle(PLUGIN_NAME + " version " + VERSION);
-		
+
 		try {
 			Image im = ImageIO.read(KappaFrame.class.getResource("/logo.png"));
 			KappaFrame.frame.setIconImage(im);
 			KappaFrame.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			KappaFrame.frame.setLocationRelativeTo(null);
 			KappaFrame.frame.setVisible(true);
-			
+
 		} catch (IOException ex) {
 			Logger.getLogger(KappaFrame.class.getName()).log(Level.SEVERE, null, ex);
 		}

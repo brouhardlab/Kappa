@@ -32,6 +32,7 @@ import java.awt.geom.Rectangle2D;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public abstract class Curve {
 
@@ -60,23 +61,23 @@ public abstract class Curve {
 	// The index of the selected control point. -1 if no control point is selected
 	int selectedCtrlPtIndex;
 	String name;
-	ArrayList<Point2D> ctrlPts;
+	List<Point2D> ctrlPts;
 	int noCtrlPts;
 	int hoveredCtrlPt;
 	int dataRadius;
 	boolean selected;
 	public BArrayList keyframes;
 	Rectangle2D boundingBox;
-	ArrayList<Point2D> bounds;
+	List<Point2D> bounds;
 	Polygon scaledBounds;
-	ArrayList<Point2D> dataFittingBounds;
+	List<Point2D> dataFittingBounds;
 	Polygon scaledDataBounds;
-	ArrayList<Point2D> thresholdedPixels;
+	List<Point2D> thresholdedPixels;
 
 	// um/pixel conversion factor
 	protected static double micronPixelFactor = DEFAULT_MICRON_PIXEL_FACTOR;
 
-	public Curve(ArrayList<Point2D> ctrlPts, int t, int noCtrlPts, String name, int dataRadius) {
+	public Curve(List<Point2D> ctrlPts, int t, int noCtrlPts, String name, int dataRadius) {
 		this.selected = true;
 		this.name = name;
 		this.ctrlPts = ctrlPts;
@@ -178,7 +179,7 @@ public abstract class Curve {
 		public double minX, maxX, minY, maxY;
 		public int t;
 
-		public BControlPoints(ArrayList<Point2D> ctrlPoints, int t) {
+		public BControlPoints(List<Point2D> ctrlPoints, int t) {
 			this.defPoints = new Point2D[noCtrlPts];
 			for (int i = 0; i < noCtrlPts; i++) {
 				defPoints[i] = ctrlPoints.get(i);
@@ -257,7 +258,7 @@ public abstract class Curve {
 		minimumLocalError = Double.MAX_VALUE;
 	}
 
-	public void addKeyframe(ArrayList<Point2D> newCtrlPts, int t) {
+	public void addKeyframe(List<Point2D> newCtrlPts, int t) {
 		keyframes.add(new BControlPoints(ctrlPts, t));
 	}
 
@@ -319,9 +320,9 @@ public abstract class Curve {
 
 	public abstract void drawThresholdedPixels(Graphics2D g, double scale);
 
-	abstract void fillPoints(ArrayList<Point2D> ctrlPts, int t);
+	abstract void fillPoints(List<Point2D> ctrlPts, int t);
 
-	abstract ArrayList<Point2D> generateOffsetBounds(ArrayList<Point2D> bounds, int radius);
+	abstract List<Point2D> generateOffsetBounds(List<Point2D> bounds, int radius);
 
 	abstract void draw(double scale, Graphics2D g, int currentPoint, boolean showBoundingBox, boolean scaleCurveStrokes,
 			boolean showTangent, boolean showThresholdedRegion);
@@ -336,19 +337,19 @@ public abstract class Curve {
 
 	public abstract double getCurvatureStdDev();
 
-	public abstract ArrayList<Point2D> getIntensityDataRed();
+	public abstract List<Point2D> getIntensityDataRed();
 
-	public abstract ArrayList<Point2D> getIntensityDataGreen();
+	public abstract List<Point2D> getIntensityDataGreen();
 
-	public abstract ArrayList<Point2D> getIntensityDataBlue();
+	public abstract List<Point2D> getIntensityDataBlue();
 
-	public abstract ArrayList<Point2D> getCurveData();
+	public abstract List<Point2D> getCurveData();
 
-	public abstract ArrayList<Point2D> getDebugCurveData();
+	public abstract List<Point2D> getDebugCurveData();
 
-	public abstract ArrayList<BezierPoint> getPoints();
+	public abstract List<BezierPoint> getPoints();
 
-	public abstract ArrayList<BezierPoint> getDigitizedPoints();
+	public abstract List<BezierPoint> getDigitizedPoints();
 
 	public abstract Point2D.Double getPoint(int n);
 
@@ -362,7 +363,7 @@ public abstract class Curve {
 
 	public abstract void updateIntensities();
 
-	public abstract ArrayList<Point2D> getThresholdedPixels();
+	public abstract List<Point2D> getThresholdedPixels();
 
 	public abstract Point2D.Double getUnitTangent(int footpointIndex);
 

@@ -33,6 +33,7 @@ import java.awt.geom.Rectangle2D;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import Jama.Matrix;
 import sc.fiji.kappa.gui.KappaFrame;
@@ -61,7 +62,7 @@ public class BSpline extends Curve {
 	private int[] oldFootpoints;
 	private Point2D[] dataPointsCopy;
 
-	public BSpline(ArrayList<Point2D> bsplineCtrlPts, int t, int noCtrlPts, String name, boolean open, int dataRadius) {
+	public BSpline(List<Point2D> bsplineCtrlPts, int t, int noCtrlPts, String name, boolean open, int dataRadius) {
 		super(bsplineCtrlPts, t, noCtrlPts, name, dataRadius);
 		this.isOpen = open;
 		minimumGlobalError = Double.MAX_VALUE;
@@ -82,7 +83,7 @@ public class BSpline extends Curve {
 		evaluateThresholdedPixels();
 	}
 
-	public void computeSpline(ArrayList<Point2D> bsplineCtrlPts, int t) {
+	public void computeSpline(List<Point2D> bsplineCtrlPts, int t) {
 		int n = B_SPLINE_DEGREE;
 		knotVector = new double[2 * n + noCurves - 1];
 
@@ -197,7 +198,7 @@ public class BSpline extends Curve {
 		keyframes.add(new BControlPoints(this.ctrlPts, t));
 	}
 
-	protected ArrayList<Point2D> generateOffsetBounds(ArrayList<Point2D> bounds, int radius) {
+	protected List<Point2D> generateOffsetBounds(List<Point2D> bounds, int radius) {
 		bounds = new ArrayList<Point2D>();
 
 		// Adds all the right offset curves. Then a cap from the last curve.
@@ -220,9 +221,9 @@ public class BSpline extends Curve {
 		return bounds;
 	}
 
-	// Conversion from an ArrayList to a Point2D array. This is necessary because of
+	// Conversion from an List to a Point2D array. This is necessary because of
 	// code changes to support variable control point quantities with B-Splines
-	protected void fillPoints(ArrayList<Point2D> bsplineCtrlPts, int t) {
+	protected void fillPoints(List<Point2D> bsplineCtrlPts, int t) {
 		Point2D[] arrayCtrlPts = new Point2D[bsplineCtrlPts.size()];
 		for (int i = 0; i < arrayCtrlPts.length; i++) {
 			arrayCtrlPts[i] = bsplineCtrlPts.get(i);
@@ -275,7 +276,7 @@ public class BSpline extends Curve {
 			scaleFactor = (knotVector[i + 3] - knotVector[i + 2]) / (knotVector[i + 4] - knotVector[i + 2]);
 			bezierCtrlPts[3] = add(multiply(subtract(tempPoint, bezierCtrlPts[2]), scaleFactor), bezierCtrlPts[2]);
 
-			ArrayList<Point2D> bCtrlPtsArray = new ArrayList<Point2D>(bezierCtrlPts.length);
+			List<Point2D> bCtrlPtsArray = new ArrayList<Point2D>(bezierCtrlPts.length);
 			for (Point2D p : bezierCtrlPts) {
 				bCtrlPtsArray.add(p);
 			}
@@ -286,7 +287,7 @@ public class BSpline extends Curve {
 		this.dataFittingBounds = generateOffsetBounds(dataFittingBounds, dataRadius);
 	}
 
-	protected double squaredDistanceErrorTerm(ArrayList<Point2D> dataPoints, int datapointIndex, int footpointIndex) {
+	protected double squaredDistanceErrorTerm(List<Point2D> dataPoints, int datapointIndex, int footpointIndex) {
 		BezierPoint p = this.getSpecificPoint(footpointIndex);
 		Point2D x = dataPoints.get(datapointIndex);
 
@@ -346,7 +347,7 @@ public class BSpline extends Curve {
 		return x * x;
 	}
 
-	private int[] getFootpoints(ArrayList<Point2D> dataPoints) {
+	private int[] getFootpoints(List<Point2D> dataPoints) {
 		if (dataPoints.size() == 0) {
 			return new int[0];
 		}
@@ -413,12 +414,11 @@ public class BSpline extends Curve {
 	 *            on.
 	 * @return The error of the fitting.
 	 */
-	public double fittingIteration(ArrayList<Point2D> dataPoints, ArrayList<Double> weights, int t) {
+	public double fittingIteration(List<Point2D> dataPoints, List<Double> weights, int t) {
 		return fittingIteration(dataPoints, getFootpoints(dataPoints), weights, t);
 	}
 
-	public double fittingIteration(ArrayList<Point2D> dataPoints, int[] footpointIndices, ArrayList<Double> weights,
-			int t) {
+	public double fittingIteration(List<Point2D> dataPoints, int[] footpointIndices, List<Double> weights, int t) {
 		// If we have no datapoints, then there's no point of fitting the curve, hence
 		// we just return.
 		if (dataPoints.size() == 0) {
@@ -441,7 +441,7 @@ public class BSpline extends Curve {
 
 		// Copies the old control points in case the iteration provides poor results and
 		// we want to revert.
-		ArrayList<Point2D> oldCtrlPts = new ArrayList<Point2D>(ctrlPts.size());
+		List<Point2D> oldCtrlPts = new ArrayList<Point2D>(ctrlPts.size());
 		for (Point2D p : ctrlPts) {
 			oldCtrlPts.add(p);
 		}
@@ -559,7 +559,7 @@ public class BSpline extends Curve {
 		ATA = ATA.plus((Matrix.identity(n, n)).times(SMOOTHNESS_FACTOR));
 		Matrix X1 = ATA.solve((A.transpose()).times(X));
 		Matrix Y1 = ATA.solve((A.transpose()).times(Y));
-		ArrayList<Point2D> newCtrlPts = new ArrayList<Point2D>(noCtrlPts);
+		List<Point2D> newCtrlPts = new ArrayList<Point2D>(noCtrlPts);
 
 		for (int i = 0; i < n; i++) {
 			newCtrlPts.add(new Point2D.Double(X1.get(i, 0), Y1.get(i, 0)));
@@ -598,7 +598,7 @@ public class BSpline extends Curve {
 	}
 
 	// Adjust the control point number to improve the fit
-	public void adjustControlPoints(ArrayList<Point2D> dataPoints, ArrayList<Double> weights, int t) {
+	public void adjustControlPoints(List<Point2D> dataPoints, List<Double> weights, int t) {
 
 		// If we have no datapoints, then there's no point of adjusting the curve, hence
 		// we just return.
@@ -609,7 +609,7 @@ public class BSpline extends Curve {
 		double globalError, localError;
 		int maxRedundancyIndex;
 		boolean wasReduced;
-		ArrayList<Point2D> oldCtrlPts;
+		List<Point2D> oldCtrlPts;
 
 		// Preliminary control point removal and adjustment.
 		do {
@@ -768,7 +768,7 @@ public class BSpline extends Curve {
 	// Reverses the reduce curve operation, to 'take back' the suboptimal final
 	// reduction when
 	// we optimize.
-	public void augmentCurve(int t, ArrayList<Point2D> oldCtrlPts) {
+	public void augmentCurve(int t, List<Point2D> oldCtrlPts) {
 		this.noCtrlPts++;
 		noCurves++;
 		spline = new BezierCurve[noCurves];
@@ -781,7 +781,7 @@ public class BSpline extends Curve {
 
 	// TODO This and the local error evaluation do the same computation.
 	// Convert the two methods into one that returns an array with both values.
-	public double evaluateGlobalError(ArrayList<Point2D> dataPoints, ArrayList<Double> weights) {
+	public double evaluateGlobalError(List<Point2D> dataPoints, List<Double> weights) {
 		// Evaluates the total error after fitting, weighted by intensity.
 		double error = 0;
 		for (int i = 0; i < this.getNoPoints(); i++) {
@@ -799,7 +799,7 @@ public class BSpline extends Curve {
 		return error;
 	}
 
-	public double evaluateMaxLocalError(ArrayList<Point2D> dataPoints, ArrayList<Double> weights) {
+	public double evaluateMaxLocalError(List<Point2D> dataPoints, List<Double> weights) {
 		double maxLocalError = 0;
 		double pieceError;
 
@@ -1010,7 +1010,7 @@ public class BSpline extends Curve {
 					(int) (2 * CTRL_PT_SIZE * scale), (int) (2 * CTRL_PT_SIZE * scale));
 
 			// Shows a line between the data point and the footpoints.
-			ArrayList<Point2D> thresholdedPixels = this.getThresholdedPixels();
+			List<Point2D> thresholdedPixels = this.getThresholdedPixels();
 			int[] footpointIndices = this.getFootpoints(thresholdedPixels);
 			if (KappaFrame.DEBUG_MODE) {
 				g.setColor(Color.PINK);
@@ -1092,11 +1092,11 @@ public class BSpline extends Curve {
 	}
 
 	@Override
-	public ArrayList<Point2D> getIntensityDataRed() {
-		ArrayList<Point2D> splineData = new ArrayList<>();
+	public List<Point2D> getIntensityDataRed() {
+		List<Point2D> splineData = new ArrayList<>();
 		double currentPt = 0;
 		for (BezierCurve c : spline) {
-			ArrayList<Point2D> curveData = c.getIntensityDataRed();
+			List<Point2D> curveData = c.getIntensityDataRed();
 
 			// Display y values with respect to x-coordinate
 			if (MenuBar.distributionDisplay == 0) {
@@ -1119,11 +1119,11 @@ public class BSpline extends Curve {
 	}
 
 	@Override
-	public ArrayList<Point2D> getIntensityDataGreen() {
-		ArrayList<Point2D> splineData = new ArrayList<Point2D>();
+	public List<Point2D> getIntensityDataGreen() {
+		List<Point2D> splineData = new ArrayList<Point2D>();
 		double currentPt = 0;
 		for (BezierCurve c : spline) {
-			ArrayList<Point2D> curveData = c.getIntensityDataGreen();
+			List<Point2D> curveData = c.getIntensityDataGreen();
 
 			// Display y values with respect to x-coordinate
 			if (MenuBar.distributionDisplay == 0) {
@@ -1146,11 +1146,11 @@ public class BSpline extends Curve {
 	}
 
 	@Override
-	public ArrayList<Point2D> getIntensityDataBlue() {
-		ArrayList<Point2D> splineData = new ArrayList<>();
+	public List<Point2D> getIntensityDataBlue() {
+		List<Point2D> splineData = new ArrayList<>();
 		double currentPt = 0;
 		for (BezierCurve c : spline) {
-			ArrayList<Point2D> curveData = c.getIntensityDataBlue();
+			List<Point2D> curveData = c.getIntensityDataBlue();
 
 			// Display y values with respect to x-coordinate
 			if (MenuBar.distributionDisplay == 0) {
@@ -1180,11 +1180,11 @@ public class BSpline extends Curve {
 	}
 
 	@Override
-	public ArrayList<Point2D> getCurveData() {
+	public List<Point2D> getCurveData() {
 		ArrayList<Point2D> splineData = new ArrayList<>();
 		double currentPt = 0;
 		for (BezierCurve c : spline) {
-			ArrayList<Point2D> curveData = c.getCurveData();
+			List<Point2D> curveData = c.getCurveData();
 
 			// Display y values with respect to x-coordinate
 			if (MenuBar.distributionDisplay == 0) {
@@ -1207,8 +1207,8 @@ public class BSpline extends Curve {
 	}
 
 	@Override
-	public ArrayList<Point2D> getDebugCurveData() {
-		ArrayList<Point2D> splineData = new ArrayList<>();
+	public List<Point2D> getDebugCurveData() {
+		List<Point2D> splineData = new ArrayList<>();
 		for (BezierCurve c : spline) {
 			splineData.addAll(c.getDebugCurveData());
 		}
@@ -1216,8 +1216,8 @@ public class BSpline extends Curve {
 	}
 
 	@Override
-	public ArrayList<BezierPoint> getPoints() {
-		ArrayList<BezierPoint> curvePoints = new ArrayList<>();
+	public List<BezierPoint> getPoints() {
+		List<BezierPoint> curvePoints = new ArrayList<>();
 		for (BezierCurve c : spline) {
 			curvePoints.addAll(c.getPoints());
 		}
@@ -1225,8 +1225,8 @@ public class BSpline extends Curve {
 	}
 
 	@Override
-	public ArrayList<BezierPoint> getDigitizedPoints() {
-		ArrayList<BezierPoint> digitizedPoints = new ArrayList<>();
+	public List<BezierPoint> getDigitizedPoints() {
+		List<BezierPoint> digitizedPoints = new ArrayList<>();
 		for (BezierCurve c : spline) {
 			digitizedPoints.addAll(c.getDigitizedPoints());
 		}
@@ -1284,7 +1284,7 @@ public class BSpline extends Curve {
 	}
 
 	@Override
-	public ArrayList<Point2D> getThresholdedPixels() {
+	public List<Point2D> getThresholdedPixels() {
 		// Gets the unique thresholded pixels for data fitting
 		thresholdedPixels = new ArrayList<>();
 		HashSet<Point2D> uniquePixels = new HashSet<>();

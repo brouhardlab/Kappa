@@ -32,12 +32,12 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
+import java.util.List;
 
 public class Chart extends Component {
 
 	private static final long serialVersionUID = 1L;
-	private ArrayList<Point2D> data;
+	private List<Point2D> data;
 
 	private double minX, minY, maxX, maxY;
 	private boolean minXFixed, minYFixed, maxXFixed, maxYFixed;
@@ -53,7 +53,7 @@ public class Chart extends Component {
 	public static final int TICK_SIZE = 2;
 	public static final int DATA_PT_SIZE = 3;
 
-	Point2D[] getMappedPoints(ArrayList<Point2D> data, int x, int y, int width, int height) {
+	Point2D[] getMappedPoints(List<Point2D> data, int x, int y, int width, int height) {
 		Point2D[] mappedPoints = new Point2D.Double[data.size()];
 		for (int i = 0; i < data.size(); i++) {
 			if (maxX - minX != 0) {
@@ -67,7 +67,7 @@ public class Chart extends Component {
 		return mappedPoints;
 	}
 
-	public void setData(ArrayList<Point2D> data) {
+	public void setData(List<Point2D> data) {
 		// Finds maximal and minimal x and y values
 		// To make the graph always start at y = 0, we make minY 0
 		this.data = data;
@@ -118,7 +118,7 @@ public class Chart extends Component {
 		tickY[NO_TICKS_Y - 1] = maxY;
 	}
 
-	public Chart(ArrayList<Point2D> data) {
+	public Chart(List<Point2D> data) {
 		tickX = new double[NO_TICKS_X];
 		tickY = new double[NO_TICKS_Y];
 		setData(data);

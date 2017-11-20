@@ -41,6 +41,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -183,9 +184,9 @@ public class InfoPanel extends JPanel {
 		Curve currEditedCurve = KappaFrame.curves.getSelected()[0];
 		currEditedCurve.updateIntensities();
 
-		ArrayList<Point2D> redIntensities = currEditedCurve.getIntensityDataRed();
-		ArrayList<Point2D> greenIntensities = currEditedCurve.getIntensityDataGreen();
-		ArrayList<Point2D> blueIntensities = currEditedCurve.getIntensityDataBlue();
+		List<Point2D> redIntensities = currEditedCurve.getIntensityDataRed();
+		List<Point2D> greenIntensities = currEditedCurve.getIntensityDataGreen();
+		List<Point2D> blueIntensities = currEditedCurve.getIntensityDataBlue();
 
 		double maxRedValue = redIntensities.stream().map(u -> u.getY()).max(Double::compareTo).get();
 		double maxGreenValue = redIntensities.stream().map(u -> u.getY()).max(Double::compareTo).get();

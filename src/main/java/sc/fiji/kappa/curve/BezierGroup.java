@@ -28,6 +28,7 @@ package sc.fiji.kappa.curve;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.List;
 
 import sc.fiji.kappa.gui.KappaFrame;
 
@@ -50,8 +51,7 @@ public class BezierGroup extends ArrayList<Curve> {
 		return super.add(curve);
 	}
 
-	public void addCurve(ArrayList<Point2D> defPoints, int t, int noCtrlPts, int curveType, boolean isOpen,
-			int dataRadius) {
+	public void addCurve(List<Point2D> defPoints, int t, int noCtrlPts, int curveType, boolean isOpen, int dataRadius) {
 
 		if (curveType == KappaFrame.BEZIER_CURVE) {
 			this.add(new BezierCurve(defPoints, t, noCtrlPts, "CURVE " + ++count, dataRadius));

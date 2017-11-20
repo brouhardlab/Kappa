@@ -33,6 +33,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 
 import sc.fiji.kappa.gui.InfoPanel;
 import sc.fiji.kappa.gui.KappaFrame;
@@ -60,7 +61,7 @@ public class BezierCurve extends Curve {
 	public static final double STEP_SIZE_ANGLE = 0.2;
 	public static final int STEP_SIZE_CURVE = Math.max(RECURSE_DEPTH - 3, 1);
 
-	public BezierCurve(ArrayList<Point2D> ctrlPts, int t, int noCtrlPts, String name, int dataRadius) {
+	public BezierCurve(List<Point2D> ctrlPts, int t, int noCtrlPts, String name, int dataRadius) {
 		super(ctrlPts, t, noCtrlPts, name, dataRadius);
 		fillPoints(ctrlPts, t);
 		evaluateThresholdedPixels();
@@ -268,7 +269,7 @@ public class BezierCurve extends Curve {
 		}
 	}
 
-	protected void fillPoints(ArrayList<Point2D> ctrlPtsList, int t) {
+	protected void fillPoints(List<Point2D> ctrlPtsList, int t) {
 		curvePoints = new ArrayList<BezierPoint>(NO_CURVE_POINTS);
 		RGBvals = new ArrayList<int[]>(NO_CURVE_POINTS);
 		hodographPoints = new ArrayList<BezierPoint>(NO_CURVE_POINTS);
@@ -305,7 +306,7 @@ public class BezierCurve extends Curve {
 		this.dataFittingBounds = generateOffsetBounds(dataFittingBounds, dataRadius);
 	}
 
-	protected void generateRightOffsetCurve(ArrayList<Point2D> bounds, int radius) {
+	protected void generateRightOffsetCurve(List<Point2D> bounds, int radius) {
 		// Generates the bounds for the offset polygon around the curve.
 		// We use the formula for the Offset Curve O(R, P(t)) = P(t) + R*(y'(t),
 		// -x'(t))/(sqrt(x'(t)^2 + y'(t)^2))
@@ -321,7 +322,7 @@ public class BezierCurve extends Curve {
 		}
 	}
 
-	protected void generateRightCap(ArrayList<Point2D> bounds, int radius) {
+	protected void generateRightCap(List<Point2D> bounds, int radius) {
 		// We generate a rounded end for one tip of the polygon with some trigonometry
 		Point2D p = curvePoints.get(curvePoints.size() - 1);
 		Point2D dp = hodographPoints.get(curvePoints.size() - 1);
@@ -339,7 +340,7 @@ public class BezierCurve extends Curve {
 		}
 	}
 
-	protected void generateLeftOffsetCurve(ArrayList<Point2D> bounds, int radius) {
+	protected void generateLeftOffsetCurve(List<Point2D> bounds, int radius) {
 		// Offset Curve along the left
 		Point2D p, dp;
 		double normalizationFactor;
@@ -352,7 +353,7 @@ public class BezierCurve extends Curve {
 		}
 	}
 
-	protected void generateLeftCap(ArrayList<Point2D> bounds, int radius) {
+	protected void generateLeftCap(List<Point2D> bounds, int radius) {
 		// We generate a rounded end for one tip of the polygon with some trigonometry
 		Point2D p = curvePoints.get(0);
 		Point2D dp = hodographPoints.get(0);
@@ -370,7 +371,7 @@ public class BezierCurve extends Curve {
 		}
 	}
 
-	protected ArrayList<Point2D> generateOffsetBounds(ArrayList<Point2D> bounds, int radius) {
+	protected List<Point2D> generateOffsetBounds(List<Point2D> bounds, int radius) {
 		bounds = new ArrayList<Point2D>();
 		generateRightOffsetCurve(bounds, radius);
 		generateRightCap(bounds, radius);
@@ -898,7 +899,7 @@ public class BezierCurve extends Curve {
 		return hodographPoints.get(n);
 	}
 
-	public ArrayList<Point2D> getThresholdedPixels() {
+	public List<Point2D> getThresholdedPixels() {
 		return thresholdedPixels;
 	}
 
@@ -911,4 +912,5 @@ public class BezierCurve extends Curve {
 		}
 		return max;
 	}
+
 }
