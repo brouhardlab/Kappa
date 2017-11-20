@@ -29,6 +29,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import sc.fiji.kappa.gui.KappaFrame;
 
@@ -210,5 +211,34 @@ public class BezierGroup extends ArrayList<Curve> {
 
 	public boolean isCurveSelected() {
 		return noSelected != 0;
+	}
+
+	public void rescaleCurves(double scaleFactor) {
+
+		BezierGroup newCurves = new BezierGroup();
+		List<Point2D> points;
+		for (Curve curve : this) {
+
+			points = curve.getPoints().stream()
+					.map(c -> new Point2D.Double(c.getX() * scaleFactor, c.getY() * scaleFactor))
+					.collect(Collectors.toList());
+
+			if (curve instanceof BezierCurve) {
+				newCurves.add(new BezierCurve(points, curve.getT(), curve.getNoCtrlPts(), curve.getName(),
+						curve.getDataRadius()));
+			} else if (curve instanceof BSpline) {
+				if (((BSpline) curve).isOpen()) {
+					newCurves.add(new BSpline(points, curve.getT(), curve.getNoCtrlPts(), curve.getName(), true,
+							curve.getDataRadius()));
+				} else {
+					newCurves.add(new BSpline(points, curve.getT(), curve.getNoCtrlPts(), curve.getName(), false,
+							curve.getDataRadius()));
+				}
+			}
+
+		}
+		
+		this.clear();
+		this.addAll(newCurves);
 	}
 }

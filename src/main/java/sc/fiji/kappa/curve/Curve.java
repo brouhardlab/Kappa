@@ -73,6 +73,7 @@ public abstract class Curve {
 	List<Point2D> dataFittingBounds;
 	Polygon scaledDataBounds;
 	List<Point2D> thresholdedPixels;
+	private int t;
 
 	// um/pixel conversion factor
 	protected static double micronPixelFactor = DEFAULT_MICRON_PIXEL_FACTOR;
@@ -88,6 +89,7 @@ public abstract class Curve {
 		keyframes.add(new BControlPoints(this.ctrlPts, t));
 		this.boundingBox = keyframes.getBounds(t);
 		this.dataRadius = dataRadius;
+		this.t = t;
 
 		this.bounds = new ArrayList<>();
 		this.scaledBounds = new Polygon();
@@ -421,4 +423,13 @@ public abstract class Curve {
 		this.dataFittingBounds = generateOffsetBounds(dataFittingBounds, dataRadius);
 		this.evaluateThresholdedPixels();
 	}
+
+	public int getDataRadius() {
+		return dataRadius;
+	}
+
+	public int getT() {
+		return t;
+	}
+
 }

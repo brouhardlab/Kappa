@@ -573,12 +573,12 @@ public class MenuBar extends JMenuBar {
 		this.add(helpMenu);
 	}
 
-	static void openFile(File file) {
+	public static void openFile(File file) {
 		ImagePlus imp = new ImagePlus(file.getPath());
 		openImage(imp);
 	}
 
-	static void openActiveImage(Context context) {
+	public static void openActiveImage(Context context) {
 		ImageDisplayService imds = context.getService(ImageDisplayService.class);
 		ConvertService convert = context.getService(ConvertService.class);
 		ImageDisplay imd = imds.getActiveImageDisplay();
@@ -586,7 +586,7 @@ public class MenuBar extends JMenuBar {
 		openImage(imp);
 	}
 
-	static void openImage(ImagePlus imp) {
+	public static void openImage(ImagePlus imp) {
 		KappaFrame.imageStack = imp;
 
 		// Splits the image into the R, G, and B channels, but only if the image is in
@@ -699,7 +699,7 @@ public class MenuBar extends JMenuBar {
 		KappaFrame.frame.setTitle(KappaFrame.APPLICATION_NAME + "- " + imp.getTitle());
 	}
 
-	static void loadCurveFile(File file) {
+	public static void loadCurveFile(File file) {
 		// Tries opening the file
 		try {
 			KappaFrame.resetCurves();
