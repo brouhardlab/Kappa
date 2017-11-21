@@ -163,6 +163,15 @@ public class MenuBar extends JMenuBar {
 		saveMenu.addActionListener(e -> {
 			// Handles save button action.
 			int returnVal = kappaSave.showSaveDialog(KappaFrame.frame);
+
+			String dirPath = KappaFrame.imageStack.getOriginalFileInfo().directory;
+			if (dirPath != null) {
+				String kappaPath = FilenameUtils.removeExtension(KappaFrame.imageStack.getOriginalFileInfo().fileName);
+				kappaPath += ".csv";
+				File fullPath = new File(dirPath, kappaPath);
+				kappaSave.setSelectedFile(fullPath);
+			}
+
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				file = kappaSave.getSelectedFile();
 				// Appends a .kapp

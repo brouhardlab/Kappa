@@ -348,7 +348,7 @@ public class KappaFrame extends JFrame {
 	/**
 	 * Resets the set of curves and the corresponding list
 	 */
-	protected static void resetCurves() {
+	public static void resetCurves() {
 		InfoPanel.listData = new Vector<>();
 		InfoPanel.list.setListData(InfoPanel.listData);
 		curves = new BezierGroup();
