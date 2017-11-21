@@ -36,6 +36,8 @@ import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.apache.commons.io.FilenameUtils;
+
 import com.opencsv.CSVWriter;
 
 import sc.fiji.kappa.curve.BezierGroup;
@@ -43,19 +45,24 @@ import sc.fiji.kappa.curve.Curve;
 
 public class CurvesExporter {
 
-	JFileChooser kappaExport;
-
-	public CurvesExporter() {
-		kappaExport = new JFileChooser();
-		kappaExport.setFileFilter(new FileNameExtensionFilter("CSV File", "csv"));
-		kappaExport.setDialogTitle("Export Curve Data");
-	}
-
 	public void export() throws IOException {
 		export(true);
 	}
 
 	public void export(boolean exportAveragePerCurve) throws IOException {
+
+		JFileChooser kappaExport = new JFileChooser();
+
+		String dirPath = KappaFrame.imageStack.getOriginalFileInfo().directory;
+		if (dirPath != null) {
+			String kappaPath = FilenameUtils.removeExtension(KappaFrame.imageStack.getOriginalFileInfo().fileName);
+			kappaPath += ".csv";
+			File fullPath = new File(dirPath, kappaPath);
+			kappaExport.setSelectedFile(fullPath);
+		}
+
+		kappaExport.setFileFilter(new FileNameExtensionFilter("CSV File", "csv"));
+		kappaExport.setDialogTitle("Export Curve Data");
 
 		// Handles export button action.
 		int returnVal = kappaExport.showSaveDialog(KappaFrame.frame);
