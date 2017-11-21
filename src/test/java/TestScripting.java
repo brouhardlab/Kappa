@@ -28,6 +28,8 @@
 import java.io.File;
 
 import net.imagej.ImageJ;
+import sc.fiji.kappa.gui.CurvesExporter;
+import sc.fiji.kappa.gui.InfoPanel;
 import sc.fiji.kappa.gui.KappaFrame;
 import sc.fiji.kappa.gui.MenuBar;
 
@@ -39,20 +41,23 @@ public class TestScripting {
 		ij.launch(args);
 
 		File imageFile = new File(
-				"/home/hadim/Documents/Postdoc/Papers/Kappa Paper/Figure4/Data/dataset/pixel_size_0.38_um.tif");
-		File kappaFile = new File("/home/hadim/test.kapp");
+				"/home/hadim/Documents/Postdoc/Papers/Kappa Paper/Figure4/Data/dataset/variable_pixel_size/pixel_size_0.04_um.tif");
+		File kappaFile = new File("/home/hadim/Documents/Postdoc/Papers/Kappa Paper/Figure4/Data/dataset/variable_pixel_size/pixel_size_0.04_um.kapp");
+		File curvaturesFile = new File("/home/hadim/curvatures.csv");
 
 		KappaFrame.frame = new KappaFrame(ij.context());
-		MenuBar.openFile(imageFile);
+		MenuBar.openImageFile(imageFile);
 		MenuBar.loadCurveFile(kappaFile);
 
-		System.out.println(KappaFrame.curves);
-
-		ij.log().info(KappaFrame.curves.get(0).getPoints());
-
-		KappaFrame.curves.rescaleCurves(0.5);
-
-		ij.log().info(KappaFrame.curves.get(0).getPoints());
+		KappaFrame.enableCtrlPtAdjustment = true;
+		InfoPanel.thresholdRadiusSpinner.setValue(60);
+		InfoPanel.thresholdSlider.setValue(160);
+		InfoPanel.conversionField.setText(Double.toString(0.04));
+		
+		KappaFrame.fitCurves();
+		
+		CurvesExporter exporter = new CurvesExporter();
+		exporter.exportToFile(curvaturesFile, false);
 	}
 
 }

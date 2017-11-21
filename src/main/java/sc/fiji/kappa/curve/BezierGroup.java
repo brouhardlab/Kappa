@@ -219,25 +219,23 @@ public class BezierGroup extends ArrayList<Curve> {
 		List<Point2D> points;
 		for (Curve curve : this) {
 
-			points = curve.getPoints().stream()
+			points = curve.getCtrlPts().stream()
 					.map(c -> new Point2D.Double(c.getX() * scaleFactor, c.getY() * scaleFactor))
 					.collect(Collectors.toList());
 
 			if (curve instanceof BezierCurve) {
 				newCurves.add(new BezierCurve(points, curve.getT(), curve.getNoCtrlPts(), curve.getName(),
-						curve.getDataRadius()));
+						(int) (curve.getDataRadius() * scaleFactor)));
 			} else if (curve instanceof BSpline) {
 				if (((BSpline) curve).isOpen()) {
 					newCurves.add(new BSpline(points, curve.getT(), curve.getNoCtrlPts(), curve.getName(), true,
 							curve.getDataRadius()));
 				} else {
 					newCurves.add(new BSpline(points, curve.getT(), curve.getNoCtrlPts(), curve.getName(), false,
-							curve.getDataRadius()));
+							(int) (curve.getDataRadius() * scaleFactor)));
 				}
 			}
-
 		}
-		
 		this.clear();
 		this.addAll(newCurves);
 	}

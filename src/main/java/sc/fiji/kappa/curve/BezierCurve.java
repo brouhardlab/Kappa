@@ -96,17 +96,17 @@ public class BezierCurve extends Curve {
 
 				// Keeps adding to the total while successive points in our curve round to the
 				// same pixel coordinate.
-				while (i + 1 < curvePoints.size() && (int) curvePoints.get(i + 1).getX() == (int) p.getX()
-						&& (int) curvePoints.get(i + 1).getY() == (int) p.getY()) {
-					n++;
-					p = curvePoints.get(++i);
-					totalX += p.getX();
-					totalY += p.getY();
-					totalK += p.sign * p.k;
-					totalRed += RGBvals.get(i)[0];
-					totalGreen += RGBvals.get(i)[1];
-					totalBlue += RGBvals.get(i)[2];
-				}
+//				while (i + 1 < curvePoints.size() && (int) curvePoints.get(i + 1).getX() == (int) p.getX()
+//						&& (int) curvePoints.get(i + 1).getY() == (int) p.getY()) {
+//					n++;
+//					p = curvePoints.get(++i);
+//					totalX += p.getX();
+//					totalY += p.getY();
+//					totalK += p.sign * p.k;
+//					totalRed += RGBvals.get(i)[0];
+//					totalGreen += RGBvals.get(i)[1];
+//					totalBlue += RGBvals.get(i)[2];
+//				}
 
 				// Now we print out the averaged point.
 				out.print("," + (totalX / n) * micronPixelFactor);
@@ -153,19 +153,19 @@ public class BezierCurve extends Curve {
 			double totalGreen = RGBvals.get(i)[1];
 			double totalBlue = RGBvals.get(i)[2];
 
-			// Keeps adding to the total while successive points in our curve round to the
-			// same pixel coordinate.
-			while (i + 1 < curvePoints.size() && (int) curvePoints.get(i + 1).getX() == (int) p.getX()
-					&& (int) curvePoints.get(i + 1).getY() == (int) p.getY()) {
-				n++;
-				p = curvePoints.get(++i);
-				totalX += p.getX();
-				totalY += p.getY();
-				totalK += p.sign * p.k;
-				totalRed += RGBvals.get(i)[0];
-				totalGreen += RGBvals.get(i)[1];
-				totalBlue += RGBvals.get(i)[2];
-			}
+//			// Keeps adding to the total while successive points in our curve round to the
+//			// same pixel coordinate.
+//			while (i + 1 < curvePoints.size() && (int) curvePoints.get(i + 1).getX() == (int) p.getX()
+//					&& (int) curvePoints.get(i + 1).getY() == (int) p.getY()) {
+//				n++;
+//				p = curvePoints.get(++i);
+//				totalX += p.getX();
+//				totalY += p.getY();
+//				totalK += p.sign * p.k;
+//				totalRed += RGBvals.get(i)[0];
+//				totalGreen += RGBvals.get(i)[1];
+//				totalBlue += RGBvals.get(i)[2];
+//			}
 
 			out.print(this.name);
 
@@ -702,11 +702,13 @@ public class BezierCurve extends Curve {
 		return Math.sqrt(variance);
 	}
 
-	public ArrayList<BezierPoint> getPoints() {
+	@Override
+	public List<BezierPoint> getPoints() {
 		return curvePoints;
 	}
 
-	public ArrayList<BezierPoint> getDigitizedPoints() {
+	@Override
+	public List<BezierPoint> getDigitizedPoints() {
 		// Averages subpixel values into a single pixel coordinate
 		// We bin all points on the curve that evaluate to the same pixel coordinate
 		// into one averaged point
@@ -740,7 +742,8 @@ public class BezierCurve extends Curve {
 		return digitizedPoints;
 	}
 
-	public ArrayList<Point2D> getIntensityDataRed() {
+	@Override
+	public List<Point2D> getIntensityDataRed() {
 		ArrayList<Point2D> intensityData = new ArrayList<Point2D>(NO_CURVE_POINTS);
 		for (int i = 0; i < curvePoints.size(); i++) {
 			// Displays curvature with respect to the x-coordinate
@@ -757,7 +760,8 @@ public class BezierCurve extends Curve {
 		return intensityData;
 	}
 
-	public ArrayList<Point2D> getIntensityDataGreen() {
+	@Override
+	public List<Point2D> getIntensityDataGreen() {
 		ArrayList<Point2D> intensityData = new ArrayList<Point2D>(NO_CURVE_POINTS);
 		for (int i = 0; i < curvePoints.size(); i++) {
 			// Displays curvature with respect to the x-coordinate
@@ -774,7 +778,8 @@ public class BezierCurve extends Curve {
 		return intensityData;
 	}
 
-	public ArrayList<Point2D> getIntensityDataBlue() {
+	@Override
+	public List<Point2D> getIntensityDataBlue() {
 		ArrayList<Point2D> intensityData = new ArrayList<Point2D>(NO_CURVE_POINTS);
 		for (int i = 0; i < curvePoints.size(); i++) {
 			// Displays curvature with respect to the x-coordinate
@@ -791,7 +796,8 @@ public class BezierCurve extends Curve {
 		return intensityData;
 	}
 
-	public ArrayList<Point2D> getCurveData() {
+	@Override
+	public List<Point2D> getCurveData() {
 		ArrayList<Point2D> curveData = new ArrayList<Point2D>(NO_CURVE_POINTS);
 		for (int i = 0; i < curvePoints.size(); i++) {
 			// Displays curvature with respect to the x-coordinate
@@ -808,7 +814,8 @@ public class BezierCurve extends Curve {
 		return curveData;
 	}
 
-	public ArrayList<Point2D> getDebugCurveData() {
+	@Override
+	public List<Point2D> getDebugCurveData() {
 		ArrayList<Point2D> debugCurveData = new ArrayList<Point2D>(NO_CURVE_POINTS);
 		for (Point2D p : curvePoints) {
 			debugCurveData.add(new Point2D.Double(p.getX(), KappaFrame.computeCurvature(p.getX(),

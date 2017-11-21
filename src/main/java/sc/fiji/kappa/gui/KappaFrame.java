@@ -1131,7 +1131,7 @@ public class KappaFrame extends JFrame {
 		// Testing accuracy versus Signal to Noise Ratio
 		for (int snr = 0; snr <= 25; snr++) {
 			// Opens each image
-			MenuBar.openFile(new File("test-data/output_snr_" + snr + ".tif"));
+			MenuBar.openImageFile(new File("test-data/output_snr_" + snr + ".tif"));
 
 			// Computes the intensity threshold, as a given number of standard deviations
 			// from the mean
@@ -1175,7 +1175,7 @@ public class KappaFrame extends JFrame {
 
 		// Testing accuracy versus pixel size
 		for (int nmPerPixel = 100; nmPerPixel <= 400; nmPerPixel += 10) {
-			MenuBar.openFile(new File(String.format("test-data/output_size_%1.2f.tif", nmPerPixel / 1000.0)));
+			MenuBar.openImageFile(new File(String.format("test-data/output_size_%1.2f.tif", nmPerPixel / 1000.0)));
 
 			// Computes the intensity threshold, as a given number of standard deviations
 			// from the mean

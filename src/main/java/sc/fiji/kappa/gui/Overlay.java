@@ -55,35 +55,37 @@ public class Overlay extends JComponent {
 
 	public void drawNotification(String text, Rectangle viewrect, int overlayDurationMillis) {
 		Graphics g = this.getGraphics();
-		((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		if (g != null) {
+			((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-		g.setFont(new Font("Sans Serif", Font.PLAIN, 18));
+			g.setFont(new Font("Sans Serif", Font.PLAIN, 18));
 
-		// Finds the drawing coordinates on the viewing port and the text length.
-		// Uses NOTIFICATION_DRAW_LOCATION to determine at what height the notification
-		// will be drawn, percentage wise.
-		Rectangle2D textBounds = g.getFontMetrics(new Font("Sans Serif", Font.PLAIN, 18)).getStringBounds(text, g);
-		int textLength = (int) (textBounds.getWidth());
-		int textHeight = (int) (textBounds.getHeight());
-		int drawX = (int) (viewrect.getWidth() / 2);
-		int drawY = (int) (50 + viewrect.getHeight() * NOTIFICATION_DRAW_LOCATION);
+			// Finds the drawing coordinates on the viewing port and the text length.
+			// Uses NOTIFICATION_DRAW_LOCATION to determine at what height the notification
+			// will be drawn, percentage wise.
+			Rectangle2D textBounds = g.getFontMetrics(new Font("Sans Serif", Font.PLAIN, 18)).getStringBounds(text, g);
+			int textLength = (int) (textBounds.getWidth());
+			int textHeight = (int) (textBounds.getHeight());
+			int drawX = (int) (viewrect.getWidth() / 2);
+			int drawY = (int) (50 + viewrect.getHeight() * NOTIFICATION_DRAW_LOCATION);
 
-		g.setColor(new Color(0, 0, 0, (float) 0.5));
-		g.fillRoundRect(drawX - textLength / 2 - 20, drawY - textHeight / 2 - 12, textLength + 40, textHeight + 24, 20,
-				20);
-		g.setColor(Color.LIGHT_GRAY);
-		g.drawRoundRect(drawX - textLength / 2 - 20, drawY - textHeight / 2 - 12, textLength + 40, textHeight + 24, 20,
-				20);
+			g.setColor(new Color(0, 0, 0, (float) 0.5));
+			g.fillRoundRect(drawX - textLength / 2 - 20, drawY - textHeight / 2 - 12, textLength + 40, textHeight + 24,
+					20, 20);
+			g.setColor(Color.LIGHT_GRAY);
+			g.drawRoundRect(drawX - textLength / 2 - 20, drawY - textHeight / 2 - 12, textLength + 40, textHeight + 24,
+					20, 20);
 
-		g.setColor(Color.WHITE);
-		g.drawString(text, drawX - textLength / 2, drawY - textHeight / 2 + 16);
+			g.setColor(Color.WHITE);
+			g.drawString(text, drawX - textLength / 2, drawY - textHeight / 2 + 16);
 
-		repaint();
+			repaint();
 
-		// If the overlay duration is negative, we don't add a delay before hiding.
-		if (overlayDurationMillis >= 0) {
-			Thread delayHide = new Thread(new DelayThread(overlayDurationMillis));
-			delayHide.run();
+			// If the overlay duration is negative, we don't add a delay before hiding.
+			if (overlayDurationMillis >= 0) {
+				Thread delayHide = new Thread(new DelayThread(overlayDurationMillis));
+				delayHide.run();
+			}
 		}
 	}
 

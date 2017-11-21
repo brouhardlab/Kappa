@@ -77,7 +77,7 @@ public class KappaPlugin implements Command {
 		try {
 			Image im = ImageIO.read(KappaFrame.class.getResource("/logo.png"));
 			KappaFrame.frame.setIconImage(im);
-			KappaFrame.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			KappaFrame.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			KappaFrame.frame.setLocationRelativeTo(null);
 			KappaFrame.frame.setVisible(true);
 

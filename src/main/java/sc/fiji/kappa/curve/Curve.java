@@ -432,4 +432,8 @@ public abstract class Curve {
 		return t;
 	}
 
+	public List<Point2D> getCtrlPts() {
+		return ctrlPts;
+	}
+
 }

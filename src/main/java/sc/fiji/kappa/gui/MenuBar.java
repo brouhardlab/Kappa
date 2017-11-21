@@ -131,7 +131,7 @@ public class MenuBar extends JMenuBar {
 		openMenu.addActionListener(e -> {
 			int returnVal = kappaOpen.showOpenDialog(KappaFrame.frame);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				openFile(kappaOpen.getSelectedFile());
+				openImageFile(kappaOpen.getSelectedFile());
 			}
 		});
 
@@ -573,7 +573,11 @@ public class MenuBar extends JMenuBar {
 		this.add(helpMenu);
 	}
 
-	public static void openFile(File file) {
+	public static void openImageFile(String file) {
+		openImageFile(new File(file));
+	}
+
+	public static void openImageFile(File file) {
 		ImagePlus imp = new ImagePlus(file.getPath());
 		openImage(imp);
 	}
@@ -699,6 +703,10 @@ public class MenuBar extends JMenuBar {
 		KappaFrame.frame.setTitle(KappaFrame.APPLICATION_NAME + "- " + imp.getTitle());
 	}
 
+	public static void loadCurveFile(String file) {
+		loadCurveFile(new File(file));
+	}
+
 	public static void loadCurveFile(File file) {
 		// Tries opening the file
 		try {
@@ -776,14 +784,19 @@ public class MenuBar extends JMenuBar {
 			KappaFrame.drawImageOverlay();
 			in.close();
 		} catch (Exception err) {
-			KappaFrame.overlay.setVisible(true);
-			KappaFrame.overlay.drawNotification("There was an error loading the curve data",
-					KappaFrame.scrollPane.getVisibleRect());
+			// KappaFrame.overlay.setVisible(true);
+			// KappaFrame.overlay.drawNotification("There was an error loading the curve
+			// data",
+			// KappaFrame.scrollPane.getVisibleRect());
 			err.printStackTrace();
 		}
 	}
 
-	static void saveCurveFile(File file) {
+	public static void saveCurveFile(String file) {
+		saveCurveFile(new File(file));
+	}
+
+	public static void saveCurveFile(File file) {
 
 		try {
 			PrintWriter out = new PrintWriter(new FileWriter(file));
