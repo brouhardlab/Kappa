@@ -50,6 +50,7 @@ import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.apache.commons.io.FilenameUtils;
 import org.scijava.Context;
 import org.scijava.convert.ConvertService;
 
@@ -701,6 +702,17 @@ public class MenuBar extends JMenuBar {
 
 		// Adds file name to the frame.
 		KappaFrame.frame.setTitle(KappaFrame.APPLICATION_NAME + "- " + imp.getTitle());
+
+		// Load Kappa file if available
+		String dirPath = imp.getOriginalFileInfo().directory;
+		if (dirPath != null) {
+			String kappaPath = FilenameUtils.removeExtension(imp.getOriginalFileInfo().fileName);
+			kappaPath += ".kapp";
+			File fullPath = new File(dirPath, kappaPath);
+			if (fullPath.exists()) {
+				loadCurveFile(fullPath);
+			}
+		}
 	}
 
 	public static void loadCurveFile(String file) {
