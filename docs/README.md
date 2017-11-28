@@ -2,6 +2,27 @@
 
 ![Kappa Screenshot](../logo.png)
 
+## Table of Contens
+
+ 1. [Introduction](#Introduction)
+ 1.1 [Source code](#Source code)
+ 1.2 [Authors](#Authors)
+ 1.3 [License](#License)
+ 2. [How to install](#How to install)
+ 3. [Usage Overview](#Usage Overview)
+ 3.1 [Step 1: Open an image](#Step 1: Open an image)
+ 3.2 [Step 2: Define an Initial Curve](#Step 2: Define an Initial Curve)
+ 3.3 [Step 3: Choose what data you want to fit to](#Step 3: Choose what data you want to fit to)
+ 3.4 [Step 4: Fit the Curve to the Data](#Step 4: Fit the Curve to the Data)
+ 4. [Working with Kappa](#Working with Kappa)
+ 4.1 [Manipulating the Image](#Manipulating the Image)
+ 4.2 [Entering and Adjusting Curves](#Entering and Adjusting Curves)
+ 4.3 [Saving and Loading Curves](#Saving and Loading Curves)
+ 4.4 [Viewing Curve Properties](#Viewing Curve Properties)
+ 4.5 [Working with Image Stacks](#Working with Image Stacks)
+ 4.6 [Exporting Data](#Exporting Data)
+ 4.7[Correlating Brightness with Curvature](#Correlating Brightness with Curvature)
+
 ## Introduction
 
 Kappa is a Curvature Analysis Program developed as a Fiji plugin. It allows a user to
@@ -156,7 +177,7 @@ If you have a stack of images, you can adjust the shape of a curve on any frame 
 
 Above is an example of tracking shape changes across multiple frames. By moving the control points, the curve will adjust as well.
 
-### Exporting Data from Kappa
+### Exporting Data
 
 The Export Panel lets you export your curve data. The data will be exported as a comma delimited file (.csv), which can then be opened by most other applications.
 
