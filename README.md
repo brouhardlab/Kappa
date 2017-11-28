@@ -10,6 +10,8 @@ It allows a user to measure curvature in images in a convenient way. You can tra
 
 ![Kappa Screenshot](screenshot.png)
 
+See also the [ImageJ Wiki page](https://imagej.net/Kappa).
+
 ## Installation
 
 - Start [Fiji](https://imagej.net/Fiji/Downloads).
@@ -24,8 +26,6 @@ It allows a user to measure curvature in images in a convenient way. You can tra
 ## Documentation
 
 See documentation in the [docs/ folder](./doc/).
-
-The documentation is also available on the [ImageJ Wiki page](https://imagej.net/Kappa).
 
 ## Authors
 
