@@ -81,16 +81,13 @@ public class ControlPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	JLabel layerLabel, scaleLabel;
 
-	private void addSpacer(int spaceSize) {
-		this.add(Box.createRigidArea(new Dimension(spaceSize, 0)));
-		JSeparator spacer = new JSeparator(JSeparator.VERTICAL);
-		spacer.setMaximumSize(new Dimension(10, 35));
-		this.add(spacer);
-		this.add(Box.createRigidArea(new Dimension(spaceSize, 0)));
-	}
+	private KappaFrame frame;
 
 	// Constructs a new InputPanel object
-	public ControlPanel() {
+	public ControlPanel(KappaFrame frame) {
+
+		this.frame = frame;
+
 		setBackground(KappaFrame.PANEL_COLOR);
 		setPreferredSize(new Dimension(0, 55));
 		setBorder(BorderFactory.createLineBorder(Color.GRAY));
@@ -98,7 +95,7 @@ public class ControlPanel extends JPanel {
 		this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 
 		// Create the slider and a label for it
-		currentLayerSlider = new JSlider(JSlider.HORIZONTAL, 1, 200, KappaFrame.INIT_LAYER);
+		currentLayerSlider = new JSlider(JSlider.HORIZONTAL, 1, 200, frame.INIT_LAYER);
 		layerLabel = new JLabel("");
 		layerLabel.setPreferredSize(new Dimension(65, Short.MAX_VALUE));
 		currentLayerSlider.addChangeListener(new LayerChanger());
@@ -135,7 +132,7 @@ public class ControlPanel extends JPanel {
 					}
 
 					// Updates the displayed Image based on what channels are selected
-					KappaFrame.frame.setDisplayedChannels(displayRange);
+					frame.setDisplayedChannels(displayRange);
 				}
 			});
 		}
@@ -147,7 +144,7 @@ public class ControlPanel extends JPanel {
 		scaleSlider.setPaintTicks(true);
 		scaleSlider.setMaximumSize(new Dimension(200, Short.MAX_VALUE));
 		scaleSlider.addChangeListener(new ScaleChanger());
-		scaleLabel = new JLabel(KappaFrame.frame.formatNumber(DEFAULT_SCALE, DIGITS_MAX_SCALE));
+		scaleLabel = new JLabel(frame.formatNumber(DEFAULT_SCALE, DIGITS_MAX_SCALE));
 		scaleLabel.setPreferredSize(new Dimension(40, Short.MAX_VALUE));
 		scaleSlider.setEnabled(false);
 
@@ -178,9 +175,9 @@ public class ControlPanel extends JPanel {
 		// Draws keyframe markers. Position affected by Swing UI style, which differs
 		// between OS X and Windows
 		Rectangle bounds = currentLayerSlider.getBounds();
-		if (KappaFrame.curves.getNoSelected() == 1) {
+		if (frame.curves.getNoSelected() == 1) {
 			g.setColor(Color.RED);
-			Curve currentCurve = KappaFrame.curves.getSelected()[0];
+			Curve currentCurve = frame.curves.getSelected()[0];
 			int[] keyframeLayers = currentCurve.getKeyframeLayers();
 			for (int frameLayer : keyframeLayers) {
 				int centerX;
@@ -197,22 +194,30 @@ public class ControlPanel extends JPanel {
 		}
 	}
 
+	private void addSpacer(int spaceSize) {
+		this.add(Box.createRigidArea(new Dimension(spaceSize, 0)));
+		JSeparator spacer = new JSeparator(JSeparator.VERTICAL);
+		spacer.setMaximumSize(new Dimension(10, 35));
+		this.add(spacer);
+		this.add(Box.createRigidArea(new Dimension(spaceSize, 0)));
+	}
+
 	// Modifies the TIFF layer in response to the value on the slider
 	private class LayerChanger implements ChangeListener {
 
 		public void stateChanged(ChangeEvent ce) {
-			layerLabel.setText(KappaFrame.frame.formatNumber(currentLayerSlider.getValue(), KappaFrame.maxLayerDigits) + " / "
-					+ KappaFrame.maxLayer);
-			KappaFrame.frame.setLayer(currentLayerSlider.getValue(), scaleSlider.getValue() / 100.0);
+			layerLabel.setText(
+					frame.formatNumber(currentLayerSlider.getValue(), frame.maxLayerDigits) + " / " + frame.maxLayer);
+			frame.setLayer(currentLayerSlider.getValue(), scaleSlider.getValue() / 100.0);
 		}
 	}
 
 	private class ScaleChanger implements ChangeListener {
 
 		public void stateChanged(ChangeEvent ce) {
-			scaleLabel.setText(KappaFrame.frame.formatNumber(scaleSlider.getValue(), DIGITS_MAX_SCALE) + "%");
-			KappaFrame.frame.setScaledImage(scaleSlider.getValue() / 100.0);
-			KappaFrame.drawImageOverlay();
+			scaleLabel.setText(frame.formatNumber(scaleSlider.getValue(), DIGITS_MAX_SCALE) + "%");
+			frame.setScaledImage(scaleSlider.getValue() / 100.0);
+			frame.drawImageOverlay();
 		}
 	}
 }

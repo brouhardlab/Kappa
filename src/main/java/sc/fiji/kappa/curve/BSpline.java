@@ -37,7 +37,7 @@ import java.util.List;
 
 import Jama.Matrix;
 import sc.fiji.kappa.gui.KappaFrame;
-import sc.fiji.kappa.gui.MenuBar;
+import sc.fiji.kappa.gui.KappaMenuBar;
 
 public class BSpline extends Curve {
 	// We define the knot intervals to be uniform size, ie [0,1], [1,2] etc.
@@ -62,8 +62,9 @@ public class BSpline extends Curve {
 	private int[] oldFootpoints;
 	private Point2D[] dataPointsCopy;
 
-	public BSpline(List<Point2D> bsplineCtrlPts, int t, int noCtrlPts, String name, boolean open, int dataRadius) {
-		super(bsplineCtrlPts, t, noCtrlPts, name, dataRadius);
+	public BSpline(List<Point2D> bsplineCtrlPts, int t, int noCtrlPts, String name, boolean open, int dataRadius,
+			KappaFrame frame) {
+		super(bsplineCtrlPts, t, noCtrlPts, name, dataRadius, frame);
 		this.isOpen = open;
 		minimumGlobalError = Double.MAX_VALUE;
 		minimumLocalError = Double.MAX_VALUE;
@@ -280,7 +281,7 @@ public class BSpline extends Curve {
 			for (Point2D p : bezierCtrlPts) {
 				bCtrlPtsArray.add(p);
 			}
-			spline[i] = new BezierCurve(bCtrlPtsArray, t, B_SPLINE_DEGREE + 1, name, dataRadius);
+			spline[i] = new BezierCurve(bCtrlPtsArray, t, B_SPLINE_DEGREE + 1, name, dataRadius, frame);
 			spline[i].setSelected(this.isSelected());
 		}
 		this.bounds = generateOffsetBounds(bounds, THRESHOLD_RADIUS);
@@ -463,7 +464,7 @@ public class BSpline extends Curve {
 		// Differing values to minimize against depending on whether we desire Point
 		// Distance Minimization or Squared Distance Minimization
 		double weighting;
-		if (KappaFrame.fittingAlgorithm.equals(KappaFrame.FITTING_ALGORITHMS[0])) {
+		if (frame.fittingAlgorithm.equals(KappaFrame.FITTING_ALGORITHMS[0])) {
 			for (int i = 0; i < dataPoints.size(); i++) {
 				if (weights != null) {
 					weighting = Math.sqrt(weights.get(i));
@@ -478,7 +479,7 @@ public class BSpline extends Curve {
 			// The canonical minimization algorithm minimizes || P(x) - X ||^2, so if we
 			// choose our X to be P(x) - (sdterm/2)^(1/2),
 			// the minimization will minimize the sdterm.
-		else if (KappaFrame.fittingAlgorithm.equals(KappaFrame.FITTING_ALGORITHMS[1])) {
+		else if (frame.fittingAlgorithm.equals(KappaFrame.FITTING_ALGORITHMS[1])) {
 			for (int i = 0; i < dataPoints.size(); i++) {
 				if (weights != null) {
 					weighting = Math.sqrt(weights.get(i));
@@ -1099,10 +1100,10 @@ public class BSpline extends Curve {
 			List<Point2D> curveData = c.getIntensityDataRed();
 
 			// Display y values with respect to x-coordinate
-			if (MenuBar.distributionDisplay == 0) {
+			if (KappaMenuBar.distributionDisplay == 0) {
 				splineData.addAll(curveData);
 			} // Display y values with respect to arc-length
-			else if (MenuBar.distributionDisplay == 1) {
+			else if (KappaMenuBar.distributionDisplay == 1) {
 				for (Point2D p : curveData) {
 					splineData.add(new Point2D.Double(p.getX() + currentPt, p.getY()));
 				}
@@ -1126,10 +1127,10 @@ public class BSpline extends Curve {
 			List<Point2D> curveData = c.getIntensityDataGreen();
 
 			// Display y values with respect to x-coordinate
-			if (MenuBar.distributionDisplay == 0) {
+			if (KappaMenuBar.distributionDisplay == 0) {
 				splineData.addAll(curveData);
 			} // Display y values with respect to arc-length
-			else if (MenuBar.distributionDisplay == 1) {
+			else if (KappaMenuBar.distributionDisplay == 1) {
 				for (Point2D p : curveData) {
 					splineData.add(new Point2D.Double(p.getX() + currentPt, p.getY()));
 				}
@@ -1153,10 +1154,10 @@ public class BSpline extends Curve {
 			List<Point2D> curveData = c.getIntensityDataBlue();
 
 			// Display y values with respect to x-coordinate
-			if (MenuBar.distributionDisplay == 0) {
+			if (KappaMenuBar.distributionDisplay == 0) {
 				splineData.addAll(curveData);
 			} // Display y values with respect to arc-length
-			else if (MenuBar.distributionDisplay == 1) {
+			else if (KappaMenuBar.distributionDisplay == 1) {
 				for (Point2D p : curveData) {
 					splineData.add(new Point2D.Double(p.getX() + currentPt, p.getY()));
 				}
@@ -1187,10 +1188,10 @@ public class BSpline extends Curve {
 			List<Point2D> curveData = c.getCurveData();
 
 			// Display y values with respect to x-coordinate
-			if (MenuBar.distributionDisplay == 0) {
+			if (KappaMenuBar.distributionDisplay == 0) {
 				splineData.addAll(curveData);
 			} // Display y values with respect to arc-length
-			else if (MenuBar.distributionDisplay == 1) {
+			else if (KappaMenuBar.distributionDisplay == 1) {
 				for (Point2D p : curveData) {
 					splineData.add(new Point2D.Double(p.getX() + currentPt, p.getY()));
 				}

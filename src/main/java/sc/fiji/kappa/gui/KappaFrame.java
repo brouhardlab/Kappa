@@ -112,51 +112,50 @@ public class KappaFrame extends JFrame {
 	public static final int DEFAULT_INPUT_CURVE = B_SPLINE;
 	public static final String[] BSPLINE_TYPES = { "Open", "Closed" };
 
-	public static int bsplineType;
-	public static int inputType;
+	public int bsplineType;
+	public int inputType;
 
 	// 0 = Point Distance Minimization
 	// 1 = Squared Distance Minimization
 	public static final int DEFAULT_FITTING_ALGORITHM = 0;
-	public static String fittingAlgorithm;
+	public String fittingAlgorithm;
 
-	public static Overlay overlay;
+	public Overlay overlay;
 
 	// Bezier Curve information
-	public static BezierGroup curves = new BezierGroup();
-	public static List<Point2D> points = new ArrayList<Point2D>(DEFAULT_NO_CTRL_PTS);
+	public BezierGroup curves = new BezierGroup(this);
+	public List<Point2D> points = new ArrayList<Point2D>(DEFAULT_NO_CTRL_PTS);
 	public Curve currEditedCurve;
-	public static int currCtrlPt = 0;
+	public int currCtrlPt = 0;
 	public boolean controlPointSelected;
 	public boolean shiftPressed;
 	public boolean dragged;
-	public static boolean fittingRunning;
+	public boolean fittingRunning;
 	public int prevIndex;
 
-	public static final int INIT_LAYER = 1;
-	public static int maxLayer;
-	public static int maxLayerDigits;
+	public final int INIT_LAYER = 1;
+	public int maxLayer;
+	public int maxLayerDigits;
 
 	// Image variables
-	public static ImagePlus displayedImageStack;
-	public static ImagePlus imageStack;
-	public static ImageStack[] imageStackLayers;
-	public static BufferedImage currImage;
-	public static BufferedImage scaled;
-	public static JLabel currImageLabel;
-	protected static boolean[][] thresholded;
-	public static ScrollDrawingPane scrollPane;
+	public ImagePlus displayedImageStack;
+	public ImagePlus imageStack;
+	public ImageStack[] imageStackLayers;
+	public BufferedImage currImage;
+	public BufferedImage scaled;
+	public JLabel currImageLabel;
+	protected boolean[][] thresholded;
+	public ScrollDrawingPane scrollPane;
 
 	// Panels
 	public InfoPanel infoPanel;
 	public ExportPanel exportPanel;
 	public ControlPanel controlPanel;
 	public ToolPanel toolPanel;
+	public KappaMenuBar kappaMenubar;
 
 	@Parameter
 	private Context context;
-
-	public static KappaFrame frame;
 
 	public KappaFrame(Context context) {
 
@@ -172,15 +171,15 @@ public class KappaFrame extends JFrame {
 
 		setLayout(new BorderLayout());
 		infoPanel = new InfoPanel(this);
-		exportPanel = new ExportPanel();
-		controlPanel = new ControlPanel();
+		exportPanel = new ExportPanel(this);
+		controlPanel = new ControlPanel(this);
 		toolPanel = new ToolPanel(this);
 		add(infoPanel, BorderLayout.EAST);
 		add(controlPanel, BorderLayout.SOUTH);
 		add(toolPanel, BorderLayout.NORTH);
 
 		// Sets the glass pane up for notifications
-		overlay = new Overlay();
+		overlay = new Overlay(this);
 		this.setGlassPane(overlay);
 		overlay.setOpaque(false);
 
@@ -254,7 +253,8 @@ public class KappaFrame extends JFrame {
 		imageStack = null;
 
 		// Adds the menubar
-		this.setJMenuBar(new MenuBar(context, this));
+		this.kappaMenubar = new KappaMenuBar(context, this);
+		this.setJMenuBar(this.kappaMenubar);
 
 		// Moves the export button position when the window is resized.
 		this.getRootPane().addComponentListener(new ComponentAdapter() {
@@ -276,36 +276,52 @@ public class KappaFrame extends JFrame {
 		return infoPanel;
 	}
 
-	public void setInfoPanel(InfoPanel infoPanel) {
-		this.infoPanel = infoPanel;
-	}
-
 	public ExportPanel getExportPanel() {
 		return exportPanel;
-	}
-
-	public void setExportPanel(ExportPanel exportPanel) {
-		this.exportPanel = exportPanel;
 	}
 
 	public ControlPanel getControlPanel() {
 		return controlPanel;
 	}
 
-	public void setControlPanel(ControlPanel controlPanel) {
-		this.controlPanel = controlPanel;
-	}
-
 	public ToolPanel getToolPanel() {
 		return toolPanel;
 	}
 
-	public void setToolPanel(ToolPanel toolPanel) {
-		this.toolPanel = toolPanel;
-	}
-
 	private void resetKappaPlugin() {
 
+	}
+
+	public Overlay getOverlay() {
+		return overlay;
+	}
+
+	public BezierGroup getCurves() {
+		return curves;
+	}
+
+	public List<Point2D> getPoints() {
+		return points;
+	}
+
+	public ImagePlus getDisplayedImageStack() {
+		return displayedImageStack;
+	}
+
+	public ImagePlus getImageStack() {
+		return imageStack;
+	}
+
+	public BufferedImage getCurrImage() {
+		return currImage;
+	}
+
+	public JLabel getCurrImageLabel() {
+		return currImageLabel;
+	}
+
+	public KappaMenuBar getKappaMenubar() {
+		return kappaMenubar;
 	}
 
 	public void fitCurves() {
@@ -386,7 +402,7 @@ public class KappaFrame extends JFrame {
 	public void resetCurves() {
 		InfoPanel.listData = new Vector<>();
 		InfoPanel.list.setListData(InfoPanel.listData);
-		curves = new BezierGroup();
+		curves = new BezierGroup(this);
 	}
 
 	/**
@@ -410,7 +426,7 @@ public class KappaFrame extends JFrame {
 		int h = (int) (scale * currImage.getHeight());
 		scaled = config.createCompatibleImage(w, h, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g2 = scaled.createGraphics();
-		if (MenuBar.antialiasingMenu.getState()) {
+		if (KappaMenuBar.antialiasingMenu.getState()) {
 			g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 		}
 		g2.drawImage(currImage, 0, 0, w, h, null);
@@ -433,7 +449,7 @@ public class KappaFrame extends JFrame {
 	/**
 	 * Draws everything on top of the scaled image
 	 */
-	protected static void drawImageOverlay() {
+	protected void drawImageOverlay() {
 		if (currImage == null) {
 			return;
 		}
@@ -452,8 +468,8 @@ public class KappaFrame extends JFrame {
 		// Draws all the Bezier Curves
 		g2.setColor(Color.GRAY);
 		g2.setStroke(new BasicStroke((int) (Curve.DEFAULT_STROKE_THICKNESS * scale)));
-		curves.draw(g2, scale, InfoPanel.pointSlider.getValue(), MenuBar.boundingBoxMenu.getState(),
-				MenuBar.scaleCurvesMenu.getState(), MenuBar.tangentMenu.getState(),
+		curves.draw(g2, scale, InfoPanel.pointSlider.getValue(), KappaMenuBar.boundingBoxMenu.getState(),
+				KappaMenuBar.scaleCurvesMenu.getState(), KappaMenuBar.tangentMenu.getState(),
 				InfoPanel.showRadiusCheckBox.isSelected());
 
 		// Draws the points we've built so far if a complete Bezier Curve has not been
@@ -486,7 +502,7 @@ public class KappaFrame extends JFrame {
 		// If there is an open image stack, it will draw it in the drawing panel
 		// Also changes the frame for our bezier curves, for keyframing.
 		displayedImageStack.setZ(layer);
-		currImage = KappaFrame.displayedImageStack.getBufferedImage();
+		currImage = this.displayedImageStack.getBufferedImage();
 		setScaledImage(scale);
 		curves.changeFrame(layer);
 
@@ -576,7 +592,7 @@ public class KappaFrame extends JFrame {
 			for (int j = 0; j < currImage.getHeight(); j++) {
 
 				// Checks the intensity level and compares it to the threshold level
-				rgb = BezierCurve.getRGB(i, j);
+				rgb = BezierCurve.getRGB(displayedImageStack, i, j);
 				switch (channel) {
 				case 0:
 					intensity = rgb[0];
@@ -681,7 +697,7 @@ public class KappaFrame extends JFrame {
 	private List<Double> getWeights(List<Point2D> dataPoints) {
 		List<Double> weights = new ArrayList<>(dataPoints.size());
 		for (Point2D p : dataPoints) {
-			int[] rgb = BezierCurve.getRGB((int) p.getX(), (int) p.getY());
+			int[] rgb = BezierCurve.getRGB(displayedImageStack, (int) p.getX(), (int) p.getY());
 
 			int channel = InfoPanel.fittingChannelsComboBox.getSelectedIndex();
 			double intensity = 0;
@@ -744,7 +760,7 @@ public class KappaFrame extends JFrame {
 		InfoPanel.pointSlider.setEnabled(true);
 		InfoPanel.pointSlider.setValue(0);
 		currCtrlPt = 0;
-		MenuBar.enter.setEnabled(false);
+		KappaMenuBar.enter.setEnabled(false);
 		drawImageOverlay();
 	}
 
@@ -883,7 +899,7 @@ public class KappaFrame extends JFrame {
 						InfoPanel.list.clearSelection();
 						getInfoPanel().updateHistograms();
 						points = new ArrayList<>(DEFAULT_NO_CTRL_PTS);
-						MenuBar.delete.setEnabled(true);
+						KappaMenuBar.delete.setEnabled(true);
 					}
 
 					Point2D mappedPoint = mapPoint(event.getPoint());
@@ -894,10 +910,10 @@ public class KappaFrame extends JFrame {
 					// If the input type is a BSpline, then pressing enter will be enabled after the
 					// base case.
 					if (currCtrlPt == BSpline.B_SPLINE_DEGREE + 1 && inputType == B_SPLINE) {
-						MenuBar.enter.setEnabled(true);
+						KappaMenuBar.enter.setEnabled(true);
 					} // The minimum size Bezier Curve we allow is a quadradic bezier curve
 					else if (currCtrlPt >= 3 && inputType == BEZIER_CURVE) {
-						MenuBar.enter.setEnabled(true);
+						KappaMenuBar.enter.setEnabled(true);
 					}
 					infoPanel.repaint();
 					drawImageOverlay();
@@ -1130,7 +1146,7 @@ public class KappaFrame extends JFrame {
 		double avgIntensity = 0;
 		for (int x = 0; x < currImage.getWidth(); x++) {
 			for (int y = 0; y < currImage.getHeight(); y++) {
-				avgIntensity += BezierCurve.getRGB(x, y)[0];
+				avgIntensity += BezierCurve.getRGB(displayedImageStack, x, y)[0];
 			}
 		}
 		avgIntensity /= (currImage.getWidth() * currImage.getHeight());
@@ -1139,7 +1155,7 @@ public class KappaFrame extends JFrame {
 		double stdDev = 0;
 		for (int x = 0; x < currImage.getWidth(); x++) {
 			for (int y = 0; y < currImage.getHeight(); y++) {
-				stdDev += squared(BezierCurve.getRGB(x, y)[0] - avgIntensity);
+				stdDev += squared(BezierCurve.getRGB(displayedImageStack, x, y)[0] - avgIntensity);
 			}
 		}
 		stdDev /= (currImage.getWidth() * currImage.getHeight()) - 1;

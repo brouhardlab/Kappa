@@ -45,6 +45,12 @@ import sc.fiji.kappa.curve.Curve;
 
 public class CurvesExporter {
 
+	private KappaFrame frame;
+
+	public CurvesExporter(KappaFrame frame) {
+		this.frame = frame;
+	}
+
 	public void export() throws IOException {
 		export(true);
 	}
@@ -53,9 +59,9 @@ public class CurvesExporter {
 
 		JFileChooser kappaExport = new JFileChooser();
 
-		String dirPath = KappaFrame.imageStack.getOriginalFileInfo().directory;
+		String dirPath = frame.imageStack.getOriginalFileInfo().directory;
 		if (dirPath != null) {
-			String kappaPath = FilenameUtils.removeExtension(KappaFrame.imageStack.getOriginalFileInfo().fileName);
+			String kappaPath = FilenameUtils.removeExtension(frame.imageStack.getOriginalFileInfo().fileName);
 			kappaPath += ".csv";
 			File fullPath = new File(dirPath, kappaPath);
 			kappaExport.setSelectedFile(fullPath);
@@ -65,7 +71,7 @@ public class CurvesExporter {
 		kappaExport.setDialogTitle("Export Curve Data");
 
 		// Handles export button action.
-		int returnVal = kappaExport.showSaveDialog(KappaFrame.frame);
+		int returnVal = kappaExport.showSaveDialog(frame);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			File file = kappaExport.getSelectedFile();
 			exportToFile(file, exportAveragePerCurve);
@@ -78,7 +84,7 @@ public class CurvesExporter {
 
 	public void exportToFile(File file, boolean exportAveragePerCurve) throws IOException {
 
-		BezierGroup curves = KappaFrame.curves;
+		BezierGroup curves = frame.curves;
 
 		// Appends a .csv
 		if (!file.getPath().toLowerCase().endsWith(".csv")) {
@@ -105,8 +111,8 @@ public class CurvesExporter {
 		writer.writeNext(headers.stream().toArray(String[]::new));
 
 		// Not used anymore
-		int w = KappaFrame.currImage.getWidth();
-		int h = KappaFrame.currImage.getHeight();
+		int w = frame.currImage.getWidth();
+		int h = frame.currImage.getHeight();
 		double[][] averaged = new double[w][h];
 
 		StringWriter out = new StringWriter();

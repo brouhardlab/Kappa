@@ -35,9 +35,10 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import ij.ImagePlus;
 import sc.fiji.kappa.gui.InfoPanel;
 import sc.fiji.kappa.gui.KappaFrame;
-import sc.fiji.kappa.gui.MenuBar;
+import sc.fiji.kappa.gui.KappaMenuBar;
 
 public class BezierCurve extends Curve {
 
@@ -61,8 +62,8 @@ public class BezierCurve extends Curve {
 	public static final double STEP_SIZE_ANGLE = 0.2;
 	public static final int STEP_SIZE_CURVE = Math.max(RECURSE_DEPTH - 3, 1);
 
-	public BezierCurve(List<Point2D> ctrlPts, int t, int noCtrlPts, String name, int dataRadius) {
-		super(ctrlPts, t, noCtrlPts, name, dataRadius);
+	public BezierCurve(List<Point2D> ctrlPts, int t, int noCtrlPts, String name, int dataRadius, KappaFrame frame) {
+		super(ctrlPts, t, noCtrlPts, name, dataRadius, frame);
 		fillPoints(ctrlPts, t);
 		evaluateThresholdedPixels();
 	}
@@ -96,17 +97,18 @@ public class BezierCurve extends Curve {
 
 				// Keeps adding to the total while successive points in our curve round to the
 				// same pixel coordinate.
-//				while (i + 1 < curvePoints.size() && (int) curvePoints.get(i + 1).getX() == (int) p.getX()
-//						&& (int) curvePoints.get(i + 1).getY() == (int) p.getY()) {
-//					n++;
-//					p = curvePoints.get(++i);
-//					totalX += p.getX();
-//					totalY += p.getY();
-//					totalK += p.sign * p.k;
-//					totalRed += RGBvals.get(i)[0];
-//					totalGreen += RGBvals.get(i)[1];
-//					totalBlue += RGBvals.get(i)[2];
-//				}
+				// while (i + 1 < curvePoints.size() && (int) curvePoints.get(i + 1).getX() ==
+				// (int) p.getX()
+				// && (int) curvePoints.get(i + 1).getY() == (int) p.getY()) {
+				// n++;
+				// p = curvePoints.get(++i);
+				// totalX += p.getX();
+				// totalY += p.getY();
+				// totalK += p.sign * p.k;
+				// totalRed += RGBvals.get(i)[0];
+				// totalGreen += RGBvals.get(i)[1];
+				// totalBlue += RGBvals.get(i)[2];
+				// }
 
 				// Now we print out the averaged point.
 				out.print("," + (totalX / n) * micronPixelFactor);
@@ -153,19 +155,21 @@ public class BezierCurve extends Curve {
 			double totalGreen = RGBvals.get(i)[1];
 			double totalBlue = RGBvals.get(i)[2];
 
-//			// Keeps adding to the total while successive points in our curve round to the
-//			// same pixel coordinate.
-//			while (i + 1 < curvePoints.size() && (int) curvePoints.get(i + 1).getX() == (int) p.getX()
-//					&& (int) curvePoints.get(i + 1).getY() == (int) p.getY()) {
-//				n++;
-//				p = curvePoints.get(++i);
-//				totalX += p.getX();
-//				totalY += p.getY();
-//				totalK += p.sign * p.k;
-//				totalRed += RGBvals.get(i)[0];
-//				totalGreen += RGBvals.get(i)[1];
-//				totalBlue += RGBvals.get(i)[2];
-//			}
+			// // Keeps adding to the total while successive points in our curve round to
+			// the
+			// // same pixel coordinate.
+			// while (i + 1 < curvePoints.size() && (int) curvePoints.get(i + 1).getX() ==
+			// (int) p.getX()
+			// && (int) curvePoints.get(i + 1).getY() == (int) p.getY()) {
+			// n++;
+			// p = curvePoints.get(++i);
+			// totalX += p.getX();
+			// totalY += p.getY();
+			// totalK += p.sign * p.k;
+			// totalRed += RGBvals.get(i)[0];
+			// totalGreen += RGBvals.get(i)[1];
+			// totalBlue += RGBvals.get(i)[2];
+			// }
 
 			out.print(this.name);
 
@@ -194,13 +198,13 @@ public class BezierCurve extends Curve {
 		return rev;
 	}
 
-	public static int[] getRGB(int x, int y) {
+	public static int[] getRGB(ImagePlus imp, int x, int y) {
 		int[] avg = new int[3];
-		if (x >= 0 && y >= 0 && x < KappaFrame.currImage.getWidth() && y < KappaFrame.currImage.getHeight()) {
-			int[] rgb = KappaFrame.displayedImageStack.getPixel(x, y);
+		if (x >= 0 && y >= 0 && x < imp.getWidth() && y < imp.getHeight()) {
+			int[] rgb = imp.getPixel(x, y);
 
 			// Gets the intensity levels depending on the image type.
-			switch (KappaFrame.displayedImageStack.getBitDepth()) {
+			switch (imp.getBitDepth()) {
 			case 8:
 			case 16:
 			case 32: // Grayscale (8, 16, 32 bit). The grayscale intensity is the first value in the
@@ -219,6 +223,10 @@ public class BezierCurve extends Curve {
 		return avg;
 	}
 
+	public int[] getRGB(int x, int y) {
+		return BezierCurve.getRGB(frame.displayedImageStack, x, y);
+	}
+
 	public void evaluateThresholdedPixels() {
 		int pixelThreshold = InfoPanel.dataThresholdSlider.getValue();
 		boolean isBrighter = InfoPanel.dataRangeComboBox.getSelectedIndex() == 0;
@@ -233,7 +241,7 @@ public class BezierCurve extends Curve {
 				+ dataRadius; x++) {
 			for (int y = (int) boundingBox.getY() - dataRadius; y <= (int) boundingBox.getY()
 					+ (int) boundingBox.getHeight() + dataRadius; y++) {
-				if (x >= 0 && x < KappaFrame.currImage.getWidth() && y >= 0 && y < KappaFrame.currImage.getHeight()) {
+				if (x >= 0 && x < frame.currImage.getWidth() && y >= 0 && y < frame.currImage.getHeight()) {
 					int[] rgb = getRGB(x, y);
 
 					// Checks the correct channel depending on the UI preference
@@ -747,10 +755,10 @@ public class BezierCurve extends Curve {
 		ArrayList<Point2D> intensityData = new ArrayList<Point2D>(NO_CURVE_POINTS);
 		for (int i = 0; i < curvePoints.size(); i++) {
 			// Displays curvature with respect to the x-coordinate
-			if (MenuBar.distributionDisplay == 0) {
+			if (KappaMenuBar.distributionDisplay == 0) {
 				intensityData.add(new Point2D.Double(curvePoints.get(i).x, RGBvals.get(i)[0]));
 			} // Displays curvature with respect to the arc length
-			else if (MenuBar.distributionDisplay == 1) {
+			else if (KappaMenuBar.distributionDisplay == 1) {
 				intensityData.add(new Point2D.Double(getApproxCurveLength(i), RGBvals.get(i)[0]));
 			} // Displays curvature with respect to the point index
 			else {
@@ -765,10 +773,10 @@ public class BezierCurve extends Curve {
 		ArrayList<Point2D> intensityData = new ArrayList<Point2D>(NO_CURVE_POINTS);
 		for (int i = 0; i < curvePoints.size(); i++) {
 			// Displays curvature with respect to the x-coordinate
-			if (MenuBar.distributionDisplay == 0) {
+			if (KappaMenuBar.distributionDisplay == 0) {
 				intensityData.add(new Point2D.Double(curvePoints.get(i).x, RGBvals.get(i)[1]));
 			} // Displays curvature with respect to the arc length
-			else if (MenuBar.distributionDisplay == 1) {
+			else if (KappaMenuBar.distributionDisplay == 1) {
 				intensityData.add(new Point2D.Double(getApproxCurveLength(i), RGBvals.get(i)[1]));
 			} // Displays curvature with respect to the point index
 			else {
@@ -783,10 +791,10 @@ public class BezierCurve extends Curve {
 		ArrayList<Point2D> intensityData = new ArrayList<Point2D>(NO_CURVE_POINTS);
 		for (int i = 0; i < curvePoints.size(); i++) {
 			// Displays curvature with respect to the x-coordinate
-			if (MenuBar.distributionDisplay == 0) {
+			if (KappaMenuBar.distributionDisplay == 0) {
 				intensityData.add(new Point2D.Double(curvePoints.get(i).x, RGBvals.get(i)[2]));
 			} // Displays curvature with respect to the arc length
-			else if (MenuBar.distributionDisplay == 1) {
+			else if (KappaMenuBar.distributionDisplay == 1) {
 				intensityData.add(new Point2D.Double(getApproxCurveLength(i), RGBvals.get(i)[2]));
 			} // Displays curvature with respect to the point index
 			else {
@@ -801,10 +809,10 @@ public class BezierCurve extends Curve {
 		ArrayList<Point2D> curveData = new ArrayList<Point2D>(NO_CURVE_POINTS);
 		for (int i = 0; i < curvePoints.size(); i++) {
 			// Displays curvature with respect to the x-coordinate
-			if (MenuBar.distributionDisplay == 0) {
+			if (KappaMenuBar.distributionDisplay == 0) {
 				curveData.add(new Point2D.Double(curvePoints.get(i).x, curvePoints.get(i).k));
 			} // Displays curvature with respect to the arc length
-			else if (MenuBar.distributionDisplay == 1) {
+			else if (KappaMenuBar.distributionDisplay == 1) {
 				curveData.add(new Point2D.Double(getApproxCurveLength(i), curvePoints.get(i).k));
 			} // Displays curvature with respect to the point index
 			else {
@@ -818,8 +826,8 @@ public class BezierCurve extends Curve {
 	public List<Point2D> getDebugCurveData() {
 		ArrayList<Point2D> debugCurveData = new ArrayList<Point2D>(NO_CURVE_POINTS);
 		for (Point2D p : curvePoints) {
-			debugCurveData.add(new Point2D.Double(p.getX(), KappaFrame.frame.computeCurvature(p.getX(),
-					6000 / (Curve.getMicronPixelFactor() * 1000.0), (2 * Math.PI) / KappaFrame.currImage.getWidth())));
+			debugCurveData.add(new Point2D.Double(p.getX(), frame.computeCurvature(p.getX(),
+					6000 / (Curve.getMicronPixelFactor() * 1000.0), (2 * Math.PI) / frame.currImage.getWidth())));
 		}
 		return debugCurveData;
 	}

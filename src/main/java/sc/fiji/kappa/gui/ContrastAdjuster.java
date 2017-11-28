@@ -127,8 +127,12 @@ public class ContrastAdjuster extends PlugInFrame
 	int channels = 7; // RGB
 	Choice choice;
 
-	public ContrastAdjuster() {
+	private KappaFrame frame;
+
+	public ContrastAdjuster(KappaFrame frame) {
 		super("B&C");
+
+		this.frame = frame;
 	}
 
 	public void run(String arg) {
@@ -308,7 +312,7 @@ public class ContrastAdjuster extends PlugInFrame
 	}
 
 	void setup() {
-		ImagePlus imp = KappaFrame.displayedImageStack;
+		ImagePlus imp = frame.displayedImageStack;
 		if (imp != null) {
 			setup(imp);
 			updatePlot();
@@ -769,7 +773,7 @@ public class ContrastAdjuster extends PlugInFrame
 		return index;
 	}
 
-	public static int set16bitRange(int index) {
+	public int set16bitRange(int index) {
 		int range = 0;
 		if (index == 1) {
 			range = 8;
@@ -888,7 +892,7 @@ public class ContrastAdjuster extends PlugInFrame
 		}
 		minSliderValue = maxSliderValue = brightnessValue = contrastValue = -1;
 		doReset = doAutoAdjust = doSet = doApplyLut = false;
-		imp = KappaFrame.displayedImageStack;
+		imp = frame.displayedImageStack;
 		if (imp == null) {
 			IJ.beep();
 			IJ.showStatus("No image");
@@ -939,12 +943,12 @@ public class ContrastAdjuster extends PlugInFrame
 		}
 
 		// Updates the adjusted image.
-		KappaFrame.currImage = KappaFrame.displayedImageStack.getBufferedImage();
-		KappaFrame.frame.setScaledImage(ControlPanel.scaleSlider.getValue() / 100.0);
-		KappaFrame.drawImageOverlay();
+		frame.currImage = frame.displayedImageStack.getBufferedImage();
+		frame.setScaledImage(ControlPanel.scaleSlider.getValue() / 100.0);
+		frame.drawImageOverlay();
 
-		KappaFrame.curves.updateIntensities();
-		KappaFrame.frame.updateDisplayed();
+		frame.curves.updateIntensities();
+		frame.updateDisplayed();
 	}
 
 	/**
@@ -964,7 +968,7 @@ public class ContrastAdjuster extends PlugInFrame
 		super.windowActivated(e);
 		if (IJ.isMacro()) {
 			// do nothing if macro and RGB image
-			ImagePlus imp2 = KappaFrame.displayedImageStack;
+			ImagePlus imp2 = frame.displayedImageStack;
 			if (imp2 != null && imp2.getBitDepth() == 24) {
 				return;
 			}
@@ -977,7 +981,7 @@ public class ContrastAdjuster extends PlugInFrame
 	public synchronized void itemStateChanged(ItemEvent e) {
 		int index = choice.getSelectedIndex();
 		channels = channelConstants[index];
-		ImagePlus imp = KappaFrame.displayedImageStack;
+		ImagePlus imp = frame.displayedImageStack;
 		if (imp != null && imp.isComposite()) {
 			if (index + 1 <= imp.getNChannels()) {
 				imp.setPosition(index + 1, imp.getSlice(), imp.getFrame());

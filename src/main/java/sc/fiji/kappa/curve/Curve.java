@@ -34,6 +34,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import sc.fiji.kappa.gui.KappaFrame;
+
 public abstract class Curve {
 
 	public static final int DEFAULT_STROKE_THICKNESS = 1;
@@ -78,7 +80,10 @@ public abstract class Curve {
 	// um/pixel conversion factor
 	protected static double micronPixelFactor = DEFAULT_MICRON_PIXEL_FACTOR;
 
-	public Curve(List<Point2D> ctrlPts, int t, int noCtrlPts, String name, int dataRadius) {
+	protected KappaFrame frame;
+
+	public Curve(List<Point2D> ctrlPts, int t, int noCtrlPts, String name, int dataRadius, KappaFrame frame) {
+		this.frame = frame;
 		this.selected = true;
 		this.name = name;
 		this.ctrlPts = ctrlPts;

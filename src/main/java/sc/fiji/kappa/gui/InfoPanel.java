@@ -188,8 +188,8 @@ public class InfoPanel extends JPanel {
 		this.addMouseListener(new MouseHandler());
 
 		this.setLayout(null);
-		setBackground(KappaFrame.PANEL_COLOR);
-		setPreferredSize(new Dimension(KappaFrame.PANEL_WIDTH, 0));
+		setBackground(frame.PANEL_COLOR);
+		setPreferredSize(new Dimension(frame.PANEL_WIDTH, 0));
 		setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 
@@ -204,16 +204,16 @@ public class InfoPanel extends JPanel {
 				if (event.getSource() == list && !event.getValueIsAdjusting()) {
 					int[] selectedIndices = list.getSelectedIndices();
 					if (selectedIndices.length == 0) {
-						KappaFrame.curves.setAllUnselected();
+						frame.curves.setAllUnselected();
 						updateHistograms();
-						MenuBar.delete.setEnabled(false);
+						KappaMenuBar.delete.setEnabled(false);
 
 						// Hides the Histogram Panels when no curves are selected
 						panels.hide("Curvature Distribution (absolute values)");
 						panels.hide("Intensity Distribution");
 					} else {
-						KappaFrame.curves.setSelected(selectedIndices);
-						MenuBar.delete.setEnabled(true);
+						frame.curves.setSelected(selectedIndices);
+						KappaMenuBar.delete.setEnabled(true);
 						if (selectedIndices.length == 1) {
 							updateHistograms();
 
@@ -222,9 +222,9 @@ public class InfoPanel extends JPanel {
 							panels.show("Intensity Distribution");
 						}
 					}
-					KappaFrame.drawImageOverlay();
-					pointSlider.setEnabled(KappaFrame.curves.isCurveSelected());
-					if (!KappaFrame.curves.isCurveSelected()) {
+					frame.drawImageOverlay();
+					pointSlider.setEnabled(frame.curves.isCurveSelected());
+					if (!frame.curves.isCurveSelected()) {
 						pointSlider.setValue(1);
 					}
 					repaint();
@@ -234,7 +234,7 @@ public class InfoPanel extends JPanel {
 		});
 
 		curvesList = new JScrollPane(list);
-		curvesList.setBounds(0, 22, KappaFrame.PANEL_WIDTH - 2, 75);
+		curvesList.setBounds(0, 22, frame.PANEL_WIDTH - 2, 75);
 		curvesList.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		this.add(curvesList);
 		Panel curvesListPanel = new Panel(0, 0, 95, "CURVES");
@@ -243,13 +243,13 @@ public class InfoPanel extends JPanel {
 		curvesListPanel.addComponent(curvesList);
 
 		// Slider and Label for traversal of Points along a Bezier Curve
-		pointSlider = new JSlider(JSlider.HORIZONTAL, 0, KappaFrame.UNIT_SCALE, 0);
+		pointSlider = new JSlider(JSlider.HORIZONTAL, 0, frame.UNIT_SCALE, 0);
 		pointSlider.addChangeListener(new PointChanger());
 		pointSlider.setBounds(POINT_SLIDER_BOUNDS);
 		pointSlider.setEnabled(false);
 		pointLabel = new JLabel(
-				"Point " + KappaFrame.frame.formatNumber(pointSlider.getValue(), BezierCurve.NO_CURVE_POINTS_DIGITS)
-						+ " / " + KappaFrame.UNIT_SCALE);
+				"Point " + frame.formatNumber(pointSlider.getValue(), BezierCurve.NO_CURVE_POINTS_DIGITS) + " / "
+						+ frame.UNIT_SCALE);
 		pointLabel.setFont(pointLabel.getFont().deriveFont(Font.PLAIN));
 		pointLabel.setForeground(Color.GRAY);
 		pointLabel.setPreferredSize(new Dimension(65, Short.MAX_VALUE));
@@ -271,7 +271,7 @@ public class InfoPanel extends JPanel {
 					try {
 						double newScaleFactor = Double.parseDouble(conversionField.getText());
 						Curve.setMicronPixelFactor(newScaleFactor);
-						KappaFrame.curves.recalculateCurvature(ControlPanel.currentLayerSlider.getValue());
+						frame.curves.recalculateCurvature(ControlPanel.currentLayerSlider.getValue());
 					} catch (Exception err) {
 						Curve.setMicronPixelFactor(oldScaleFactor);
 					}
@@ -285,26 +285,26 @@ public class InfoPanel extends JPanel {
 		panels.addPanel(inputOptionsPanel);
 		addLabelComponent("Curve Input Type: ", inputOptionsPanel, INPUT_OPTION_LABEL_BOUNDS);
 
-		curveComboBox = new JComboBox<String>(KappaFrame.CURVE_TYPES);
+		curveComboBox = new JComboBox<String>(frame.CURVE_TYPES);
 		curveComboBox.setSelectedIndex(1);
-		KappaFrame.inputType = curveComboBox.getSelectedIndex();
+		frame.inputType = curveComboBox.getSelectedIndex();
 		curveComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Bezier Curves are viable with 3 control points but Cubic B-Splines need at
 				// least 4.
-				KappaFrame.inputType = curveComboBox.getSelectedIndex();
+				frame.inputType = curveComboBox.getSelectedIndex();
 
-				bsplineComboBox.setEnabled(KappaFrame.inputType == KappaFrame.B_SPLINE);
-				bsplineOptionLabel.setEnabled(KappaFrame.inputType == KappaFrame.B_SPLINE);
-				if (KappaFrame.currCtrlPt == 3) {
-					MenuBar.enter.setEnabled(KappaFrame.inputType == KappaFrame.BEZIER_CURVE);
+				bsplineComboBox.setEnabled(frame.inputType == frame.B_SPLINE);
+				bsplineOptionLabel.setEnabled(frame.inputType == frame.B_SPLINE);
+				if (frame.currCtrlPt == 3) {
+					KappaMenuBar.enter.setEnabled(frame.inputType == frame.BEZIER_CURVE);
 				}
-				KappaFrame.scrollPane.requestFocusInWindow();
+				frame.scrollPane.requestFocusInWindow();
 			}
 		});
 		curveComboBox.setBounds(CURVE_COMBO_BOX_BOUNDS);
 		if (System.getProperty("os.name").equals("Mac OS X")) {
-			curveComboBox.setSize(curveComboBox.getWidth(), KappaFrame.COMBO_BOX_HEIGHT_OSX);
+			curveComboBox.setSize(curveComboBox.getWidth(), frame.COMBO_BOX_HEIGHT_OSX);
 		}
 		this.add(curveComboBox);
 		inputOptionsPanel.addComponent(curveComboBox);
@@ -312,23 +312,23 @@ public class InfoPanel extends JPanel {
 		bsplineOptionLabel = new JLabel("B-Spline Type: ");
 		bsplineOptionLabel.setBounds(BSPLINE_OPTION_LABEL_BOUNDS);
 		bsplineOptionLabel.setFont(bsplineOptionLabel.getFont().deriveFont(Font.PLAIN));
-		bsplineOptionLabel.setEnabled(KappaFrame.inputType == KappaFrame.B_SPLINE);
+		bsplineOptionLabel.setEnabled(frame.inputType == frame.B_SPLINE);
 		this.add(bsplineOptionLabel);
 		inputOptionsPanel.addComponent(bsplineOptionLabel);
 
-		bsplineComboBox = new JComboBox<String>(KappaFrame.BSPLINE_TYPES);
+		bsplineComboBox = new JComboBox<String>(frame.BSPLINE_TYPES);
 		bsplineComboBox.setSelectedIndex(0);
 		bsplineComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				KappaFrame.bsplineType = bsplineComboBox.getSelectedIndex();
-				KappaFrame.scrollPane.requestFocusInWindow();
-				KappaFrame.drawImageOverlay();
+				frame.bsplineType = bsplineComboBox.getSelectedIndex();
+				frame.scrollPane.requestFocusInWindow();
+				frame.drawImageOverlay();
 			}
 		});
-		bsplineComboBox.setEnabled(KappaFrame.inputType == KappaFrame.B_SPLINE);
+		bsplineComboBox.setEnabled(frame.inputType == frame.B_SPLINE);
 		bsplineComboBox.setBounds(BSPLINE_COMBO_BOX_BOUNDS);
 		if (System.getProperty("os.name").equals("Mac OS X")) {
-			bsplineComboBox.setSize(bsplineComboBox.getWidth(), KappaFrame.COMBO_BOX_HEIGHT_OSX);
+			bsplineComboBox.setSize(bsplineComboBox.getWidth(), frame.COMBO_BOX_HEIGHT_OSX);
 		}
 		this.add(bsplineComboBox);
 		inputOptionsPanel.addComponent(bsplineComboBox);
@@ -382,16 +382,16 @@ public class InfoPanel extends JPanel {
 		dataThresholdSlider = new JSlider(JSlider.HORIZONTAL, 0, 256, DEFAULT_DATA_THRESHOLD);
 		dataThresholdSlider.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent c) {
-				if (MenuBar.RGBColor.isSelected()) {
+				if (KappaMenuBar.RGBColor.isSelected()) {
 					dataThresholdLabel.setText(dataThresholdSlider.getValue() + " / " + "256");
 				} else {
 					dataThresholdLabel.setText(dataThresholdSlider.getValue() + " / "
-							+ (int) Math.pow(2, KappaFrame.displayedImageStack.getBitDepth()));
+							+ (int) Math.pow(2, frame.displayedImageStack.getBitDepth()));
 				}
-				for (Curve curve : KappaFrame.curves) {
+				for (Curve curve : frame.curves) {
 					curve.evaluateThresholdedPixels();
 				}
-				KappaFrame.drawImageOverlay();
+				frame.drawImageOverlay();
 			}
 		});
 		dataThresholdSlider.setBounds(DATA_THRESHOLD_SLIDER_BOUNDS);
@@ -410,31 +410,31 @@ public class InfoPanel extends JPanel {
 		fittingChannelsComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Reevaluate all the thresholded pixels
-				for (Curve c : KappaFrame.curves) {
+				for (Curve c : frame.curves) {
 					c.evaluateThresholdedPixels();
 				}
-				KappaFrame.drawImageOverlay();
+				frame.drawImageOverlay();
 				;
 			}
 		});
 		fittingChannelsComboBox.setBounds(FITTING_CHANNEL_COMBO_BOX_BOUNDS);
 		if (System.getProperty("os.name").equals("Mac OS X")) {
-			fittingChannelsComboBox.setSize(fittingChannelsComboBox.getWidth(), KappaFrame.COMBO_BOX_HEIGHT_OSX);
+			fittingChannelsComboBox.setSize(fittingChannelsComboBox.getWidth(), frame.COMBO_BOX_HEIGHT_OSX);
 		}
 		this.add(fittingChannelsComboBox);
 		curveFittingPanel.addComponent(fittingChannelsComboBox);
 
-		fittingComboBox = new JComboBox<String>(KappaFrame.FITTING_ALGORITHMS);
-		fittingComboBox.setSelectedIndex(KappaFrame.DEFAULT_FITTING_ALGORITHM);
+		fittingComboBox = new JComboBox<String>(frame.FITTING_ALGORITHMS);
+		fittingComboBox.setSelectedIndex(frame.DEFAULT_FITTING_ALGORITHM);
 		fittingComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				KappaFrame.fittingAlgorithm = KappaFrame.FITTING_ALGORITHMS[fittingComboBox.getSelectedIndex()];
-				KappaFrame.scrollPane.requestFocusInWindow();
+				frame.fittingAlgorithm = frame.FITTING_ALGORITHMS[fittingComboBox.getSelectedIndex()];
+				frame.scrollPane.requestFocusInWindow();
 			}
 		});
 		fittingComboBox.setBounds(FITTING_COMBO_BOX_BOUNDS);
 		if (System.getProperty("os.name").equals("Mac OS X")) {
-			fittingComboBox.setSize(fittingComboBox.getWidth(), KappaFrame.COMBO_BOX_HEIGHT_OSX);
+			fittingComboBox.setSize(fittingComboBox.getWidth(), frame.COMBO_BOX_HEIGHT_OSX);
 		}
 		this.add(fittingComboBox);
 		curveFittingPanel.addComponent(fittingComboBox);
@@ -443,15 +443,15 @@ public class InfoPanel extends JPanel {
 		dataRangeComboBox.setSelectedIndex(0);
 		dataRangeComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				for (Curve c : KappaFrame.curves) {
+				for (Curve c : frame.curves) {
 					c.evaluateThresholdedPixels();
 				}
-				KappaFrame.drawImageOverlay();
+				frame.drawImageOverlay();
 			}
 		});
 		dataRangeComboBox.setBounds(DATA_RANGE_COMBO_BOX_BOUNDS);
 		if (System.getProperty("os.name").equals("Mac OS X")) {
-			dataRangeComboBox.setSize(dataRangeComboBox.getWidth(), KappaFrame.COMBO_BOX_HEIGHT_OSX);
+			dataRangeComboBox.setSize(dataRangeComboBox.getWidth(), frame.COMBO_BOX_HEIGHT_OSX);
 		}
 		this.add(dataRangeComboBox);
 		curveFittingPanel.addComponent(dataRangeComboBox);
@@ -460,10 +460,10 @@ public class InfoPanel extends JPanel {
 		thresholdRadiusSpinner.setBounds(THRESHOLD_RADIUS_SPINNER_BOUNDS);
 		thresholdRadiusSpinner.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent c) {
-				for (Curve curve : KappaFrame.curves) {
+				for (Curve curve : frame.curves) {
 					curve.setDataRadius((Integer) thresholdRadiusSpinner.getValue());
 				}
-				KappaFrame.drawImageOverlay();
+				frame.drawImageOverlay();
 			}
 		});
 		this.add(thresholdRadiusSpinner);
@@ -473,7 +473,7 @@ public class InfoPanel extends JPanel {
 		showRadiusCheckBox.setBounds(SHOW_RADIUS_CHECKBOX_BOUNDS);
 		showRadiusCheckBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				KappaFrame.drawImageOverlay();
+				frame.drawImageOverlay();
 			}
 		});
 		this.add(showRadiusCheckBox);
@@ -483,7 +483,7 @@ public class InfoPanel extends JPanel {
 		showDatapointsCheckBox.setBounds(SHOW_DATAPOINTS_CHECKBOX_BOUNDS);
 		showDatapointsCheckBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				KappaFrame.drawImageOverlay();
+				frame.drawImageOverlay();
 			}
 		});
 		this.add(showDatapointsCheckBox);
@@ -499,18 +499,18 @@ public class InfoPanel extends JPanel {
 		thresholdChannelsComboBox.setSelectedIndex(0);
 		thresholdChannelsComboBox.setBounds(THRESHOLD_CHANNEL_COMBO_BOX_BOUNDS);
 		if (System.getProperty("os.name").equals("Mac OS X")) {
-			thresholdChannelsComboBox.setSize(thresholdChannelsComboBox.getWidth(), KappaFrame.COMBO_BOX_HEIGHT_OSX);
+			thresholdChannelsComboBox.setSize(thresholdChannelsComboBox.getWidth(), frame.COMBO_BOX_HEIGHT_OSX);
 		}
 		this.add(thresholdChannelsComboBox);
 		thresholdingPanel.addComponent(thresholdChannelsComboBox);
 
-		bgThresholdLabel = new JLabel("Background Threshold: " + KappaFrame.DEFAULT_BG_THRESHOLD + " / " + "256");
+		bgThresholdLabel = new JLabel("Background Threshold: " + frame.DEFAULT_BG_THRESHOLD + " / " + "256");
 		bgThresholdLabel.setBounds(THRESHOLD_LABEL_BOUNDS);
 		bgThresholdLabel.setFont(bgThresholdLabel.getFont().deriveFont(Font.PLAIN));
 		this.add(bgThresholdLabel);
 		thresholdingPanel.addComponent(bgThresholdLabel);
 
-		thresholdSlider = new JSlider(JSlider.HORIZONTAL, 0, 256, KappaFrame.DEFAULT_BG_THRESHOLD);
+		thresholdSlider = new JSlider(JSlider.HORIZONTAL, 0, 256, frame.DEFAULT_BG_THRESHOLD);
 		thresholdSlider.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent c) {
 				bgThresholdLabel.setText("Background Threshold: " + thresholdSlider.getValue() + "/" + "256");
@@ -550,22 +550,22 @@ public class InfoPanel extends JPanel {
 		thresholdingPanel.addComponent(revert);
 		apply.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				KappaFrame.frame.updateThresholded();
+				frame.updateThresholded();
 			}
 		});
 		revert.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				thresholdSlider.setValue(KappaFrame.DEFAULT_BG_THRESHOLD);
+				thresholdSlider.setValue(frame.DEFAULT_BG_THRESHOLD);
 				bgCheckBox.setSelected(false);
 				rangeAveragingSpinner.setValue(3);
-				KappaFrame.frame.setScaledImage(ControlPanel.scaleSlider.getValue() / 100.0);
-				KappaFrame.drawImageOverlay();
+				frame.setScaledImage(ControlPanel.scaleSlider.getValue() / 100.0);
+				frame.drawImageOverlay();
 			}
 		});
 
 		curvaturePanel = new Panel(110, "Curvature Distribution (absolute values)");
 		curvatureChart = new Chart(new ArrayList<Point2D>());
-		if (KappaFrame.DEBUG_MODE) {
+		if (frame.DEBUG_MODE) {
 			debugCurvatureChart = new Chart(new ArrayList<Point2D>());
 			curvaturePanel.addComponent(debugCurvatureChart);
 		}
@@ -594,10 +594,10 @@ public class InfoPanel extends JPanel {
 	public void updateHistograms() {
 
 		// Updates the histograms
-		if (KappaFrame.curves.getNoSelected() == 0) {
+		if (frame.curves.getNoSelected() == 0) {
 			return;
 		}
-		Curve currEditedCurve = KappaFrame.curves.getSelected()[0];
+		Curve currEditedCurve = frame.curves.getSelected()[0];
 		currEditedCurve.updateIntensities();
 
 		List<Point2D> redIntensities = currEditedCurve.getIntensityDataRed();
@@ -620,7 +620,7 @@ public class InfoPanel extends JPanel {
 		intensityChartGreen.setData(greenIntensities);
 		intensityChartBlue.setData(blueIntensities);
 
-		if (KappaFrame.DEBUG_MODE) {
+		if (frame.DEBUG_MODE) {
 			debugCurvatureChart.setData(currEditedCurve.getDebugCurveData());
 		}
 		frame.infoPanel.repaint();
@@ -652,7 +652,7 @@ public class InfoPanel extends JPanel {
 	 */
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		BezierGroup curves = KappaFrame.curves;
+		BezierGroup curves = frame.curves;
 
 		((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		panels.draw(g);
@@ -698,29 +698,28 @@ public class InfoPanel extends JPanel {
 		// Draws the curvature chart.
 		if (curvatureChart.isVisible()) {
 			curvatureChart.draw(curvaturePanel.getX(), curvaturePanel.getY() + Panel.TITLEBAR_DEFAULT_HEIGHT,
-					KappaFrame.PANEL_WIDTH, curvaturePanel.getH(), g, Color.BLUE);
-			if (KappaFrame.DEBUG_MODE) {
+					frame.PANEL_WIDTH, curvaturePanel.getH(), g, Color.BLUE);
+			if (frame.DEBUG_MODE) {
 				debugCurvatureChart.draw(curvaturePanel.getX(), curvaturePanel.getY() + Panel.TITLEBAR_DEFAULT_HEIGHT,
-						KappaFrame.PANEL_WIDTH, curvaturePanel.getH(), g, Color.PINK);
+						frame.PANEL_WIDTH, curvaturePanel.getH(), g, Color.PINK);
 			}
 		}
 
 		intensityChartRed.draw(intensityPanel.getX(), intensityPanel.getY() + Panel.TITLEBAR_DEFAULT_HEIGHT,
-				KappaFrame.PANEL_WIDTH, intensityPanel.getH(), g, Color.RED);
+				frame.PANEL_WIDTH, intensityPanel.getH(), g, Color.RED);
 		intensityChartGreen.draw(intensityPanel.getX(), intensityPanel.getY() + Panel.TITLEBAR_DEFAULT_HEIGHT,
-				KappaFrame.PANEL_WIDTH, intensityPanel.getH(), g, Color.GREEN);
+				frame.PANEL_WIDTH, intensityPanel.getH(), g, Color.GREEN);
 		intensityChartBlue.draw(intensityPanel.getX(), intensityPanel.getY() + Panel.TITLEBAR_DEFAULT_HEIGHT,
-				KappaFrame.PANEL_WIDTH, intensityPanel.getH(), g, Color.BLUE);
+				frame.PANEL_WIDTH, intensityPanel.getH(), g, Color.BLUE);
 	}
 
 	// Refreshes the info panel value when the point slider changes
 	private class PointChanger implements ChangeListener {
 
 		public void stateChanged(ChangeEvent ce) {
-			pointLabel.setText(
-					"Point " + KappaFrame.frame.formatNumber(pointSlider.getValue(), BezierCurve.NO_CURVE_POINTS_DIGITS)
-							+ " / " + KappaFrame.UNIT_SCALE);
-			KappaFrame.drawImageOverlay();
+			pointLabel.setText("Point " + frame.formatNumber(pointSlider.getValue(), BezierCurve.NO_CURVE_POINTS_DIGITS)
+					+ " / " + frame.UNIT_SCALE);
+			frame.drawImageOverlay();
 			repaint();
 		}
 	}

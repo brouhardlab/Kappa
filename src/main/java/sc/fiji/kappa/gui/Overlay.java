@@ -42,11 +42,14 @@ public class Overlay extends JComponent {
 
 	private static final long serialVersionUID = 1L;
 
-	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
+	private KappaFrame frame;
+
+	public Overlay(KappaFrame frame) {
+		this.frame = frame;
 	}
 
-	public Overlay() {
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
 	}
 
 	public void drawNotification(String text, Rectangle viewrect) {
@@ -103,7 +106,7 @@ public class Overlay extends JComponent {
 				Thread.sleep(timeMillis);
 			} catch (Exception e) {
 			}
-			KappaFrame.overlay.setVisible(false);
+			frame.overlay.setVisible(false);
 		}
 	}
 }

@@ -70,16 +70,16 @@ public class KappaPlugin implements Command {
 		log.info("Running " + PLUGIN_NAME + " version " + VERSION);
 
 		// Launch old IJ1 and not integrated Kappa GUI
-		KappaFrame.frame = new KappaFrame(ij.context());
-		KappaFrame.frame.setMinimumSize(new Dimension(APP_MIN_WIDTH, APP_MIN_HEIGHT));
-		KappaFrame.frame.setTitle(PLUGIN_NAME + " version " + VERSION);
+		KappaFrame frame = new KappaFrame(ij.context());
+		frame.setMinimumSize(new Dimension(APP_MIN_WIDTH, APP_MIN_HEIGHT));
+		frame.setTitle(PLUGIN_NAME + " version " + VERSION);
 
 		try {
 			Image im = ImageIO.read(KappaFrame.class.getResource("/logo.png"));
-			KappaFrame.frame.setIconImage(im);
-			KappaFrame.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-			KappaFrame.frame.setLocationRelativeTo(null);
-			KappaFrame.frame.setVisible(true);
+			frame.setIconImage(im);
+			frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			frame.setLocationRelativeTo(null);
+			frame.setVisible(true);
 
 		} catch (IOException ex) {
 			Logger.getLogger(KappaFrame.class.getName()).log(Level.SEVERE, null, ex);

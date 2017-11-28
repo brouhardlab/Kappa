@@ -39,8 +39,11 @@ public class BezierGroup extends ArrayList<Curve> {
 	private int noSelected;
 	private int count;
 
-	public BezierGroup() {
+	protected KappaFrame frame;
+
+	public BezierGroup(KappaFrame frame) {
 		super();
+		this.frame = frame;
 		noSelected = 0;
 		count = 0;
 	}
@@ -55,11 +58,11 @@ public class BezierGroup extends ArrayList<Curve> {
 	public void addCurve(List<Point2D> defPoints, int t, int noCtrlPts, int curveType, boolean isOpen, int dataRadius) {
 
 		if (curveType == KappaFrame.BEZIER_CURVE) {
-			this.add(new BezierCurve(defPoints, t, noCtrlPts, "CURVE " + ++count, dataRadius));
+			this.add(new BezierCurve(defPoints, t, noCtrlPts, "CURVE " + ++count, dataRadius, frame));
 		} else if (isOpen) {
-			this.add(new BSpline(defPoints, t, noCtrlPts, "CURVE " + ++count, true, dataRadius));
+			this.add(new BSpline(defPoints, t, noCtrlPts, "CURVE " + ++count, true, dataRadius, frame));
 		} else {
-			this.add(new BSpline(defPoints, t, noCtrlPts, "CURVE " + ++count, false, dataRadius));
+			this.add(new BSpline(defPoints, t, noCtrlPts, "CURVE " + ++count, false, dataRadius, frame));
 		}
 	}
 
@@ -215,7 +218,7 @@ public class BezierGroup extends ArrayList<Curve> {
 
 	public void rescaleCurves(double scaleFactor) {
 
-		BezierGroup newCurves = new BezierGroup();
+		BezierGroup newCurves = new BezierGroup(frame);
 		List<Point2D> points;
 		for (Curve curve : this) {
 
@@ -225,14 +228,14 @@ public class BezierGroup extends ArrayList<Curve> {
 
 			if (curve instanceof BezierCurve) {
 				newCurves.add(new BezierCurve(points, curve.getT(), curve.getNoCtrlPts(), curve.getName(),
-						(int) (curve.getDataRadius() * scaleFactor)));
+						(int) (curve.getDataRadius() * scaleFactor), frame));
 			} else if (curve instanceof BSpline) {
 				if (((BSpline) curve).isOpen()) {
 					newCurves.add(new BSpline(points, curve.getT(), curve.getNoCtrlPts(), curve.getName(), true,
-							curve.getDataRadius()));
+							curve.getDataRadius(), frame));
 				} else {
 					newCurves.add(new BSpline(points, curve.getT(), curve.getNoCtrlPts(), curve.getName(), false,
-							(int) (curve.getDataRadius() * scaleFactor)));
+							(int) (curve.getDataRadius() * scaleFactor), frame));
 				}
 			}
 		}

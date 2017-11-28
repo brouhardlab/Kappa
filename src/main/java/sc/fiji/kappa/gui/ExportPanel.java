@@ -98,18 +98,15 @@ public class ExportPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private PanelGroup exportPanels;
 
-	private void addLabelComponent(String labelText, Panel panel, Rectangle bounds) {
-		JLabel label = new JLabel(labelText);
-		label.setBounds(bounds);
-		label.setFont(label.getFont().deriveFont(Font.PLAIN));
-		this.add(label);
-		panel.addComponent(label);
-	}
+	private KappaFrame frame;
 
 	/**
 	 * Constructs a new ExportPanel object
 	 */
-	public ExportPanel() {
+	public ExportPanel(KappaFrame frame) {
+
+		this.frame = frame;
+
 		exportPanels = new PanelGroup();
 		this.addMouseListener(new MouseHandler());
 
@@ -218,6 +215,14 @@ public class ExportPanel extends JPanel {
 		this.add(exportButton);
 	}
 
+	private void addLabelComponent(String labelText, Panel panel, Rectangle bounds) {
+		JLabel label = new JLabel(labelText);
+		label.setBounds(bounds);
+		label.setFont(label.getFont().deriveFont(Font.PLAIN));
+		this.add(label);
+		panel.addComponent(label);
+	}
+
 	/**
 	 * Repaint the export panel
 	 *
@@ -309,10 +314,10 @@ public class ExportPanel extends JPanel {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			BezierGroup curves = KappaFrame.curves;
+			BezierGroup curves = frame.curves;
 
 			// Handles export button action.
-			int returnVal = kappaExport.showSaveDialog(KappaFrame.frame);
+			int returnVal = kappaExport.showSaveDialog(frame);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				File file = kappaExport.getSelectedFile();
 
@@ -324,8 +329,8 @@ public class ExportPanel extends JPanel {
 				// Exports the file based on the chosen export options.
 				try {
 					// Get averaged background data for background normalization
-					int w = KappaFrame.currImage.getWidth();
-					int h = KappaFrame.currImage.getHeight();
+					int w = frame.currImage.getWidth();
+					int h = frame.currImage.getHeight();
 					double[][] averaged = new double[w][h];
 					for (int i = 0; i < w; i++) {
 						for (int j = 0; j < h; j++) {
@@ -335,9 +340,9 @@ public class ExportPanel extends JPanel {
 									+ KappaFrame.BG_AVERAGING_RANGE; dx++) {
 								for (int dy = j - KappaFrame.BG_AVERAGING_RANGE; dy <= j
 										+ KappaFrame.BG_AVERAGING_RANGE; dy++) {
-									if (dx >= 0 && dy >= 0 && dx < w && dy < h && KappaFrame.thresholded[dx][dy]) {
+									if (dx >= 0 && dy >= 0 && dx < w && dy < h && frame.thresholded[dx][dy]) {
 										int channel = InfoPanel.thresholdChannelsComboBox.getSelectedIndex();
-										int[] rgb = BezierCurve.getRGB(dx, dy);
+										int[] rgb = BezierCurve.getRGB(frame.displayedImageStack, dx, dy);
 										switch (channel) {
 										case 0:
 											totalThresholded += rgb[0];
@@ -398,7 +403,7 @@ public class ExportPanel extends JPanel {
 						for (int j = 0; j < h; j++) {
 							if (averaged[i][j] == -1) {
 								int channel = InfoPanel.thresholdChannelsComboBox.getSelectedIndex();
-								int[] rgb = BezierCurve.getRGB(i, j);
+								int[] rgb = BezierCurve.getRGB(frame.displayedImageStack, i, j);
 								switch (channel) {
 								case 0:
 									averaged[i][j] = rgb[0];
@@ -456,9 +461,9 @@ public class ExportPanel extends JPanel {
 
 					out.close();
 				} catch (Exception err) {
-					KappaFrame.overlay.setVisible(true);
-					KappaFrame.overlay.drawNotification("There was an error exporting the curve data",
-							KappaFrame.scrollPane.getVisibleRect());
+					frame.overlay.setVisible(true);
+					frame.overlay.drawNotification("There was an error exporting the curve data",
+							frame.scrollPane.getVisibleRect());
 					err.printStackTrace();
 				}
 			}

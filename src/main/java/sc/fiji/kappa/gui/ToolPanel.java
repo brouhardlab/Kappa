@@ -98,7 +98,7 @@ public class ToolPanel extends JPanel {
 			final int j = i;
 			toolButtons[i].addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent a) {
-					KappaFrame.scrollPane.setCursor(TOOL_CURSORS[j]);
+					frame.scrollPane.setCursor(TOOL_CURSORS[j]);
 				}
 			});
 			this.add(toolButtons[i]);
@@ -165,7 +165,7 @@ public class ToolPanel extends JPanel {
 	private class ExportListener implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {
-			CurvesExporter exporter = new CurvesExporter();
+			CurvesExporter exporter = new CurvesExporter(frame);
 			try {
 				exporter.export(false);
 			} catch (IOException e1) {
@@ -177,7 +177,7 @@ public class ToolPanel extends JPanel {
 	private class ExportAverageListener implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {
-			CurvesExporter exporter = new CurvesExporter();
+			CurvesExporter exporter = new CurvesExporter(frame);
 			try {
 				exporter.export(true);
 			} catch (IOException e1) {
@@ -190,7 +190,7 @@ public class ToolPanel extends JPanel {
 
 		public void actionPerformed(ActionEvent e) {
 			if (inspector.isSelected()) {
-				KappaFrame.frame.add(frame.infoPanel, BorderLayout.EAST);
+				frame.add(frame.infoPanel, BorderLayout.EAST);
 			}
 			frame.infoPanel.setVisible(inspector.isSelected());
 		}
