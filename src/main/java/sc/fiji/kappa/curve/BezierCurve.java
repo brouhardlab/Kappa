@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ij.ImagePlus;
-import sc.fiji.kappa.gui.InfoPanel;
 import sc.fiji.kappa.gui.KappaFrame;
 import sc.fiji.kappa.gui.KappaMenuBar;
 
@@ -228,8 +227,8 @@ public class BezierCurve extends Curve {
 	}
 
 	public void evaluateThresholdedPixels() {
-		int pixelThreshold = InfoPanel.dataThresholdSlider.getValue();
-		boolean isBrighter = InfoPanel.dataRangeComboBox.getSelectedIndex() == 0;
+		int pixelThreshold = frame.getInfoPanel().getDataThresholdSlider().getValue();
+		boolean isBrighter = frame.getInfoPanel().getDataRangeComboBox().getSelectedIndex() == 0;
 
 		// Finds all pixels nearby the curve that are higher than a threshold intensity.
 		thresholdedPixels = new ArrayList<Point2D>();
@@ -245,7 +244,7 @@ public class BezierCurve extends Curve {
 					int[] rgb = getRGB(x, y);
 
 					// Checks the correct channel depending on the UI preference
-					int channel = InfoPanel.fittingChannelsComboBox.getSelectedIndex();
+					int channel = frame.getInfoPanel().getFittingChannelsComboBox().getSelectedIndex();
 					long intensity;
 					if (channel == 0) {
 						intensity = rgb[0];

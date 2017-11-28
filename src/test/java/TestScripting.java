@@ -29,7 +29,6 @@ import java.io.File;
 
 import net.imagej.ImageJ;
 import sc.fiji.kappa.gui.CurvesExporter;
-import sc.fiji.kappa.gui.InfoPanel;
 import sc.fiji.kappa.gui.KappaFrame;
 
 public class TestScripting {
@@ -50,9 +49,9 @@ public class TestScripting {
 		frame.getKappaMenubar().loadCurveFile(kappaFile);
 
 		KappaFrame.enableCtrlPtAdjustment = true;
-		InfoPanel.thresholdRadiusSpinner.setValue(60);
-		InfoPanel.thresholdSlider.setValue(160);
-		InfoPanel.conversionField.setText(Double.toString(0.04));
+		frame.getInfoPanel().getThresholdRadiusSpinner().setValue(60);
+		frame.getInfoPanel().getThresholdSlider().setValue(160);
+		frame.getInfoPanel().getConversionField().setText(Double.toString(0.04));
 
 		frame.fitCurves();
 

@@ -206,8 +206,8 @@ public class ControlPanel extends JPanel {
 	private class LayerChanger implements ChangeListener {
 
 		public void stateChanged(ChangeEvent ce) {
-			layerLabel.setText(
-					frame.formatNumber(currentLayerSlider.getValue(), frame.getMaxLayerDigits()) + " / " + frame.getMaxLayer());
+			layerLabel.setText(frame.formatNumber(currentLayerSlider.getValue(), frame.getMaxLayerDigits()) + " / "
+					+ frame.getMaxLayer());
 			frame.setLayer(currentLayerSlider.getValue(), scaleSlider.getValue() / 100.0);
 		}
 	}

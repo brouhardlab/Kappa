@@ -78,27 +78,27 @@ public class KappaMenuBar extends JMenuBar {
 	public static int distributionDisplay;
 
 	// File handlers
-	File file;
-	JFileChooser kappaOpen;
-	JFileChooser kappaLoad;
-	JFileChooser kappaSave;
+	private File file;
+	private JFileChooser kappaOpen;
+	private JFileChooser kappaLoad;
+	private JFileChooser kappaSave;
 
 	// Menu Items
 	private JMenuItem[] toolMenuItems = new JMenuItem[ToolPanel.NO_TOOLS];
-	static JMenuItem zoomIn;
-	static JMenuItem zoomOut;
-	static JMenuItem prevFrame, nextFrame, prevKeyframe, nextKeyframe;
-	static JMenuItem adjustBrightnessContrast;
+	private JMenuItem zoomIn;
+	private JMenuItem zoomOut;
+	private JMenuItem prevFrame, nextFrame, prevKeyframe, nextKeyframe;
+	private JMenuItem adjustBrightnessContrast;
 
-	static JMenuItem delete, enter, fit;
-	static JCheckBoxMenuItem boundingBoxMenu;
-	static JCheckBoxMenuItem scaleCurvesMenu;
-	public static JCheckBoxMenuItem antialiasingMenu;
-	static JCheckBoxMenuItem tangentMenu;
-	static JCheckBoxMenuItem bit8;
-	static JCheckBoxMenuItem bit16;
-	static JCheckBoxMenuItem bit32;
-	static JCheckBoxMenuItem RGBColor;
+	private JMenuItem delete, enter, fit;
+	private JCheckBoxMenuItem boundingBoxMenu;
+	private JCheckBoxMenuItem scaleCurvesMenu;
+	private JCheckBoxMenuItem antialiasingMenu;
+	private JCheckBoxMenuItem tangentMenu;
+	private JCheckBoxMenuItem bit8;
+	private JCheckBoxMenuItem bit16;
+	private JCheckBoxMenuItem bit32;
+	private JCheckBoxMenuItem RGBColor;
 
 	private KappaFrame frame;
 
@@ -206,27 +206,27 @@ public class KappaMenuBar extends JMenuBar {
 		}
 
 		// We also add a menu item for deleting Bezier Curves via the Backspace key.
-		delete = new JMenuItem("Delete Curves");
-		delete.addActionListener(new ActionListener() {
+		setDelete(new JMenuItem("Delete Curves"));
+		getDelete().addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent event) {
 				frame.deleteCurve();
 			}
 		});
-		delete.setEnabled(false);
-		delete.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
+		getDelete().setEnabled(false);
+		getDelete().setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
 		toolMenu.addSeparator();
-		toolMenu.add(delete);
+		toolMenu.add(getDelete());
 
-		enter = new JMenuItem("Enter Curve");
-		enter.addActionListener(new ActionListener() {
+		setEnter(new JMenuItem("Enter Curve"));
+		getEnter().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				frame.enterCurve();
 			}
 		});
-		enter.setEnabled(false);
-		enter.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0));
-		toolMenu.add(enter);
+		getEnter().setEnabled(false);
+		getEnter().setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0));
+		toolMenu.add(getEnter());
 
 		fit = new JMenuItem("Fit Curve");
 		fit.addActionListener(new ActionListener() {
@@ -309,15 +309,15 @@ public class KappaMenuBar extends JMenuBar {
 		bit8 = new JCheckBoxMenuItem("8-Bit Grayscale");
 		bit16 = new JCheckBoxMenuItem("16-Bit Grayscale");
 		bit32 = new JCheckBoxMenuItem("32-Bit Grayscale");
-		RGBColor = new JCheckBoxMenuItem("RGB Color");
+		setRGBColor(new JCheckBoxMenuItem("RGB Color"));
 		bit8.setEnabled(false);
 		bit16.setEnabled(false);
 		bit32.setEnabled(false);
-		RGBColor.setEnabled(false);
+		getRGBColor().setEnabled(false);
 		imageTypeGroup.add(bit8);
 		imageTypeGroup.add(bit16);
 		imageTypeGroup.add(bit32);
-		imageTypeGroup.add(RGBColor);
+		imageTypeGroup.add(getRGBColor());
 
 		// 8-Bit conversion. Uses ImageJ libraries to convert, which handles unallowed
 		// conversion schemes.
@@ -340,7 +340,8 @@ public class KappaMenuBar extends JMenuBar {
 					frame.drawImageOverlay();
 				} catch (IllegalArgumentException err) {
 					frame.getOverlay().setVisible(true);
-					frame.getOverlay().drawNotification("Illegal Conversion Option", frame.getScrollPane().getVisibleRect());
+					frame.getOverlay().drawNotification("Illegal Conversion Option",
+							frame.getScrollPane().getVisibleRect());
 				}
 			}
 		});
@@ -367,7 +368,8 @@ public class KappaMenuBar extends JMenuBar {
 					frame.drawImageOverlay();
 				} catch (IllegalArgumentException err) {
 					frame.getOverlay().setVisible(true);
-					frame.getOverlay().drawNotification("Illegal Conversion Option", frame.getScrollPane().getVisibleRect());
+					frame.getOverlay().drawNotification("Illegal Conversion Option",
+							frame.getScrollPane().getVisibleRect());
 				}
 			}
 		});
@@ -394,14 +396,15 @@ public class KappaMenuBar extends JMenuBar {
 					frame.drawImageOverlay();
 				} catch (IllegalArgumentException err) {
 					frame.getOverlay().setVisible(true);
-					frame.getOverlay().drawNotification("Illegal Conversion Option", frame.getScrollPane().getVisibleRect());
+					frame.getOverlay().drawNotification("Illegal Conversion Option",
+							frame.getScrollPane().getVisibleRect());
 				}
 			}
 		});
 		imageTypeSubmenu.add(bit32);
 
 		// RGB Color conversion.
-		RGBColor.addActionListener(new ActionListener() {
+		getRGBColor().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Merges the red, green and blue channels from the original image. If this was
 				// originally grayscale
@@ -410,8 +413,8 @@ public class KappaMenuBar extends JMenuBar {
 				RGBStackMerge merge = new RGBStackMerge();
 				frame.setDisplayedImageStack(new ImagePlus(frame.getImageStack().getTitle(),
 						merge.mergeStacks(frame.getImageStack().getWidth(), frame.getImageStack().getHeight(),
-								frame.getImageStack().getNSlices(), frame.getImageStackLayers()[0], frame.getImageStackLayers()[1],
-								frame.getImageStackLayers()[2], true)));
+								frame.getImageStack().getNSlices(), frame.getImageStackLayers()[0],
+								frame.getImageStackLayers()[1], frame.getImageStackLayers()[2], true)));
 
 				for (int i = 0; i < 3; i++) {
 					ControlPanel.channelButtons[i].setSelected(true);
@@ -423,7 +426,7 @@ public class KappaMenuBar extends JMenuBar {
 				frame.drawImageOverlay();
 			}
 		});
-		imageTypeSubmenu.add(RGBColor);
+		imageTypeSubmenu.add(getRGBColor());
 
 		// Adds the submenu to the menu
 		imageMenu.add(imageTypeSubmenu);
@@ -453,14 +456,14 @@ public class KappaMenuBar extends JMenuBar {
 		zoomOut.setEnabled(false);
 
 		// Menu Item for showing bounding boxes
-		boundingBoxMenu = new JCheckBoxMenuItem("Show Bounding Boxes");
-		boundingBoxMenu.setState(false);
-		boundingBoxMenu.addActionListener(new ActionListener() {
+		setBoundingBoxMenu(new JCheckBoxMenuItem("Show Bounding Boxes"));
+		getBoundingBoxMenu().setState(false);
+		getBoundingBoxMenu().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent a) {
 				frame.drawImageOverlay();
 			}
 		});
-		boundingBoxMenu.setEnabled(false);
+		getBoundingBoxMenu().setEnabled(false);
 
 		// Menu Item for choosing the x-axis values for the curvature and intensity
 		// display
@@ -506,45 +509,45 @@ public class KappaMenuBar extends JMenuBar {
 		}
 
 		// Menu Item for scaling curve strokes when zooming in or out
-		scaleCurvesMenu = new JCheckBoxMenuItem("Scale Curve Strokes");
-		scaleCurvesMenu.setState(true);
-		scaleCurvesMenu.addActionListener(new ActionListener() {
+		setScaleCurvesMenu(new JCheckBoxMenuItem("Scale Curve Strokes"));
+		getScaleCurvesMenu().setState(true);
+		getScaleCurvesMenu().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent a) {
 				frame.drawImageOverlay();
 			}
 		});
-		scaleCurvesMenu.setEnabled(false);
+		getScaleCurvesMenu().setEnabled(false);
 
 		// Menu Item for image antialiasing
-		antialiasingMenu = new JCheckBoxMenuItem("Enable Antialiasing");
-		antialiasingMenu.setState(false);
-		antialiasingMenu.addActionListener(new ActionListener() {
+		setAntialiasingMenu(new JCheckBoxMenuItem("Enable Antialiasing"));
+		getAntialiasingMenu().setState(false);
+		getAntialiasingMenu().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent a) {
 				frame.setScaledImage(ControlPanel.scaleSlider.getValue() / 100.0);
 				frame.drawImageOverlay();
 			}
 		});
-		antialiasingMenu.setEnabled(false);
+		getAntialiasingMenu().setEnabled(false);
 
 		// Menu Item for displaying tangent and normal curves.
-		tangentMenu = new JCheckBoxMenuItem("Show Tangent and Normal Vectors");
-		tangentMenu.setState(false);
-		tangentMenu.addActionListener(new ActionListener() {
+		setTangentMenu(new JCheckBoxMenuItem("Show Tangent and Normal Vectors"));
+		getTangentMenu().setState(false);
+		getTangentMenu().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent a) {
 				frame.drawImageOverlay();
 			}
 		});
-		tangentMenu.setEnabled(false);
+		getTangentMenu().setEnabled(false);
 
 		viewMenu.add(zoomIn);
 		viewMenu.add(zoomOut);
 		viewMenu.addSeparator();
 		viewMenu.add(xAxisSubmenu);
 		viewMenu.addSeparator();
-		viewMenu.add(scaleCurvesMenu);
-		viewMenu.add(tangentMenu);
-		viewMenu.add(boundingBoxMenu);
-		viewMenu.add(antialiasingMenu);
+		viewMenu.add(getScaleCurvesMenu());
+		viewMenu.add(getTangentMenu());
+		viewMenu.add(getBoundingBoxMenu());
+		viewMenu.add(getAntialiasingMenu());
 		this.add(viewMenu);
 
 		// Sets a "Help" menu list
@@ -617,7 +620,7 @@ public class KappaMenuBar extends JMenuBar {
 		bit8.setEnabled(true);
 		bit16.setEnabled(true);
 		bit32.setEnabled(true);
-		RGBColor.setEnabled(true);
+		getRGBColor().setEnabled(true);
 
 		switch (frame.getDisplayedImageStack().getType()) {
 		case ImagePlus.GRAY8:
@@ -630,7 +633,7 @@ public class KappaMenuBar extends JMenuBar {
 			bit32.setSelected(true);
 			break;
 		default:
-			RGBColor.setSelected(true);
+			getRGBColor().setSelected(true);
 			break;
 		}
 
@@ -644,17 +647,18 @@ public class KappaMenuBar extends JMenuBar {
 		ControlPanel.scaleSlider.setEnabled(true);
 
 		// Sets the maximum intensity depending on the bit depth of the image.
-		if (RGBColor.isSelected()) {
-			InfoPanel.dataThresholdSlider.setMaximum(256);
+		if (getRGBColor().isSelected()) {
+			frame.getInfoPanel().getDataThresholdSlider().setMaximum(256);
 		} else {
-			InfoPanel.dataThresholdSlider.setMaximum((int) (Math.pow(2, frame.getDisplayedImageStack().getBitDepth())));
+			frame.getInfoPanel().getDataThresholdSlider()
+					.setMaximum((int) (Math.pow(2, frame.getDisplayedImageStack().getBitDepth())));
 		}
 
 		// We disable export options for stacks if this is just a single image.
 		if (frame.getMaxLayer() == 1) {
-			frame.getExportPanel().perStackPanel.hide();
+			frame.getExportPanel().getPerStackPanel().hide();
 		} else if (frame.getMaxLayer() > 1) {
-			frame.getExportPanel().perStackPanel.show();
+			frame.getExportPanel().getPerStackPanel().show();
 		}
 		frame.getExportPanel().repaint();
 
@@ -681,19 +685,19 @@ public class KappaMenuBar extends JMenuBar {
 				.setMaximum(Math.min(ControlPanel.MAX_SCALE, ControlPanel.MAX_AVG_PIXEL_DIM / avgPixelDim * 100));
 
 		this.frame.updateThresholded();
-		InfoPanel.thresholdChannelsComboBox.setEnabled(true);
-		InfoPanel.thresholdSlider.setEnabled(true);
-		InfoPanel.rangeAveragingSpinner.setEnabled(true);
-		InfoPanel.bgCheckBox.setEnabled(true);
-		InfoPanel.apply.setEnabled(true);
-		InfoPanel.revert.setEnabled(true);
+		frame.getInfoPanel().getThresholdChannelsComboBox().setEnabled(true);
+		frame.getInfoPanel().getThresholdSlider().setEnabled(true);
+		frame.getInfoPanel().getRangeAveragingSpinner().setEnabled(true);
+		frame.getInfoPanel().getBgCheckBox().setEnabled(true);
+		frame.getInfoPanel().getApply().setEnabled(true);
+		frame.getInfoPanel().getRevert().setEnabled(true);
 		fit.setEnabled(true);
 
 		// Enables view checkboxes
-		boundingBoxMenu.setEnabled(true);
-		scaleCurvesMenu.setEnabled(true);
-		antialiasingMenu.setEnabled(true);
-		tangentMenu.setEnabled(true);
+		getBoundingBoxMenu().setEnabled(true);
+		getScaleCurvesMenu().setEnabled(true);
+		getAntialiasingMenu().setEnabled(true);
+		getTangentMenu().setEnabled(true);
 
 		// Enables toolbar buttons and selects the direct selection tool
 		frame.getToolPanel().enableAllButtons();
@@ -758,13 +762,14 @@ public class KappaMenuBar extends JMenuBar {
 
 				if (curveType == frame.B_SPLINE) {
 					frame.getCurves().addCurve(frame.getPoints(), currentKeyframe, noCtrlPts, frame.B_SPLINE,
-							bsplineType == BSpline.OPEN, (Integer) (InfoPanel.thresholdRadiusSpinner.getValue()));
+							bsplineType == BSpline.OPEN,
+							(Integer) (frame.getInfoPanel().getThresholdRadiusSpinner().getValue()));
 				} else {
 					frame.getCurves().addCurve(frame.getPoints(), currentKeyframe, noCtrlPts, frame.BEZIER_CURVE, true,
-							(Integer) (InfoPanel.thresholdRadiusSpinner.getValue()));
+							(Integer) (frame.getInfoPanel().getThresholdRadiusSpinner().getValue()));
 				}
-				InfoPanel.listData.addElement("  CURVE " + frame.getCurves().getCount());
-				InfoPanel.list.setListData(InfoPanel.listData);
+				frame.getInfoPanel().getListData().addElement("  CURVE " + frame.getCurves().getCount());
+				frame.getInfoPanel().getList().setListData(frame.getInfoPanel().getListData());
 
 				// Load all the other keyframes for the curve
 				for (int i = 1; i < noKeyframes; i++) {
@@ -784,8 +789,8 @@ public class KappaMenuBar extends JMenuBar {
 									Double.parseDouble(in.readLine())));
 						}
 						for (int j = 0; j < BSpline.B_SPLINE_DEGREE; j++) {
-							frame.getPoints()
-									.add(new Point2D.Double(frame.getPoints().get(i).getX(), frame.getPoints().get(i).getY()));
+							frame.getPoints().add(new Point2D.Double(frame.getPoints().get(i).getX(),
+									frame.getPoints().get(i).getY()));
 						}
 					}
 					frame.getCurves().get(frame.getCurves().size() - 1).addKeyframe(frame.getPoints(), currentKeyframe);
@@ -877,4 +882,61 @@ public class KappaMenuBar extends JMenuBar {
 					frame.getScrollPane().getVisibleRect());
 		}
 	}
+
+	public JCheckBoxMenuItem getRGBColor() {
+		return RGBColor;
+	}
+
+	public JMenuItem getDelete() {
+		return delete;
+	}
+
+	public JMenuItem getEnter() {
+		return enter;
+	}
+
+	public void setDelete(JMenuItem delete) {
+		this.delete = delete;
+	}
+
+	public void setEnter(JMenuItem enter) {
+		this.enter = enter;
+	}
+
+	public void setRGBColor(JCheckBoxMenuItem rGBColor) {
+		RGBColor = rGBColor;
+	}
+
+	public JCheckBoxMenuItem getTangentMenu() {
+		return tangentMenu;
+	}
+
+	public void setTangentMenu(JCheckBoxMenuItem tangentMenu) {
+		this.tangentMenu = tangentMenu;
+	}
+
+	public JCheckBoxMenuItem getScaleCurvesMenu() {
+		return scaleCurvesMenu;
+	}
+
+	public void setScaleCurvesMenu(JCheckBoxMenuItem scaleCurvesMenu) {
+		this.scaleCurvesMenu = scaleCurvesMenu;
+	}
+
+	public JCheckBoxMenuItem getBoundingBoxMenu() {
+		return boundingBoxMenu;
+	}
+
+	public void setBoundingBoxMenu(JCheckBoxMenuItem boundingBoxMenu) {
+		this.boundingBoxMenu = boundingBoxMenu;
+	}
+
+	public JCheckBoxMenuItem getAntialiasingMenu() {
+		return antialiasingMenu;
+	}
+
+	public void setAntialiasingMenu(JCheckBoxMenuItem antialiasingMenu) {
+		this.antialiasingMenu = antialiasingMenu;
+	}
+
 }

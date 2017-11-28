@@ -63,11 +63,11 @@ public class ExportPanel extends JPanel {
 	JFileChooser kappaExport;
 
 	// Export Panel Checkboxes- Per Curve
-	static JCheckBox exportAllDataPoints;
-	static JCheckBox exportAveragesOnly;
-	static CheckboxGroup curveExportOptions;
-	static JCheckBox exportCurveLength;
-	static JCheckBox exportFitError;
+	private JCheckBox exportAllDataPoints;
+	private JCheckBox exportAveragesOnly;
+	private CheckboxGroup curveExportOptions;
+	private JCheckBox exportCurveLength;
+	private JCheckBox exportFitError;
 	final static Rectangle EXPORT_ALL_POINTS_BOUNDS = new Rectangle(5, 27, 25, 25);
 	final static Rectangle EXPORT_ALL_POINTS_LABEL_BOUNDS = new Rectangle(35, 25, 200, 25);
 	final static Rectangle EXPORT_AVERAGES_BOUNDS = new Rectangle(5, 45, 25, 25);
@@ -78,22 +78,22 @@ public class ExportPanel extends JPanel {
 	final static Rectangle EXPORT_FIT_ERROR_LABEL_BOUNDS = new Rectangle(35, 91, 200, 25);
 
 	// Export Panel Checkboxes- Per Frame
-	static JCheckBox exportAllCurves;
-	static JCheckBox exportSelectedCurves;
+	private JCheckBox exportAllCurves;
+	private JCheckBox exportSelectedCurves;
 	final static Rectangle EXPORT_ALL_CURVES_BOUNDS = new Rectangle(5, 27, 25, 25);
 	final static Rectangle EXPORT_ALL_CURVES_LABEL_BOUNDS = new Rectangle(35, 25, 200, 25);
 	final static Rectangle EXPORT_SELECTED_CURVES_BOUNDS = new Rectangle(5, 45, 25, 25);
 	final static Rectangle EXPORT_SELECTED_CURVES_LABEL_BOUNDS = new Rectangle(35, 43, 200, 25);
 
 	// Export Panel Checkboxes- Per Stack
-	static JCheckBox exportEachFrame;
-	static JCheckBox exportKeyframes;
-	final static Rectangle EXPORT_EACH_FRAME_BOUNDS = new Rectangle(5, 27, 25, 25);
-	final static Rectangle EXPORT_EACH_FRAME_LABEL_BOUNDS = new Rectangle(35, 25, 200, 25);
-	final static Rectangle EXPORT_KEYFRAMES_BOUNDS = new Rectangle(5, 45, 25, 25);
-	final static Rectangle EXPORT_KEYFRAMES_LABEL_BOUNDS = new Rectangle(35, 43, 200, 25);
-	protected JButton exportButton;
-	protected Panel perStackPanel;
+	private JCheckBox exportEachFrame;
+	private JCheckBox exportKeyframes;
+	final private static Rectangle EXPORT_EACH_FRAME_BOUNDS = new Rectangle(5, 27, 25, 25);
+	final private static Rectangle EXPORT_EACH_FRAME_LABEL_BOUNDS = new Rectangle(35, 25, 200, 25);
+	final private static Rectangle EXPORT_KEYFRAMES_BOUNDS = new Rectangle(5, 45, 25, 25);
+	final private static Rectangle EXPORT_KEYFRAMES_LABEL_BOUNDS = new Rectangle(35, 43, 200, 25);
+	private JButton exportButton;
+	private Panel perStackPanel;
 
 	private static final long serialVersionUID = 1L;
 	private PanelGroup exportPanels;
@@ -185,10 +185,10 @@ public class ExportPanel extends JPanel {
 		this.add(exportSelectedCurves);
 		perFramePanel.addComponent(exportSelectedCurves);
 
-		perStackPanel = new Panel(70, "PER STACK OPTIONS:");
-		exportPanels.addPanel(perStackPanel);
-		addLabelComponent("Export Data in Each Frame", perStackPanel, EXPORT_EACH_FRAME_LABEL_BOUNDS);
-		addLabelComponent("Export Data in Keyframes Only", perStackPanel, EXPORT_KEYFRAMES_LABEL_BOUNDS);
+		setPerStackPanel(new Panel(70, "PER STACK OPTIONS:"));
+		exportPanels.addPanel(getPerStackPanel());
+		addLabelComponent("Export Data in Each Frame", getPerStackPanel(), EXPORT_EACH_FRAME_LABEL_BOUNDS);
+		addLabelComponent("Export Data in Keyframes Only", getPerStackPanel(), EXPORT_KEYFRAMES_LABEL_BOUNDS);
 		exportEachFrame = new JCheckBox();
 		exportEachFrame.setBounds(EXPORT_EACH_FRAME_BOUNDS);
 		exportEachFrame.setSelected(true);
@@ -198,7 +198,7 @@ public class ExportPanel extends JPanel {
 			}
 		});
 		this.add(exportEachFrame);
-		perStackPanel.addComponent(exportEachFrame);
+		getPerStackPanel().addComponent(exportEachFrame);
 		exportKeyframes = new JCheckBox();
 		exportKeyframes.setBounds(EXPORT_KEYFRAMES_BOUNDS);
 		exportKeyframes.setSelected(false);
@@ -208,11 +208,11 @@ public class ExportPanel extends JPanel {
 			}
 		});
 		this.add(exportKeyframes);
-		perStackPanel.addComponent(exportKeyframes);
+		getPerStackPanel().addComponent(exportKeyframes);
 
-		exportButton = new JButton("EXPORT");
-		exportButton.addActionListener(new ExportActionListener());
-		this.add(exportButton);
+		setExportButton(new JButton("EXPORT"));
+		getExportButton().addActionListener(new ExportActionListener());
+		this.add(getExportButton());
 	}
 
 	private void addLabelComponent(String labelText, Panel panel, Rectangle bounds) {
@@ -249,6 +249,22 @@ public class ExportPanel extends JPanel {
 		g.setColor(Color.BLACK);
 		exportPanels.draw(g);
 		g.setColor(Color.BLACK);
+	}
+
+	public JButton getExportButton() {
+		return exportButton;
+	}
+
+	public void setExportButton(JButton exportButton) {
+		this.exportButton = exportButton;
+	}
+
+	public Panel getPerStackPanel() {
+		return perStackPanel;
+	}
+
+	public void setPerStackPanel(Panel perStackPanel) {
+		this.perStackPanel = perStackPanel;
 	}
 
 	// Inner class to handle mouse events
@@ -341,7 +357,8 @@ public class ExportPanel extends JPanel {
 								for (int dy = j - KappaFrame.BG_AVERAGING_RANGE; dy <= j
 										+ KappaFrame.BG_AVERAGING_RANGE; dy++) {
 									if (dx >= 0 && dy >= 0 && dx < w && dy < h && frame.getThresholded()[dx][dy]) {
-										int channel = InfoPanel.thresholdChannelsComboBox.getSelectedIndex();
+										int channel = frame.getInfoPanel().getThresholdChannelsComboBox()
+												.getSelectedIndex();
 										int[] rgb = BezierCurve.getRGB(frame.getDisplayedImageStack(), dx, dy);
 										switch (channel) {
 										case 0:
@@ -402,7 +419,7 @@ public class ExportPanel extends JPanel {
 					for (int i = 0; i < w; i++) {
 						for (int j = 0; j < h; j++) {
 							if (averaged[i][j] == -1) {
-								int channel = InfoPanel.thresholdChannelsComboBox.getSelectedIndex();
+								int channel = frame.getInfoPanel().getThresholdChannelsComboBox().getSelectedIndex();
 								int[] rgb = BezierCurve.getRGB(frame.getDisplayedImageStack(), i, j);
 								switch (channel) {
 								case 0:
