@@ -73,24 +73,15 @@ public class ToolPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Draws a separator flanked by a space of a desired number of pixels
-	 *
-	 * @param spaceSize
-	 *            The size of the space
-	 */
-	private void addSpacer(int spaceSize) {
-		this.add(Box.createRigidArea(new Dimension(spaceSize, 0)));
-		JSeparator spacer = new JSeparator(JSeparator.VERTICAL);
-		spacer.setMaximumSize(new Dimension(10, 35));
-		this.add(spacer);
-		this.add(Box.createRigidArea(new Dimension(spaceSize, 0)));
-	}
+	private KappaFrame frame;
 
 	/**
 	 * Constructs a new ToolPanel object
 	 */
-	public ToolPanel() {
+	public ToolPanel(KappaFrame frame) {
+
+		this.frame = frame;
+
 		setBackground(KappaFrame.PANEL_COLOR);
 		setPreferredSize(new Dimension(0, 35));
 		setBorder(BorderFactory.createLineBorder(Color.GRAY));
@@ -146,6 +137,20 @@ public class ToolPanel extends JPanel {
 		otherButtons[1].addActionListener(new ZoomOutListener());
 	}
 
+	/**
+	 * Draws a separator flanked by a space of a desired number of pixels
+	 *
+	 * @param spaceSize
+	 *            The size of the space
+	 */
+	private void addSpacer(int spaceSize) {
+		this.add(Box.createRigidArea(new Dimension(spaceSize, 0)));
+		JSeparator spacer = new JSeparator(JSeparator.VERTICAL);
+		spacer.setMaximumSize(new Dimension(10, 35));
+		this.add(spacer);
+		this.add(Box.createRigidArea(new Dimension(spaceSize, 0)));
+	}
+
 	public void enableAllButtons() {
 		for (JToggleButton b : toolButtons) {
 			b.setEnabled(true);
@@ -185,9 +190,9 @@ public class ToolPanel extends JPanel {
 
 		public void actionPerformed(ActionEvent e) {
 			if (inspector.isSelected()) {
-				KappaFrame.frame.add(KappaFrame.infoPanel, BorderLayout.EAST);
+				KappaFrame.frame.add(frame.infoPanel, BorderLayout.EAST);
 			}
-			KappaFrame.infoPanel.setVisible(inspector.isSelected());
+			frame.infoPanel.setVisible(inspector.isSelected());
 		}
 	}
 

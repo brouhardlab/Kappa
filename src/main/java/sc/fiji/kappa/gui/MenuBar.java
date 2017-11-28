@@ -84,7 +84,7 @@ public class MenuBar extends JMenuBar {
 	JFileChooser kappaSave;
 
 	// Menu Items
-	static JMenuItem[] toolMenuItems = new JMenuItem[ToolPanel.NO_TOOLS];
+	private JMenuItem[] toolMenuItems = new JMenuItem[ToolPanel.NO_TOOLS];
 	static JMenuItem zoomIn;
 	static JMenuItem zoomOut;
 	static JMenuItem prevFrame, nextFrame, prevKeyframe, nextKeyframe;
@@ -99,12 +99,16 @@ public class MenuBar extends JMenuBar {
 	static JCheckBoxMenuItem bit16;
 	static JCheckBoxMenuItem bit32;
 	static JCheckBoxMenuItem RGBColor;
+	
+	private KappaFrame frame;
 
 	/**
 	 * Creates a menu-bar and adds menu items to it
 	 */
-	public MenuBar(Context context) {
+	public MenuBar(Context context, KappaFrame frame) {
 		context.inject(this);
+		
+		this.frame = frame;
 
 		// Creates a new file chooser. Same native image support as ImageJ since ImageJ
 		// libraries are used.
@@ -130,7 +134,7 @@ public class MenuBar extends JMenuBar {
 		JMenuItem openMenu = new JMenuItem("Open Image File");
 		openMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, DEFAULT_MASK));
 		openMenu.addActionListener(e -> {
-			int returnVal = kappaOpen.showOpenDialog(KappaFrame.frame);
+			int returnVal = kappaOpen.showOpenDialog(this.frame);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				openImageFile(kappaOpen.getSelectedFile());
 			}
@@ -150,7 +154,7 @@ public class MenuBar extends JMenuBar {
 		loadMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, DEFAULT_MASK));
 		loadMenu.addActionListener(e -> {
 			// Handle open button action.
-			int returnVal = kappaLoad.showOpenDialog(KappaFrame.frame);
+			int returnVal = kappaLoad.showOpenDialog(this.frame);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				file = kappaLoad.getSelectedFile();
 				loadCurveFile(file);
@@ -162,7 +166,7 @@ public class MenuBar extends JMenuBar {
 		saveMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, DEFAULT_MASK));
 		saveMenu.addActionListener(e -> {
 			// Handles save button action.
-			int returnVal = kappaSave.showSaveDialog(KappaFrame.frame);
+			int returnVal = kappaSave.showSaveDialog(this.frame);
 
 			String dirPath = KappaFrame.imageStack.getOriginalFileInfo().directory;
 			if (dirPath != null) {
@@ -194,7 +198,7 @@ public class MenuBar extends JMenuBar {
 			final int j = i;
 			toolMenuItems[i].addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent event) {
-					KappaFrame.toolPanel.setSelected(j, true);
+					frame.toolPanel.setSelected(j, true);
 					KappaFrame.scrollPane.setCursor(ToolPanel.TOOL_CURSORS[j]);
 				}
 			});
@@ -206,7 +210,7 @@ public class MenuBar extends JMenuBar {
 		delete.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent event) {
-				KappaFrame.deleteCurve();
+				frame.deleteCurve();
 			}
 		});
 		delete.setEnabled(false);
@@ -217,7 +221,7 @@ public class MenuBar extends JMenuBar {
 		enter = new JMenuItem("Enter Curve");
 		enter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				KappaFrame.enterCurve();
+				frame.enterCurve();
 			}
 		});
 		enter.setEnabled(false);
@@ -227,7 +231,7 @@ public class MenuBar extends JMenuBar {
 		fit = new JMenuItem("Fit Curve");
 		fit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				KappaFrame.fitCurves();
+				frame.fitCurves();
 			}
 		});
 		fit.setEnabled(false);
@@ -331,8 +335,8 @@ public class MenuBar extends JMenuBar {
 						ControlPanel.channelButtons[i].setEnabled(false);
 					}
 					KappaFrame.currImage = KappaFrame.displayedImageStack.getBufferedImage();
-					KappaFrame.setScaledImage(ControlPanel.scaleSlider.getValue() / 100.0);
-					KappaFrame.infoPanel.repaint();
+					frame.setScaledImage(ControlPanel.scaleSlider.getValue() / 100.0);
+					frame.infoPanel.repaint();
 					KappaFrame.drawImageOverlay();
 				} catch (IllegalArgumentException err) {
 					KappaFrame.overlay.setVisible(true);
@@ -359,8 +363,8 @@ public class MenuBar extends JMenuBar {
 						ControlPanel.channelButtons[i].setEnabled(false);
 					}
 					KappaFrame.currImage = KappaFrame.displayedImageStack.getBufferedImage();
-					KappaFrame.setScaledImage(ControlPanel.scaleSlider.getValue() / 100.0);
-					KappaFrame.infoPanel.repaint();
+					frame.setScaledImage(ControlPanel.scaleSlider.getValue() / 100.0);
+					frame.infoPanel.repaint();
 					KappaFrame.drawImageOverlay();
 				} catch (IllegalArgumentException err) {
 					KappaFrame.overlay.setVisible(true);
@@ -387,13 +391,13 @@ public class MenuBar extends JMenuBar {
 						ControlPanel.channelButtons[i].setEnabled(false);
 					}
 					KappaFrame.currImage = KappaFrame.displayedImageStack.getBufferedImage();
-					KappaFrame.setScaledImage(ControlPanel.scaleSlider.getValue() / 100.0);
-					KappaFrame.infoPanel.repaint();
+					frame.setScaledImage(ControlPanel.scaleSlider.getValue() / 100.0);
+					frame.infoPanel.repaint();
 					KappaFrame.drawImageOverlay();
 				} catch (IllegalArgumentException err) {
-					KappaFrame.overlay.setVisible(true);
-					KappaFrame.overlay.drawNotification("Illegal Conversion Option",
-							KappaFrame.scrollPane.getVisibleRect());
+					frame.overlay.setVisible(true);
+					frame.overlay.drawNotification("Illegal Conversion Option",
+							frame.scrollPane.getVisibleRect());
 				}
 			}
 		});
@@ -417,8 +421,8 @@ public class MenuBar extends JMenuBar {
 					ControlPanel.channelButtons[i].setEnabled(true);
 				}
 				KappaFrame.currImage = KappaFrame.displayedImageStack.getBufferedImage();
-				KappaFrame.setScaledImage(ControlPanel.scaleSlider.getValue() / 100.0);
-				KappaFrame.infoPanel.repaint();
+				frame.setScaledImage(ControlPanel.scaleSlider.getValue() / 100.0);
+				frame.infoPanel.repaint();
 				KappaFrame.drawImageOverlay();
 			}
 		});
@@ -481,19 +485,19 @@ public class MenuBar extends JMenuBar {
 		xValue.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent a) {
 				distributionDisplay = 0;
-				InfoPanel.updateHistograms();
+				frame.getInfoPanel().updateHistograms();
 			}
 		});
 		curveLength.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent a) {
 				distributionDisplay = 1;
-				InfoPanel.updateHistograms();
+				frame.getInfoPanel().updateHistograms();
 			}
 		});
 		pointIndex.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent a) {
 				distributionDisplay = 2;
-				InfoPanel.updateHistograms();
+				frame.getInfoPanel().updateHistograms();
 			}
 		});
 		if (DEFAULT_DISTRIBUTION_DISPLAY == 0) {
@@ -519,7 +523,7 @@ public class MenuBar extends JMenuBar {
 		antialiasingMenu.setState(false);
 		antialiasingMenu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent a) {
-				KappaFrame.setScaledImage(ControlPanel.scaleSlider.getValue() / 100.0);
+				frame.setScaledImage(ControlPanel.scaleSlider.getValue() / 100.0);
 				KappaFrame.drawImageOverlay();
 			}
 		});
@@ -555,7 +559,7 @@ public class MenuBar extends JMenuBar {
 		aboutMenuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				JOptionPane.showMessageDialog(KappaFrame.frame, "Developed by the Brouhard lab, 2016-2017.",
+				JOptionPane.showMessageDialog(frame, "Developed by the Brouhard lab, 2016-2017.",
 						KappaFrame.APPLICATION_NAME, JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
@@ -583,16 +587,16 @@ public class MenuBar extends JMenuBar {
 		this.add(helpMenu);
 	}
 
-	public static void openImageFile(String file) {
+	public void openImageFile(String file) {
 		openImageFile(new File(file));
 	}
 
-	public static void openImageFile(File file) {
+	public void openImageFile(File file) {
 		ImagePlus imp = new ImagePlus(file.getPath());
 		openImage(imp);
 	}
 
-	public static void openActiveImage(Context context) {
+	public void openActiveImage(Context context) {
 		ImageDisplayService imds = context.getService(ImageDisplayService.class);
 		ConvertService convert = context.getService(ConvertService.class);
 		ImageDisplay imd = imds.getActiveImageDisplay();
@@ -600,7 +604,7 @@ public class MenuBar extends JMenuBar {
 		openImage(imp);
 	}
 
-	public static void openImage(ImagePlus imp) {
+	public void openImage(ImagePlus imp) {
 		KappaFrame.imageStack = imp;
 
 		// Splits the image into the R, G, and B channels, but only if the image is in
@@ -651,11 +655,11 @@ public class MenuBar extends JMenuBar {
 
 		// We disable export options for stacks if this is just a single image.
 		if (KappaFrame.maxLayer == 1) {
-			KappaFrame.exportPanel.perStackPanel.hide();
+			frame.exportPanel.perStackPanel.hide();
 		} else if (KappaFrame.maxLayer > 1) {
-			KappaFrame.exportPanel.perStackPanel.show();
+			frame.exportPanel.perStackPanel.show();
 		}
-		KappaFrame.exportPanel.repaint();
+		frame.exportPanel.repaint();
 
 		// Sets the buttons to active and selected if the image type is a Color one.
 		// Otherwise sets them to inactive
@@ -679,7 +683,7 @@ public class MenuBar extends JMenuBar {
 		ControlPanel.scaleSlider
 				.setMaximum(Math.min(ControlPanel.MAX_SCALE, ControlPanel.MAX_AVG_PIXEL_DIM / avgPixelDim * 100));
 
-		KappaFrame.updateThresholded();
+		this.frame.updateThresholded();
 		InfoPanel.thresholdChannelsComboBox.setEnabled(true);
 		InfoPanel.thresholdSlider.setEnabled(true);
 		InfoPanel.rangeAveragingSpinner.setEnabled(true);
@@ -695,7 +699,7 @@ public class MenuBar extends JMenuBar {
 		tangentMenu.setEnabled(true);
 
 		// Enables toolbar buttons and selects the direct selection tool
-		KappaFrame.toolPanel.enableAllButtons();
+		frame.toolPanel.enableAllButtons();
 
 		// Enables Menu Items
 		zoomIn.setEnabled(true);
@@ -710,7 +714,7 @@ public class MenuBar extends JMenuBar {
 		adjustBrightnessContrast.setEnabled(true);
 
 		// Adds file name to the frame.
-		KappaFrame.frame.setTitle(KappaFrame.APPLICATION_NAME + "- " + imp.getTitle());
+		this.frame.setTitle(KappaFrame.APPLICATION_NAME + "- " + imp.getTitle());
 
 		// Load Kappa file if available
 		String dirPath = imp.getOriginalFileInfo().directory;
@@ -724,14 +728,14 @@ public class MenuBar extends JMenuBar {
 		}
 	}
 
-	public static void loadCurveFile(String file) {
+	public void loadCurveFile(String file) {
 		loadCurveFile(new File(file));
 	}
 
-	public static void loadCurveFile(File file) {
+	public void loadCurveFile(File file) {
 		// Tries opening the file
 		try {
-			KappaFrame.resetCurves();
+			this.frame.resetCurves();
 			BufferedReader in = new BufferedReader(new FileReader(file));
 			int noCurves = Integer.parseInt(in.readLine());
 
@@ -813,11 +817,11 @@ public class MenuBar extends JMenuBar {
 		}
 	}
 
-	public static void saveCurveFile(String file) {
+	public void saveCurveFile(String file) {
 		saveCurveFile(new File(file));
 	}
 
-	public static void saveCurveFile(File file) {
+	public void saveCurveFile(File file) {
 
 		try {
 			PrintWriter out = new PrintWriter(new FileWriter(file));

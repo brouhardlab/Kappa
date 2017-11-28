@@ -175,63 +175,15 @@ public class InfoPanel extends JPanel {
 	public static JSlider pointSlider;
 	public static JSlider thresholdSlider;
 
-	public static void updateHistograms() {
-
-		// Updates the histograms
-		if (KappaFrame.curves.getNoSelected() == 0) {
-			return;
-		}
-		Curve currEditedCurve = KappaFrame.curves.getSelected()[0];
-		currEditedCurve.updateIntensities();
-
-		List<Point2D> redIntensities = currEditedCurve.getIntensityDataRed();
-		List<Point2D> greenIntensities = currEditedCurve.getIntensityDataGreen();
-		List<Point2D> blueIntensities = currEditedCurve.getIntensityDataBlue();
-
-		double maxRedValue = redIntensities.stream().map(u -> u.getY()).max(Double::compareTo).get();
-		double maxGreenValue = redIntensities.stream().map(u -> u.getY()).max(Double::compareTo).get();
-		double maxBlueValue = redIntensities.stream().map(u -> u.getY()).max(Double::compareTo).get();
-
-		double maxValue = Math.max(maxRedValue, maxGreenValue);
-		maxValue = Math.max(maxValue, maxBlueValue);
-
-		intensityChartRed.setMaxY(maxValue);
-		intensityChartGreen.setMaxY(maxValue);
-		intensityChartBlue.setMaxY(maxValue);
-
-		curvatureChart.setData(currEditedCurve.getCurveData());
-		intensityChartRed.setData(redIntensities);
-		intensityChartGreen.setData(greenIntensities);
-		intensityChartBlue.setData(blueIntensities);
-
-		if (KappaFrame.DEBUG_MODE) {
-			debugCurvatureChart.setData(currEditedCurve.getDebugCurveData());
-		}
-		KappaFrame.infoPanel.repaint();
-	}
-
-	protected static void setHistogramVisibility(boolean showRed, boolean showGreen, boolean showBlue) {
-		if (!intensityPanel.isExpanded()) {
-			return;
-		}
-		intensityChartRed.setVisible(showRed);
-		intensityChartGreen.setVisible(showGreen);
-		intensityChartBlue.setVisible(showBlue);
-		updateHistograms();
-	}
-
-	private void addLabelComponent(String labelText, Panel panel, Rectangle bounds) {
-		JLabel label = new JLabel(labelText);
-		label.setBounds(bounds);
-		label.setFont(label.getFont().deriveFont(Font.PLAIN));
-		this.add(label);
-		panel.addComponent(label);
-	}
+	private KappaFrame frame;
 
 	/**
 	 * Constructs a new InfoPanel object
 	 */
-	public InfoPanel() {
+	public InfoPanel(KappaFrame frame) {
+
+		this.frame = frame;
+
 		panels = new PanelGroup();
 		this.addMouseListener(new MouseHandler());
 
@@ -276,7 +228,7 @@ public class InfoPanel extends JPanel {
 						pointSlider.setValue(1);
 					}
 					repaint();
-					KappaFrame.controlPanel.repaint();
+					frame.controlPanel.repaint();
 				}
 			}
 		});
@@ -296,8 +248,8 @@ public class InfoPanel extends JPanel {
 		pointSlider.setBounds(POINT_SLIDER_BOUNDS);
 		pointSlider.setEnabled(false);
 		pointLabel = new JLabel(
-				"Point " + KappaFrame.formatNumber(pointSlider.getValue(), BezierCurve.NO_CURVE_POINTS_DIGITS) + " / "
-						+ KappaFrame.UNIT_SCALE);
+				"Point " + KappaFrame.frame.formatNumber(pointSlider.getValue(), BezierCurve.NO_CURVE_POINTS_DIGITS)
+						+ " / " + KappaFrame.UNIT_SCALE);
 		pointLabel.setFont(pointLabel.getFont().deriveFont(Font.PLAIN));
 		pointLabel.setForeground(Color.GRAY);
 		pointLabel.setPreferredSize(new Dimension(65, Short.MAX_VALUE));
@@ -598,7 +550,7 @@ public class InfoPanel extends JPanel {
 		thresholdingPanel.addComponent(revert);
 		apply.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				KappaFrame.updateThresholded();
+				KappaFrame.frame.updateThresholded();
 			}
 		});
 		revert.addActionListener(new ActionListener() {
@@ -606,7 +558,7 @@ public class InfoPanel extends JPanel {
 				thresholdSlider.setValue(KappaFrame.DEFAULT_BG_THRESHOLD);
 				bgCheckBox.setSelected(false);
 				rangeAveragingSpinner.setValue(3);
-				KappaFrame.setScaledImage(ControlPanel.scaleSlider.getValue() / 100.0);
+				KappaFrame.frame.setScaledImage(ControlPanel.scaleSlider.getValue() / 100.0);
 				KappaFrame.drawImageOverlay();
 			}
 		});
@@ -637,6 +589,59 @@ public class InfoPanel extends JPanel {
 		// Hides the Histogram Panels by default
 		panels.hide("Curvature Distribution (absolute values)");
 		panels.hide("Intensity Distribution");
+	}
+
+	public void updateHistograms() {
+
+		// Updates the histograms
+		if (KappaFrame.curves.getNoSelected() == 0) {
+			return;
+		}
+		Curve currEditedCurve = KappaFrame.curves.getSelected()[0];
+		currEditedCurve.updateIntensities();
+
+		List<Point2D> redIntensities = currEditedCurve.getIntensityDataRed();
+		List<Point2D> greenIntensities = currEditedCurve.getIntensityDataGreen();
+		List<Point2D> blueIntensities = currEditedCurve.getIntensityDataBlue();
+
+		double maxRedValue = redIntensities.stream().map(u -> u.getY()).max(Double::compareTo).get();
+		double maxGreenValue = redIntensities.stream().map(u -> u.getY()).max(Double::compareTo).get();
+		double maxBlueValue = redIntensities.stream().map(u -> u.getY()).max(Double::compareTo).get();
+
+		double maxValue = Math.max(maxRedValue, maxGreenValue);
+		maxValue = Math.max(maxValue, maxBlueValue);
+
+		intensityChartRed.setMaxY(maxValue);
+		intensityChartGreen.setMaxY(maxValue);
+		intensityChartBlue.setMaxY(maxValue);
+
+		curvatureChart.setData(currEditedCurve.getCurveData());
+		intensityChartRed.setData(redIntensities);
+		intensityChartGreen.setData(greenIntensities);
+		intensityChartBlue.setData(blueIntensities);
+
+		if (KappaFrame.DEBUG_MODE) {
+			debugCurvatureChart.setData(currEditedCurve.getDebugCurveData());
+		}
+		frame.infoPanel.repaint();
+	}
+
+	protected void setHistogramVisibility(boolean showRed, boolean showGreen, boolean showBlue) {
+		if (!intensityPanel.isExpanded()) {
+			return;
+		}
+		intensityChartRed.setVisible(showRed);
+		intensityChartGreen.setVisible(showGreen);
+		intensityChartBlue.setVisible(showBlue);
+		updateHistograms();
+	}
+
+	private void addLabelComponent(String labelText, Panel panel, Rectangle bounds) {
+		JLabel label = new JLabel(labelText);
+		label.setBounds(bounds);
+		label.setFont(label.getFont().deriveFont(Font.PLAIN));
+		this.add(label);
+		panel.addComponent(label);
 	}
 
 	/**
@@ -713,7 +718,7 @@ public class InfoPanel extends JPanel {
 
 		public void stateChanged(ChangeEvent ce) {
 			pointLabel.setText(
-					"Point " + KappaFrame.formatNumber(pointSlider.getValue(), BezierCurve.NO_CURVE_POINTS_DIGITS)
+					"Point " + KappaFrame.frame.formatNumber(pointSlider.getValue(), BezierCurve.NO_CURVE_POINTS_DIGITS)
 							+ " / " + KappaFrame.UNIT_SCALE);
 			KappaFrame.drawImageOverlay();
 			repaint();

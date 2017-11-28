@@ -940,11 +940,11 @@ public class ContrastAdjuster extends PlugInFrame
 
 		// Updates the adjusted image.
 		KappaFrame.currImage = KappaFrame.displayedImageStack.getBufferedImage();
-		KappaFrame.setScaledImage(ControlPanel.scaleSlider.getValue() / 100.0);
+		KappaFrame.frame.setScaledImage(ControlPanel.scaleSlider.getValue() / 100.0);
 		KappaFrame.drawImageOverlay();
 
 		KappaFrame.curves.updateIntensities();
-		KappaFrame.updateDisplayed();
+		KappaFrame.frame.updateDisplayed();
 	}
 
 	/**

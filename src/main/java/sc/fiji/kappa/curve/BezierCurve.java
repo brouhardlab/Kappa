@@ -818,7 +818,7 @@ public class BezierCurve extends Curve {
 	public List<Point2D> getDebugCurveData() {
 		ArrayList<Point2D> debugCurveData = new ArrayList<Point2D>(NO_CURVE_POINTS);
 		for (Point2D p : curvePoints) {
-			debugCurveData.add(new Point2D.Double(p.getX(), KappaFrame.computeCurvature(p.getX(),
+			debugCurveData.add(new Point2D.Double(p.getX(), KappaFrame.frame.computeCurvature(p.getX(),
 					6000 / (Curve.getMicronPixelFactor() * 1000.0), (2 * Math.PI) / KappaFrame.currImage.getWidth())));
 		}
 		return debugCurveData;

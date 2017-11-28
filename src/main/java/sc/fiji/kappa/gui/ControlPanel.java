@@ -135,7 +135,7 @@ public class ControlPanel extends JPanel {
 					}
 
 					// Updates the displayed Image based on what channels are selected
-					KappaFrame.setDisplayedChannels(displayRange);
+					KappaFrame.frame.setDisplayedChannels(displayRange);
 				}
 			});
 		}
@@ -147,7 +147,7 @@ public class ControlPanel extends JPanel {
 		scaleSlider.setPaintTicks(true);
 		scaleSlider.setMaximumSize(new Dimension(200, Short.MAX_VALUE));
 		scaleSlider.addChangeListener(new ScaleChanger());
-		scaleLabel = new JLabel(KappaFrame.formatNumber(DEFAULT_SCALE, DIGITS_MAX_SCALE));
+		scaleLabel = new JLabel(KappaFrame.frame.formatNumber(DEFAULT_SCALE, DIGITS_MAX_SCALE));
 		scaleLabel.setPreferredSize(new Dimension(40, Short.MAX_VALUE));
 		scaleSlider.setEnabled(false);
 
@@ -201,17 +201,17 @@ public class ControlPanel extends JPanel {
 	private class LayerChanger implements ChangeListener {
 
 		public void stateChanged(ChangeEvent ce) {
-			layerLabel.setText(KappaFrame.formatNumber(currentLayerSlider.getValue(), KappaFrame.maxLayerDigits) + " / "
+			layerLabel.setText(KappaFrame.frame.formatNumber(currentLayerSlider.getValue(), KappaFrame.maxLayerDigits) + " / "
 					+ KappaFrame.maxLayer);
-			KappaFrame.setLayer(currentLayerSlider.getValue(), scaleSlider.getValue() / 100.0);
+			KappaFrame.frame.setLayer(currentLayerSlider.getValue(), scaleSlider.getValue() / 100.0);
 		}
 	}
 
 	private class ScaleChanger implements ChangeListener {
 
 		public void stateChanged(ChangeEvent ce) {
-			scaleLabel.setText(KappaFrame.formatNumber(scaleSlider.getValue(), DIGITS_MAX_SCALE) + "%");
-			KappaFrame.setScaledImage(scaleSlider.getValue() / 100.0);
+			scaleLabel.setText(KappaFrame.frame.formatNumber(scaleSlider.getValue(), DIGITS_MAX_SCALE) + "%");
+			KappaFrame.frame.setScaledImage(scaleSlider.getValue() / 100.0);
 			KappaFrame.drawImageOverlay();
 		}
 	}

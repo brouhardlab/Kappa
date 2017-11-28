@@ -48,10 +48,6 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -152,10 +148,10 @@ public class KappaFrame extends JFrame {
 	public static ScrollDrawingPane scrollPane;
 
 	// Panels
-	public static InfoPanel infoPanel;
-	public static ExportPanel exportPanel;
-	public static ControlPanel controlPanel;
-	public static ToolPanel toolPanel;
+	public InfoPanel infoPanel;
+	public ExportPanel exportPanel;
+	public ControlPanel controlPanel;
+	public ToolPanel toolPanel;
 
 	@Parameter
 	private Context context;
@@ -166,16 +162,19 @@ public class KappaFrame extends JFrame {
 
 		// Set up the original frame
 		super(APPLICATION_NAME);
+
+		resetKappaPlugin();
+
 		context.inject(this);
 
 		setSize(APP_DEFAULT_WIDTH, APP_DEFAULT_HEIGHT);
 		setLocation(APP_DEFAULT_X, APP_DEFAULT_Y);
 
 		setLayout(new BorderLayout());
-		infoPanel = new InfoPanel();
+		infoPanel = new InfoPanel(this);
 		exportPanel = new ExportPanel();
 		controlPanel = new ControlPanel();
-		toolPanel = new ToolPanel();
+		toolPanel = new ToolPanel(this);
 		add(infoPanel, BorderLayout.EAST);
 		add(controlPanel, BorderLayout.SOUTH);
 		add(toolPanel, BorderLayout.NORTH);
@@ -255,7 +254,7 @@ public class KappaFrame extends JFrame {
 		imageStack = null;
 
 		// Adds the menubar
-		this.setJMenuBar(new MenuBar(context));
+		this.setJMenuBar(new MenuBar(context, this));
 
 		// Moves the export button position when the window is resized.
 		this.getRootPane().addComponentListener(new ComponentAdapter() {
@@ -273,7 +272,43 @@ public class KappaFrame extends JFrame {
 		this.requestFocusInWindow();
 	}
 
-	public static void fitCurves() {
+	public InfoPanel getInfoPanel() {
+		return infoPanel;
+	}
+
+	public void setInfoPanel(InfoPanel infoPanel) {
+		this.infoPanel = infoPanel;
+	}
+
+	public ExportPanel getExportPanel() {
+		return exportPanel;
+	}
+
+	public void setExportPanel(ExportPanel exportPanel) {
+		this.exportPanel = exportPanel;
+	}
+
+	public ControlPanel getControlPanel() {
+		return controlPanel;
+	}
+
+	public void setControlPanel(ControlPanel controlPanel) {
+		this.controlPanel = controlPanel;
+	}
+
+	public ToolPanel getToolPanel() {
+		return toolPanel;
+	}
+
+	public void setToolPanel(ToolPanel toolPanel) {
+		this.toolPanel = toolPanel;
+	}
+
+	private void resetKappaPlugin() {
+
+	}
+
+	public void fitCurves() {
 		// If no curves are selected, no fitting is done
 		if (curves.getNoSelected() == 0) {
 			return;
@@ -336,7 +371,7 @@ public class KappaFrame extends JFrame {
 				// Updates curve display
 				infoPanel.repaint();
 				drawImageOverlay();
-				InfoPanel.updateHistograms();
+				this.getInfoPanel().updateHistograms();
 			}
 		}
 
@@ -348,7 +383,7 @@ public class KappaFrame extends JFrame {
 	/**
 	 * Resets the set of curves and the corresponding list
 	 */
-	public static void resetCurves() {
+	public void resetCurves() {
 		InfoPanel.listData = new Vector<>();
 		InfoPanel.list.setListData(InfoPanel.listData);
 		curves = new BezierGroup();
@@ -361,7 +396,7 @@ public class KappaFrame extends JFrame {
 	 * @param scale
 	 *            The scale factor to scale the image by
 	 */
-	protected static void setScaledImage(double scale) {
+	protected void setScaledImage(double scale) {
 		if (currImage == null) {
 			return;
 		}
@@ -447,7 +482,7 @@ public class KappaFrame extends JFrame {
 		currImageLabel.setIcon(new ImageIcon(combined));
 	}
 
-	protected static void setLayer(int layer, double scale) {
+	protected void setLayer(int layer, double scale) {
 		// If there is an open image stack, it will draw it in the drawing panel
 		// Also changes the frame for our bezier curves, for keyframing.
 		displayedImageStack.setZ(layer);
@@ -459,7 +494,7 @@ public class KappaFrame extends JFrame {
 		updateDisplayed();
 	}
 
-	protected static void setDisplayedChannels(int displayRange) {
+	protected void setDisplayedChannels(int displayRange) {
 		RGBStackMerge merge = new RGBStackMerge();
 		// The currImage variable must be set before the histogram visibility is
 		// changed,
@@ -471,21 +506,21 @@ public class KappaFrame extends JFrame {
 					imageStack.getHeight(), imageStack.getNSlices(), null, null, null, true));
 			displayedImageStack.setZ(ControlPanel.currentLayerSlider.getValue());
 			currImage = displayedImageStack.getBufferedImage();
-			InfoPanel.setHistogramVisibility(false, false, false);
+			this.getInfoPanel().setHistogramVisibility(false, false, false);
 			break;
 		case 1:
 			displayedImageStack = new ImagePlus(imageStack.getTitle(), merge.mergeStacks(imageStack.getWidth(),
 					imageStack.getHeight(), imageStack.getNSlices(), null, null, imageStackLayers[2], true));
 			displayedImageStack.setZ(ControlPanel.currentLayerSlider.getValue());
 			currImage = displayedImageStack.getBufferedImage();
-			InfoPanel.setHistogramVisibility(false, false, true);
+			this.getInfoPanel().setHistogramVisibility(false, false, true);
 			break;
 		case 2:
 			displayedImageStack = new ImagePlus(imageStack.getTitle(), merge.mergeStacks(imageStack.getWidth(),
 					imageStack.getHeight(), imageStack.getNSlices(), null, imageStackLayers[1], null, true));
 			displayedImageStack.setZ(ControlPanel.currentLayerSlider.getValue());
 			currImage = displayedImageStack.getBufferedImage();
-			InfoPanel.setHistogramVisibility(false, true, false);
+			this.getInfoPanel().setHistogramVisibility(false, true, false);
 			break;
 		case 3:
 			displayedImageStack = new ImagePlus(imageStack.getTitle(),
@@ -493,14 +528,14 @@ public class KappaFrame extends JFrame {
 							imageStackLayers[1], imageStackLayers[2], true));
 			displayedImageStack.setZ(ControlPanel.currentLayerSlider.getValue());
 			currImage = displayedImageStack.getBufferedImage();
-			InfoPanel.setHistogramVisibility(false, true, true);
+			this.getInfoPanel().setHistogramVisibility(false, true, true);
 			break;
 		case 4:
 			displayedImageStack = new ImagePlus(imageStack.getTitle(), merge.mergeStacks(imageStack.getWidth(),
 					imageStack.getHeight(), imageStack.getNSlices(), imageStackLayers[0], null, null, true));
 			displayedImageStack.setZ(ControlPanel.currentLayerSlider.getValue());
 			currImage = displayedImageStack.getBufferedImage();
-			InfoPanel.setHistogramVisibility(true, false, false);
+			this.getInfoPanel().setHistogramVisibility(true, false, false);
 			break;
 		case 5:
 			displayedImageStack = new ImagePlus(imageStack.getTitle(),
@@ -508,7 +543,7 @@ public class KappaFrame extends JFrame {
 							imageStackLayers[0], null, imageStackLayers[2], true));
 			displayedImageStack.setZ(ControlPanel.currentLayerSlider.getValue());
 			currImage = displayedImageStack.getBufferedImage();
-			InfoPanel.setHistogramVisibility(true, false, true);
+			this.getInfoPanel().setHistogramVisibility(true, false, true);
 			break;
 		case 6:
 			displayedImageStack = new ImagePlus(imageStack.getTitle(),
@@ -516,7 +551,7 @@ public class KappaFrame extends JFrame {
 							imageStackLayers[0], imageStackLayers[1], null, true));
 			displayedImageStack.setZ(ControlPanel.currentLayerSlider.getValue());
 			currImage = displayedImageStack.getBufferedImage();
-			InfoPanel.setHistogramVisibility(true, true, false);
+			this.getInfoPanel().setHistogramVisibility(true, true, false);
 			break;
 		case 7:
 			displayedImageStack = new ImagePlus(imageStack.getTitle(),
@@ -524,14 +559,14 @@ public class KappaFrame extends JFrame {
 							imageStackLayers[0], imageStackLayers[1], imageStackLayers[2], true));
 			displayedImageStack.setZ(ControlPanel.currentLayerSlider.getValue());
 			currImage = displayedImageStack.getBufferedImage();
-			InfoPanel.setHistogramVisibility(true, true, true);
+			this.getInfoPanel().setHistogramVisibility(true, true, true);
 		}
 		setScaledImage(ControlPanel.scaleSlider.getValue() / 100.0);
 		infoPanel.repaint();
 		drawImageOverlay();
 	}
 
-	protected static void updateThresholded() {
+	protected void updateThresholded() {
 		// Update thresholded level
 		int thresholdLevel = InfoPanel.thresholdSlider.getValue();
 		int[] rgb;
@@ -618,7 +653,7 @@ public class KappaFrame extends JFrame {
 	 * @return The number modified so that it has at least the desired number of
 	 *         digits.
 	 */
-	public static String formatNumber(int number, int noDigits) {
+	public String formatNumber(int number, int noDigits) {
 		if (number == 0) {
 			return "0000";
 		}
@@ -643,7 +678,7 @@ public class KappaFrame extends JFrame {
 	 *            The data points, in an ArrayList with n elements
 	 * @return An ArrayList with n elements with corresponding weight values.
 	 */
-	private static List<Double> getWeights(List<Point2D> dataPoints) {
+	private List<Double> getWeights(List<Point2D> dataPoints) {
 		List<Double> weights = new ArrayList<>(dataPoints.size());
 		for (Point2D p : dataPoints) {
 			int[] rgb = BezierCurve.getRGB((int) p.getX(), (int) p.getY());
@@ -679,7 +714,7 @@ public class KappaFrame extends JFrame {
 		return weights;
 	}
 
-	protected static void updateDisplayed() {
+	protected void updateDisplayed() {
 		// Updates the background thresholding display
 		if (InfoPanel.bgCheckBox.isSelected()) {
 			updateThresholded();
@@ -687,10 +722,10 @@ public class KappaFrame extends JFrame {
 
 		// Updates the image
 		drawImageOverlay();
-		InfoPanel.updateHistograms();
+		this.getInfoPanel().updateHistograms();
 	}
 
-	protected static void enterCurve() {
+	protected void enterCurve() {
 		// Enters a new Bezier Curve or B-Spline when the user presses ENTER
 		if (inputType == B_SPLINE) {
 			curves.addCurve(points, ControlPanel.currentLayerSlider.getValue(), currCtrlPt, B_SPLINE,
@@ -699,7 +734,7 @@ public class KappaFrame extends JFrame {
 			curves.addCurve(points, ControlPanel.currentLayerSlider.getValue(), currCtrlPt, BEZIER_CURVE, true,
 					(Integer) (InfoPanel.thresholdRadiusSpinner.getValue()));
 		}
-		InfoPanel.updateHistograms();
+		this.getInfoPanel().updateHistograms();
 
 		// Updates our list after adding the curve
 		InfoPanel.listData.addElement("  CURVE " + curves.getCount());
@@ -713,7 +748,7 @@ public class KappaFrame extends JFrame {
 		drawImageOverlay();
 	}
 
-	protected static void deleteCurve() {
+	protected void deleteCurve() {
 		// Deletes a curve when the user presses DELETE
 		// Deletes any control points not formed into a curve
 		if (currCtrlPt != 0) {
@@ -810,7 +845,7 @@ public class KappaFrame extends JFrame {
 							} // Otherwise, we set the curve to selected
 							else {
 								curves.setSelected(c);
-								InfoPanel.updateHistograms();
+								getInfoPanel().updateHistograms();
 								if (!shiftPressed) {
 									InfoPanel.list.setSelectedIndex(i);
 								} else {
@@ -829,7 +864,7 @@ public class KappaFrame extends JFrame {
 					if (!shiftPressed) {
 						curves.setAllUnselected();
 						InfoPanel.list.clearSelection();
-						InfoPanel.updateHistograms();
+						getInfoPanel().updateHistograms();
 					}
 				}
 
@@ -846,7 +881,7 @@ public class KappaFrame extends JFrame {
 					if (currCtrlPt == 0) {
 						curves.setAllUnselected();
 						InfoPanel.list.clearSelection();
-						InfoPanel.updateHistograms();
+						getInfoPanel().updateHistograms();
 						points = new ArrayList<>(DEFAULT_NO_CTRL_PTS);
 						MenuBar.delete.setEnabled(true);
 					}
@@ -937,7 +972,7 @@ public class KappaFrame extends JFrame {
 						double scale = ControlPanel.scaleSlider.getValue() / 100.0;
 						currEditedCurve.addKeyFrame(new Point2D.Double(newPt.getX() / scale, newPt.getY() / scale),
 								ControlPanel.currentLayerSlider.getValue());
-						InfoPanel.updateHistograms();
+						getInfoPanel().updateHistograms();
 						infoPanel.repaint();
 						drawImageOverlay();
 					}
@@ -1016,7 +1051,7 @@ public class KappaFrame extends JFrame {
 		}
 	}
 
-	public static void setUIFont(javax.swing.plaf.FontUIResource f) {
+	public void setUIFont(javax.swing.plaf.FontUIResource f) {
 		java.util.Enumeration<Object> keys = UIManager.getDefaults().keys();
 		while (keys.hasMoreElements()) {
 			Object key = keys.nextElement();
@@ -1027,7 +1062,7 @@ public class KappaFrame extends JFrame {
 		}
 	}
 
-	public static double computeCurvature(double x, double a, double b) {
+	public double computeCurvature(double x, double a, double b) {
 		// Computes the curvature of a*sin(bx), which is
 		// ab^2sin(bx)/(1+a^2b^2cos^2(bx))^(3/2)
 		return Math
@@ -1036,7 +1071,7 @@ public class KappaFrame extends JFrame {
 				/ Curve.getMicronPixelFactor();
 	}
 
-	public static double getCurvatureError(Curve c, double a, double b) {
+	public double getCurvatureError(Curve c, double a, double b) {
 		int noPoints = 0;
 		double totalCurvatureError = 0;
 
@@ -1055,7 +1090,7 @@ public class KappaFrame extends JFrame {
 
 	// Computes the Pearson's Correlation Coefficient between a fitted b-spline's
 	// curvature and the true curvature
-	public static double computePearsonR(Curve c, double a, double b) {
+	public double computePearsonR(Curve c, double a, double b) {
 		List<BezierPoint> points = c.getDigitizedPoints();
 
 		// Computes the mean of the b-spline curvature and the mean of the true
@@ -1084,11 +1119,11 @@ public class KappaFrame extends JFrame {
 		return covariance / (sd1 * sd2);
 	}
 
-	private static double squared(double x) {
+	private double squared(double x) {
 		return x * x;
 	}
 
-	private static void setIntensityThreshold(double sigma) {
+	private void setIntensityThreshold(double sigma) {
 		// We set the intensity threshold to 2 standard deviations above the mean image
 		// intensity
 		// Compute the mean image intensity
@@ -1113,105 +1148,6 @@ public class KappaFrame extends JFrame {
 		// Set the intensity threshold
 		System.out.println("Intensity Threshold: " + (int) (avgIntensity + sigma * stdDev));
 		InfoPanel.dataThresholdSlider.setValue(Math.min((int) (avgIntensity + sigma * stdDev), 256 - 1));
-	}
-
-	public static void testingScript() throws IOException {
-		PrintWriter out = new PrintWriter(new FileWriter("test-data/dataSNR.csv"));
-		PrintWriter out2 = new PrintWriter(new FileWriter("test-data/datamax.csv"));
-		PrintWriter out3 = new PrintWriter(new FileWriter("test-data/dataPixelSize.csv"));
-
-		// We set the parameters for fitting here. The algorithm used (PDM), and the
-		// data threshold radius.
-		InfoPanel.dataThresholdSlider.setValue(128);
-		InfoPanel.fittingComboBox.setSelectedIndex(DEFAULT_FITTING_ALGORITHM);
-		InfoPanel.thresholdRadiusSpinner.setValue(15);
-		fittingAlgorithm = FITTING_ALGORITHMS[InfoPanel.fittingComboBox.getSelectedIndex()];
-		double a, b;
-
-		// Testing accuracy versus Signal to Noise Ratio
-		for (int snr = 0; snr <= 25; snr++) {
-			// Opens each image
-			MenuBar.openImageFile(new File("test-data/output_snr_" + snr + ".tif"));
-
-			// Computes the intensity threshold, as a given number of standard deviations
-			// from the mean
-			setIntensityThreshold(2);
-
-			// Amplitude and Stretch Factor for the sine curves.
-			a = 6000 / (Curve.getMicronPixelFactor() * 1000.0);
-			b = (2 * Math.PI) / currImage.getWidth();
-
-			System.out.println("SNR: " + snr);
-			MenuBar.loadCurveFile(new File("test-curves/newtestcurves.kapp"));
-
-			// Scale the testing curves so that they span the entire image.
-			// The testing curves were originally drawn on a 82px x 82px image, so that's
-			// the reference for our scaling.
-			for (Curve c : curves) {
-				c.scale(currImage.getWidth() / 82.0, ControlPanel.currentLayerSlider.getValue());
-			}
-
-			curves.setAllSelected();
-			fitCurves();
-
-			// The amplitude of the sine wave is 6000 nm. We adjust for the pixel size.
-			// The stretch factor is such that one period is undergone across the image.
-			for (Curve c : curves) {
-				out.println(snr + "," + c.getNoCtrlPts() + "," + getCurvatureError(c, a, b) + ","
-						+ computePearsonR(c, a, b));
-			}
-
-			// We export the peak curvature at each half of the image, to compare how the
-			// fitting algorithm
-			// performs with maximal curvatures
-			for (Curve c : curves) {
-				out2.println(snr + "," + c.getNoCtrlPts() + "," + Math.abs(c.getMaximum(0, currImage.getWidth() / 2.0)
-						- computeCurvature(currImage.getWidth() / 4.0, a, b)));
-				out2.println(snr + "," + c.getNoCtrlPts() + ","
-						+ Math.abs(c.getMaximum(currImage.getWidth() / 2.0, currImage.getWidth())
-								- computeCurvature((3 * currImage.getWidth()) / 4.0, a, b)));
-			}
-		}
-
-		// Testing accuracy versus pixel size
-		for (int nmPerPixel = 100; nmPerPixel <= 400; nmPerPixel += 10) {
-			MenuBar.openImageFile(new File(String.format("test-data/output_size_%1.2f.tif", nmPerPixel / 1000.0)));
-
-			// Computes the intensity threshold, as a given number of standard deviations
-			// from the mean
-			setIntensityThreshold(2);
-
-			// Set the Micron Pixel Factor
-			Curve.setMicronPixelFactor(nmPerPixel / 1000.0);
-			System.out.println("Micron Pixel Factor: " + nmPerPixel / 1000.0);
-
-			// Set the Threshold Radius Depending on how big the pixel size is.
-			// We always set it to the equivalent of 2 micrometres.
-			InfoPanel.thresholdRadiusSpinner.setValue((int) (2 / Curve.getMicronPixelFactor()));
-			System.out.println("Threshold Radius: " + (int) (2 / Curve.getMicronPixelFactor()));
-
-			// Amplitude and Stretch Factor for the sine curves.
-			a = 6000 / (Curve.getMicronPixelFactor() * 1000.0);
-			b = (2 * Math.PI) / currImage.getWidth();
-
-			// Scale the testing curves so that they span the entire image.
-			// The testing curves were originally drawn on a 82px x 82px image, so that's
-			// the reference for our scaling.
-			MenuBar.loadCurveFile(new File("test-curves/newtestcurves.kapp"));
-			for (Curve c : curves) {
-				c.scale(currImage.getWidth() / 82.0, ControlPanel.currentLayerSlider.getValue());
-			}
-
-			curves.setAllSelected();
-			fitCurves();
-			for (Curve c : curves) {
-				out3.println(nmPerPixel / 1000.0 + "," + c.getNoCtrlPts() + "," + getCurvatureError(c, a, b) + ","
-						+ computePearsonR(c, a, b));
-			}
-		}
-		out.close();
-		out2.close();
-		out3.close();
 	}
 
 }
