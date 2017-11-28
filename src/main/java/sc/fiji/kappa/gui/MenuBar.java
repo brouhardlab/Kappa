@@ -210,7 +210,7 @@ public class MenuBar extends JMenuBar {
 			}
 		});
 		delete.setEnabled(false);
-		delete.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0));
+		delete.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
 		toolMenu.addSeparator();
 		toolMenu.add(delete);
 
