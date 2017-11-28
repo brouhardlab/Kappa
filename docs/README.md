@@ -10,10 +10,10 @@
  	3. [License](#License)
  2. [How to install](#how-to-install)
  3. [Usage Overview](#usage-overview)
- 	1. [Step 1: Open an image](#step-1:-open-an-image)
- 	2. [Step 2: Define an Initial Curve](#step-2:-define-an-initial-curve)
- 	3. [Step 3: Choose what data you want to fit to](#step-3:-choose-what-data-you-want-to-fit-to)
- 	4. [Step 4: Fit the Curve to the Data](#step-4:-fit-the-curve-to-the-data)
+ 	1. [Step 1: Open an image](#open-an-image)
+ 	2. [Step 2: Define an Initial Curve](#define-an-initial-curve)
+ 	3. [Step 3: Choose what data you want to fit to](#choose-what-data-you-want-to-fit-to)
+ 	4. [Step 4: Fit the Curve to the Data](#fit-the-curve-to-the-data)
  4. [Working with Kappa](#working-with-kappa)
  	1. [Manipulating the Image](#manipulating-the-image)
  	2. [Entering and Adjusting Curves](#entering-and-adjusting-curves)
@@ -64,16 +64,16 @@ Kappa is shipped as a Fiji plugin:
 Kappa is very easy to use! You can track the curvature of an object on an image in
 just a few steps.
 
-### Step 1: Open an image
+### Open an image
 
 You can open an image from your hard disk or choose to open the current Fiji image.
 
-### Step 2: Define an Initial Curve
+### Define an Initial Curve
 
 The user can click to define control points that loosely track the shape of an object.
 Then, by pressing **ENTER**, the corresponding B-Spline curve will appear.
 
-### Step 3: Choose what data you want to fit to
+### Choose what data you want to fit to
 
 The user can then adjust the data points that the curve will be fit to. Parameters
 such as the colour channel, the brightness threshold, and the distance from the
@@ -81,7 +81,7 @@ initial curve can be modified. Any data within these thresholds will be fit.
 
 ![](images/what_data_to_fit.png)
 
-### Step 4: Fit the Curve to the Data
+### Fit the Curve to the Data
 
 Kappa will fit the curve to the chosen data points using a least-squares
 based minimization algorithm. This reduces the problem of human bias
