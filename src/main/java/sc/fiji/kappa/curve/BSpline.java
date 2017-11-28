@@ -464,7 +464,7 @@ public class BSpline extends Curve {
 		// Differing values to minimize against depending on whether we desire Point
 		// Distance Minimization or Squared Distance Minimization
 		double weighting;
-		if (frame.fittingAlgorithm.equals(KappaFrame.FITTING_ALGORITHMS[0])) {
+		if (frame.getFittingAlgorithm().equals(KappaFrame.FITTING_ALGORITHMS[0])) {
 			for (int i = 0; i < dataPoints.size(); i++) {
 				if (weights != null) {
 					weighting = Math.sqrt(weights.get(i));
@@ -479,7 +479,7 @@ public class BSpline extends Curve {
 			// The canonical minimization algorithm minimizes || P(x) - X ||^2, so if we
 			// choose our X to be P(x) - (sdterm/2)^(1/2),
 			// the minimization will minimize the sdterm.
-		else if (frame.fittingAlgorithm.equals(KappaFrame.FITTING_ALGORITHMS[1])) {
+		else if (frame.getFittingAlgorithm().equals(KappaFrame.FITTING_ALGORITHMS[1])) {
 			for (int i = 0; i < dataPoints.size(); i++) {
 				if (weights != null) {
 					weighting = Math.sqrt(weights.get(i));

@@ -95,7 +95,7 @@ public class ControlPanel extends JPanel {
 		this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 
 		// Create the slider and a label for it
-		currentLayerSlider = new JSlider(JSlider.HORIZONTAL, 1, 200, frame.INIT_LAYER);
+		currentLayerSlider = new JSlider(JSlider.HORIZONTAL, 1, 200, frame.getINIT_LAYER());
 		layerLabel = new JLabel("");
 		layerLabel.setPreferredSize(new Dimension(65, Short.MAX_VALUE));
 		currentLayerSlider.addChangeListener(new LayerChanger());
@@ -175,9 +175,9 @@ public class ControlPanel extends JPanel {
 		// Draws keyframe markers. Position affected by Swing UI style, which differs
 		// between OS X and Windows
 		Rectangle bounds = currentLayerSlider.getBounds();
-		if (frame.curves.getNoSelected() == 1) {
+		if (frame.getCurves().getNoSelected() == 1) {
 			g.setColor(Color.RED);
-			Curve currentCurve = frame.curves.getSelected()[0];
+			Curve currentCurve = frame.getCurves().getSelected()[0];
 			int[] keyframeLayers = currentCurve.getKeyframeLayers();
 			for (int frameLayer : keyframeLayers) {
 				int centerX;
@@ -207,7 +207,7 @@ public class ControlPanel extends JPanel {
 
 		public void stateChanged(ChangeEvent ce) {
 			layerLabel.setText(
-					frame.formatNumber(currentLayerSlider.getValue(), frame.maxLayerDigits) + " / " + frame.maxLayer);
+					frame.formatNumber(currentLayerSlider.getValue(), frame.getMaxLayerDigits()) + " / " + frame.getMaxLayer());
 			frame.setLayer(currentLayerSlider.getValue(), scaleSlider.getValue() / 100.0);
 		}
 	}

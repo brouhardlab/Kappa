@@ -224,7 +224,7 @@ public class BezierCurve extends Curve {
 	}
 
 	public int[] getRGB(int x, int y) {
-		return BezierCurve.getRGB(frame.displayedImageStack, x, y);
+		return BezierCurve.getRGB(frame.getDisplayedImageStack(), x, y);
 	}
 
 	public void evaluateThresholdedPixels() {
@@ -241,7 +241,7 @@ public class BezierCurve extends Curve {
 				+ dataRadius; x++) {
 			for (int y = (int) boundingBox.getY() - dataRadius; y <= (int) boundingBox.getY()
 					+ (int) boundingBox.getHeight() + dataRadius; y++) {
-				if (x >= 0 && x < frame.currImage.getWidth() && y >= 0 && y < frame.currImage.getHeight()) {
+				if (x >= 0 && x < frame.getCurrImage().getWidth() && y >= 0 && y < frame.getCurrImage().getHeight()) {
 					int[] rgb = getRGB(x, y);
 
 					// Checks the correct channel depending on the UI preference
@@ -827,7 +827,7 @@ public class BezierCurve extends Curve {
 		ArrayList<Point2D> debugCurveData = new ArrayList<Point2D>(NO_CURVE_POINTS);
 		for (Point2D p : curvePoints) {
 			debugCurveData.add(new Point2D.Double(p.getX(), frame.computeCurvature(p.getX(),
-					6000 / (Curve.getMicronPixelFactor() * 1000.0), (2 * Math.PI) / frame.currImage.getWidth())));
+					6000 / (Curve.getMicronPixelFactor() * 1000.0), (2 * Math.PI) / frame.getCurrImage().getWidth())));
 		}
 		return debugCurveData;
 	}

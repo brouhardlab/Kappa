@@ -314,7 +314,7 @@ public class ExportPanel extends JPanel {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			BezierGroup curves = frame.curves;
+			BezierGroup curves = frame.getCurves();
 
 			// Handles export button action.
 			int returnVal = kappaExport.showSaveDialog(frame);
@@ -329,8 +329,8 @@ public class ExportPanel extends JPanel {
 				// Exports the file based on the chosen export options.
 				try {
 					// Get averaged background data for background normalization
-					int w = frame.currImage.getWidth();
-					int h = frame.currImage.getHeight();
+					int w = frame.getCurrImage().getWidth();
+					int h = frame.getCurrImage().getHeight();
 					double[][] averaged = new double[w][h];
 					for (int i = 0; i < w; i++) {
 						for (int j = 0; j < h; j++) {
@@ -340,9 +340,9 @@ public class ExportPanel extends JPanel {
 									+ KappaFrame.BG_AVERAGING_RANGE; dx++) {
 								for (int dy = j - KappaFrame.BG_AVERAGING_RANGE; dy <= j
 										+ KappaFrame.BG_AVERAGING_RANGE; dy++) {
-									if (dx >= 0 && dy >= 0 && dx < w && dy < h && frame.thresholded[dx][dy]) {
+									if (dx >= 0 && dy >= 0 && dx < w && dy < h && frame.getThresholded()[dx][dy]) {
 										int channel = InfoPanel.thresholdChannelsComboBox.getSelectedIndex();
-										int[] rgb = BezierCurve.getRGB(frame.displayedImageStack, dx, dy);
+										int[] rgb = BezierCurve.getRGB(frame.getDisplayedImageStack(), dx, dy);
 										switch (channel) {
 										case 0:
 											totalThresholded += rgb[0];
@@ -403,7 +403,7 @@ public class ExportPanel extends JPanel {
 						for (int j = 0; j < h; j++) {
 							if (averaged[i][j] == -1) {
 								int channel = InfoPanel.thresholdChannelsComboBox.getSelectedIndex();
-								int[] rgb = BezierCurve.getRGB(frame.displayedImageStack, i, j);
+								int[] rgb = BezierCurve.getRGB(frame.getDisplayedImageStack(), i, j);
 								switch (channel) {
 								case 0:
 									averaged[i][j] = rgb[0];
@@ -461,9 +461,9 @@ public class ExportPanel extends JPanel {
 
 					out.close();
 				} catch (Exception err) {
-					frame.overlay.setVisible(true);
-					frame.overlay.drawNotification("There was an error exporting the curve data",
-							frame.scrollPane.getVisibleRect());
+					frame.getOverlay().setVisible(true);
+					frame.getOverlay().drawNotification("There was an error exporting the curve data",
+							frame.getScrollPane().getVisibleRect());
 					err.printStackTrace();
 				}
 			}

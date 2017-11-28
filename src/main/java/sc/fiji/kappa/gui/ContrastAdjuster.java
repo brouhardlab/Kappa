@@ -312,7 +312,7 @@ public class ContrastAdjuster extends PlugInFrame
 	}
 
 	void setup() {
-		ImagePlus imp = frame.displayedImageStack;
+		ImagePlus imp = frame.getDisplayedImageStack();
 		if (imp != null) {
 			setup(imp);
 			updatePlot();
@@ -892,7 +892,7 @@ public class ContrastAdjuster extends PlugInFrame
 		}
 		minSliderValue = maxSliderValue = brightnessValue = contrastValue = -1;
 		doReset = doAutoAdjust = doSet = doApplyLut = false;
-		imp = frame.displayedImageStack;
+		imp = frame.getDisplayedImageStack();
 		if (imp == null) {
 			IJ.beep();
 			IJ.showStatus("No image");
@@ -943,11 +943,11 @@ public class ContrastAdjuster extends PlugInFrame
 		}
 
 		// Updates the adjusted image.
-		frame.currImage = frame.displayedImageStack.getBufferedImage();
+		frame.setCurrImage(frame.getDisplayedImageStack().getBufferedImage());
 		frame.setScaledImage(ControlPanel.scaleSlider.getValue() / 100.0);
 		frame.drawImageOverlay();
 
-		frame.curves.updateIntensities();
+		frame.getCurves().updateIntensities();
 		frame.updateDisplayed();
 	}
 
@@ -968,7 +968,7 @@ public class ContrastAdjuster extends PlugInFrame
 		super.windowActivated(e);
 		if (IJ.isMacro()) {
 			// do nothing if macro and RGB image
-			ImagePlus imp2 = frame.displayedImageStack;
+			ImagePlus imp2 = frame.getDisplayedImageStack();
 			if (imp2 != null && imp2.getBitDepth() == 24) {
 				return;
 			}
@@ -981,7 +981,7 @@ public class ContrastAdjuster extends PlugInFrame
 	public synchronized void itemStateChanged(ItemEvent e) {
 		int index = choice.getSelectedIndex();
 		channels = channelConstants[index];
-		ImagePlus imp = frame.displayedImageStack;
+		ImagePlus imp = frame.getDisplayedImageStack();
 		if (imp != null && imp.isComposite()) {
 			if (index + 1 <= imp.getNChannels()) {
 				imp.setPosition(index + 1, imp.getSlice(), imp.getFrame());

@@ -98,7 +98,7 @@ public class ToolPanel extends JPanel {
 			final int j = i;
 			toolButtons[i].addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent a) {
-					frame.scrollPane.setCursor(TOOL_CURSORS[j]);
+					frame.getScrollPane().setCursor(TOOL_CURSORS[j]);
 				}
 			});
 			this.add(toolButtons[i]);
@@ -190,9 +190,9 @@ public class ToolPanel extends JPanel {
 
 		public void actionPerformed(ActionEvent e) {
 			if (inspector.isSelected()) {
-				frame.add(frame.infoPanel, BorderLayout.EAST);
+				frame.add(frame.getInfoPanel(), BorderLayout.EAST);
 			}
-			frame.infoPanel.setVisible(inspector.isSelected());
+			frame.getInfoPanel().setVisible(inspector.isSelected());
 		}
 	}
 

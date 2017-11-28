@@ -112,47 +112,47 @@ public class KappaFrame extends JFrame {
 	public static final int DEFAULT_INPUT_CURVE = B_SPLINE;
 	public static final String[] BSPLINE_TYPES = { "Open", "Closed" };
 
-	public int bsplineType;
-	public int inputType;
+	private int bsplineType;
+	private int inputType;
 
 	// 0 = Point Distance Minimization
 	// 1 = Squared Distance Minimization
 	public static final int DEFAULT_FITTING_ALGORITHM = 0;
-	public String fittingAlgorithm;
+	private String fittingAlgorithm;
 
-	public Overlay overlay;
+	private Overlay overlay;
 
 	// Bezier Curve information
-	public BezierGroup curves = new BezierGroup(this);
-	public List<Point2D> points = new ArrayList<Point2D>(DEFAULT_NO_CTRL_PTS);
-	public Curve currEditedCurve;
-	public int currCtrlPt = 0;
-	public boolean controlPointSelected;
-	public boolean shiftPressed;
-	public boolean dragged;
-	public boolean fittingRunning;
-	public int prevIndex;
+	private BezierGroup curves = new BezierGroup(this);
+	private List<Point2D> points = new ArrayList<Point2D>(DEFAULT_NO_CTRL_PTS);
+	private Curve currEditedCurve;
+	private int currCtrlPt = 0;
+	private boolean controlPointSelected;
+	private boolean shiftPressed;
+	private boolean dragged;
+	private boolean fittingRunning;
+	private int prevIndex;
 
-	public final int INIT_LAYER = 1;
-	public int maxLayer;
-	public int maxLayerDigits;
+	private final int INIT_LAYER = 1;
+	private int maxLayer;
+	private int maxLayerDigits;
 
 	// Image variables
-	public ImagePlus displayedImageStack;
-	public ImagePlus imageStack;
-	public ImageStack[] imageStackLayers;
-	public BufferedImage currImage;
-	public BufferedImage scaled;
-	public JLabel currImageLabel;
-	protected boolean[][] thresholded;
-	public ScrollDrawingPane scrollPane;
+	private ImagePlus displayedImageStack;
+	private ImagePlus imageStack;
+	private ImageStack[] imageStackLayers;
+	private BufferedImage currImage;
+	private BufferedImage scaled;
+	private JLabel currImageLabel;
+	private boolean[][] thresholded;
+	private ScrollDrawingPane scrollPane;
 
 	// Panels
-	public InfoPanel infoPanel;
-	public ExportPanel exportPanel;
-	public ControlPanel controlPanel;
-	public ToolPanel toolPanel;
-	public KappaMenuBar kappaMenubar;
+	private InfoPanel infoPanel;
+	private ExportPanel exportPanel;
+	private ControlPanel controlPanel;
+	private ToolPanel toolPanel;
+	private KappaMenuBar kappaMenubar;
 
 	@Parameter
 	private Context context;
@@ -170,100 +170,100 @@ public class KappaFrame extends JFrame {
 		setLocation(APP_DEFAULT_X, APP_DEFAULT_Y);
 
 		setLayout(new BorderLayout());
-		infoPanel = new InfoPanel(this);
-		exportPanel = new ExportPanel(this);
-		controlPanel = new ControlPanel(this);
-		toolPanel = new ToolPanel(this);
-		add(infoPanel, BorderLayout.EAST);
-		add(controlPanel, BorderLayout.SOUTH);
-		add(toolPanel, BorderLayout.NORTH);
+		setInfoPanel(new InfoPanel(this));
+		setExportPanel(new ExportPanel(this));
+		setControlPanel(new ControlPanel(this));
+		setToolPanel(new ToolPanel(this));
+		add(getInfoPanel(), BorderLayout.EAST);
+		add(getControlPanel(), BorderLayout.SOUTH);
+		add(getToolPanel(), BorderLayout.NORTH);
 
 		// Sets the glass pane up for notifications
-		overlay = new Overlay(this);
-		this.setGlassPane(overlay);
-		overlay.setOpaque(false);
+		setOverlay(new Overlay(this));
+		this.setGlassPane(getOverlay());
+		getOverlay().setOpaque(false);
 
 		// Default Curve input
-		inputType = DEFAULT_INPUT_CURVE;
-		bsplineType = BSpline.DEFAULT_BSPLINE_TYPE;
-		fittingAlgorithm = FITTING_ALGORITHMS[DEFAULT_FITTING_ALGORITHM];
+		setInputType(DEFAULT_INPUT_CURVE);
+		setBsplineType(BSpline.DEFAULT_BSPLINE_TYPE);
+		setFittingAlgorithm(FITTING_ALGORITHMS[DEFAULT_FITTING_ALGORITHM]);
 
 		// We define the currentImage as a label so the centering and scaling can be
 		// done by the layout manager
-		currImageLabel = new JLabel();
-		currImageLabel.setHorizontalAlignment(JLabel.CENTER);
+		setCurrImageLabel(new JLabel());
+		getCurrImageLabel().setHorizontalAlignment(JLabel.CENTER);
 
 		// We add the JScrollPane containing the desired Image
-		scrollPane = new ScrollDrawingPane(currImageLabel);
-		scrollPane.setVisible(true);
-		add(scrollPane);
+		setScrollPane(new ScrollDrawingPane(getCurrImageLabel()));
+		getScrollPane().setVisible(true);
+		add(getScrollPane());
 
 		// Key Bindings for the Hand Tool
-		scrollPane.getInputMap().put(KeyStroke.getKeyStroke("SPACE"), "space pressed");
-		scrollPane.getInputMap().put(KeyStroke.getKeyStroke("released SPACE"), "space released");
-		scrollPane.getActionMap().put("space pressed", (new AbstractAction() {
+		getScrollPane().getInputMap().put(KeyStroke.getKeyStroke("SPACE"), "space pressed");
+		getScrollPane().getInputMap().put(KeyStroke.getKeyStroke("released SPACE"), "space released");
+		getScrollPane().getActionMap().put("space pressed", (new AbstractAction() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				if (!toolPanel.isEnabled(1) || toolPanel.isSelected(1)) {
+				if (!getToolPanel().isEnabled(1) || getToolPanel().isSelected(1)) {
 					return;
 				}
-				prevIndex = 0;
-				while (!toolPanel.isSelected(prevIndex)) {
-					prevIndex++;
+				setPrevIndex(0);
+				while (!getToolPanel().isSelected(getPrevIndex())) {
+					setPrevIndex(getPrevIndex() + 1);
 				}
-				toolPanel.setSelected(1, true);
-				scrollPane.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				getToolPanel().setSelected(1, true);
+				getScrollPane().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			}
 		}));
-		scrollPane.getActionMap().put("space released", (new AbstractAction() {
+		getScrollPane().getActionMap().put("space released", (new AbstractAction() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				if (!toolPanel.isEnabled(1)) {
+				if (!getToolPanel().isEnabled(1)) {
 					return;
 				}
-				toolPanel.setSelected(prevIndex, true);
-				scrollPane.setCursor(ToolPanel.TOOL_CURSORS[prevIndex]);
+				getToolPanel().setSelected(getPrevIndex(), true);
+				getScrollPane().setCursor(ToolPanel.TOOL_CURSORS[getPrevIndex()]);
 			}
 		}));
 
 		// Key Bindings for the SHIFT key
-		scrollPane.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, InputEvent.SHIFT_DOWN_MASK),
+		getScrollPane().getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, InputEvent.SHIFT_DOWN_MASK),
 				"shift pressed");
-		scrollPane.getInputMap().put(KeyStroke.getKeyStroke("released SHIFT"), "shift released");
-		scrollPane.getActionMap().put("shift pressed", (new AbstractAction() {
+		getScrollPane().getInputMap().put(KeyStroke.getKeyStroke("released SHIFT"), "shift released");
+		getScrollPane().getActionMap().put("shift pressed", (new AbstractAction() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				shiftPressed = true;
+				setShiftPressed(true);
 			}
 		}));
-		scrollPane.getActionMap().put("shift released", (new AbstractAction() {
+		getScrollPane().getActionMap().put("shift released", (new AbstractAction() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				shiftPressed = false;
+				setShiftPressed(false);
 			}
 		}));
-		imageStack = null;
+		setImageStack(null);
 
 		// Adds the menubar
-		this.kappaMenubar = new KappaMenuBar(context, this);
-		this.setJMenuBar(this.kappaMenubar);
+		this.setKappaMenubar(new KappaMenuBar(context, this));
+		this.setJMenuBar(this.getKappaMenubar());
 
 		// Moves the export button position when the window is resized.
 		this.getRootPane().addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e) {
 				if (System.getProperty("os.name").equals("Mac OS X")) {
-					exportPanel.exportButton.setBounds(new Rectangle(20, getHeight() - 150, PANEL_WIDTH - 40, 25));
+					getExportPanel().exportButton.setBounds(new Rectangle(20, getHeight() - 150, PANEL_WIDTH - 40, 25));
 				} else {
-					exportPanel.exportButton.setBounds(new Rectangle(20, getHeight() - 200, PANEL_WIDTH - 40, 25));
+					getExportPanel().exportButton.setBounds(new Rectangle(20, getHeight() - 200, PANEL_WIDTH - 40, 25));
 				}
 			}
 		});
@@ -326,21 +326,21 @@ public class KappaFrame extends JFrame {
 
 	public void fitCurves() {
 		// If no curves are selected, no fitting is done
-		if (curves.getNoSelected() == 0) {
+		if (getCurves().getNoSelected() == 0) {
 			return;
 		}
 
 		// Shows that the fitting algorithm is running
-		fittingRunning = true;
-		overlay.setVisible(true);
+		setFittingRunning(true);
+		getOverlay().setVisible(true);
 
 		// We draw an overlay without a built in delay because we turn it off ourselves.
 		// Hence the
 		// delay interval is -1 by convention.
-		overlay.drawNotification("Fitting in Progress...", scrollPane.getVisibleRect(), -1);
+		getOverlay().drawNotification("Fitting in Progress...", getScrollPane().getVisibleRect(), -1);
 
 		// We fit every selected B-Spline.
-		for (Curve c : curves.getSelected()) {
+		for (Curve c : getCurves().getSelected()) {
 			if (c instanceof BSpline) {
 				// Performs curve fitting with the current B-Spline
 				double error = Double.MAX_VALUE;
@@ -385,15 +385,15 @@ public class KappaFrame extends JFrame {
 				c.shiftControlPoints(ControlPanel.currentLayerSlider.getValue());
 
 				// Updates curve display
-				infoPanel.repaint();
+				getInfoPanel().repaint();
 				drawImageOverlay();
 				this.getInfoPanel().updateHistograms();
 			}
 		}
 
 		// Shows that the execution has stopped
-		fittingRunning = false;
-		overlay.setVisible(false);
+		setFittingRunning(false);
+		getOverlay().setVisible(false);
 	}
 
 	/**
@@ -402,7 +402,7 @@ public class KappaFrame extends JFrame {
 	public void resetCurves() {
 		InfoPanel.listData = new Vector<>();
 		InfoPanel.list.setListData(InfoPanel.listData);
-		curves = new BezierGroup(this);
+		setCurves(new BezierGroup(this));
 	}
 
 	/**
@@ -413,7 +413,7 @@ public class KappaFrame extends JFrame {
 	 *            The scale factor to scale the image by
 	 */
 	protected void setScaledImage(double scale) {
-		if (currImage == null) {
+		if (getCurrImage() == null) {
 			return;
 		}
 
@@ -422,21 +422,21 @@ public class KappaFrame extends JFrame {
 		GraphicsDevice device = env.getDefaultScreenDevice();
 		GraphicsConfiguration config = device.getDefaultConfiguration();
 
-		int w = (int) (scale * currImage.getWidth());
-		int h = (int) (scale * currImage.getHeight());
-		scaled = config.createCompatibleImage(w, h, BufferedImage.TYPE_INT_RGB);
-		Graphics2D g2 = scaled.createGraphics();
+		int w = (int) (scale * getCurrImage().getWidth());
+		int h = (int) (scale * getCurrImage().getHeight());
+		setScaled(config.createCompatibleImage(w, h, BufferedImage.TYPE_INT_RGB));
+		Graphics2D g2 = getScaled().createGraphics();
 		if (KappaMenuBar.antialiasingMenu.getState()) {
 			g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 		}
-		g2.drawImage(currImage, 0, 0, w, h, null);
+		g2.drawImage(getCurrImage(), 0, 0, w, h, null);
 
 		// Draws the thresholded pixels on top
 		if (InfoPanel.bgCheckBox.isSelected()) {
 			g2.setColor(Color.RED);
-			for (int i = 0; i < currImage.getWidth(); i++) {
-				for (int j = 0; j < currImage.getHeight(); j++) {
-					if (thresholded[i][j]) {
+			for (int i = 0; i < getCurrImage().getWidth(); i++) {
+				for (int j = 0; j < getCurrImage().getHeight(); j++) {
+					if (getThresholded()[i][j]) {
 						g2.fillRect((int) Math.round(i * scale), (int) Math.round(j * scale), (int) Math.round(scale),
 								(int) Math.round(scale));
 					}
@@ -450,17 +450,17 @@ public class KappaFrame extends JFrame {
 	 * Draws everything on top of the scaled image
 	 */
 	protected void drawImageOverlay() {
-		if (currImage == null) {
+		if (getCurrImage() == null) {
 			return;
 		}
 		double scale = ControlPanel.scaleSlider.getValue() / 100.0;
-		BufferedImage combined = new BufferedImage(scaled.getWidth(), scaled.getHeight(), BufferedImage.TYPE_INT_RGB);
+		BufferedImage combined = new BufferedImage(getScaled().getWidth(), getScaled().getHeight(), BufferedImage.TYPE_INT_RGB);
 		Graphics2D g2 = (Graphics2D) combined.getGraphics();
-		g2.drawImage(scaled, 0, 0, null);
+		g2.drawImage(getScaled(), 0, 0, null);
 
 		// Draws the data threshold pixels on top
 		if (InfoPanel.showDatapointsCheckBox.isSelected()) {
-			for (Curve c : curves) {
+			for (Curve c : getCurves()) {
 				c.drawThresholdedPixels(g2, scale);
 			}
 		}
@@ -468,43 +468,43 @@ public class KappaFrame extends JFrame {
 		// Draws all the Bezier Curves
 		g2.setColor(Color.GRAY);
 		g2.setStroke(new BasicStroke((int) (Curve.DEFAULT_STROKE_THICKNESS * scale)));
-		curves.draw(g2, scale, InfoPanel.pointSlider.getValue(), KappaMenuBar.boundingBoxMenu.getState(),
+		getCurves().draw(g2, scale, InfoPanel.pointSlider.getValue(), KappaMenuBar.boundingBoxMenu.getState(),
 				KappaMenuBar.scaleCurvesMenu.getState(), KappaMenuBar.tangentMenu.getState(),
 				InfoPanel.showRadiusCheckBox.isSelected());
 
 		// Draws the points we've built so far if a complete Bezier Curve has not been
 		// formed
-		if (currCtrlPt != 0) {
+		if (getCurrCtrlPt() != 0) {
 			g2.setColor(Color.GRAY);
-			for (int i = 0; i < currCtrlPt - 1; i++) {
-				g2.drawLine((int) (points.get(i).getX() * scale), (int) (points.get(i).getY() * scale),
-						(int) (points.get(i + 1).getX() * scale), (int) (points.get(i + 1).getY() * scale));
+			for (int i = 0; i < getCurrCtrlPt() - 1; i++) {
+				g2.drawLine((int) (getPoints().get(i).getX() * scale), (int) (getPoints().get(i).getY() * scale),
+						(int) (getPoints().get(i + 1).getX() * scale), (int) (getPoints().get(i + 1).getY() * scale));
 			}
 
 			// If it's a closed B-Spline, then we close the polygon.
-			if (inputType == B_SPLINE && bsplineType == BSpline.CLOSED) {
-				g2.drawLine((int) (points.get(0).getX() * scale), (int) (points.get(0).getY() * scale),
-						(int) (points.get(points.size() - 1).getX() * scale),
-						(int) (points.get(points.size() - 1).getY() * scale));
+			if (getInputType() == B_SPLINE && getBsplineType() == BSpline.CLOSED) {
+				g2.drawLine((int) (getPoints().get(0).getX() * scale), (int) (getPoints().get(0).getY() * scale),
+						(int) (getPoints().get(getPoints().size() - 1).getX() * scale),
+						(int) (getPoints().get(getPoints().size() - 1).getY() * scale));
 			}
 
 			g2.setColor(Color.WHITE);
-			for (int i = 0; i < currCtrlPt; i++) {
-				g2.fillRect((int) ((points.get(i).getX() - Curve.CTRL_PT_SIZE) * scale),
-						(int) ((points.get(i).getY() - Curve.CTRL_PT_SIZE) * scale),
+			for (int i = 0; i < getCurrCtrlPt(); i++) {
+				g2.fillRect((int) ((getPoints().get(i).getX() - Curve.CTRL_PT_SIZE) * scale),
+						(int) ((getPoints().get(i).getY() - Curve.CTRL_PT_SIZE) * scale),
 						(int) (2 * Curve.CTRL_PT_SIZE * scale), (int) (2 * Curve.CTRL_PT_SIZE * scale));
 			}
 		}
-		currImageLabel.setIcon(new ImageIcon(combined));
+		getCurrImageLabel().setIcon(new ImageIcon(combined));
 	}
 
 	protected void setLayer(int layer, double scale) {
 		// If there is an open image stack, it will draw it in the drawing panel
 		// Also changes the frame for our bezier curves, for keyframing.
-		displayedImageStack.setZ(layer);
-		currImage = this.displayedImageStack.getBufferedImage();
+		getDisplayedImageStack().setZ(layer);
+		setCurrImage(this.getDisplayedImageStack().getBufferedImage());
 		setScaledImage(scale);
-		curves.changeFrame(layer);
+		getCurves().changeFrame(layer);
 
 		// Updates histograms and background thresholds
 		updateDisplayed();
@@ -518,67 +518,67 @@ public class KappaFrame extends JFrame {
 		// displayed channel
 		switch (displayRange) {
 		case 0:
-			displayedImageStack = new ImagePlus(imageStack.getTitle(), merge.mergeStacks(imageStack.getWidth(),
-					imageStack.getHeight(), imageStack.getNSlices(), null, null, null, true));
-			displayedImageStack.setZ(ControlPanel.currentLayerSlider.getValue());
-			currImage = displayedImageStack.getBufferedImage();
+			setDisplayedImageStack(new ImagePlus(getImageStack().getTitle(), merge.mergeStacks(getImageStack().getWidth(),
+					getImageStack().getHeight(), getImageStack().getNSlices(), null, null, null, true)));
+			getDisplayedImageStack().setZ(ControlPanel.currentLayerSlider.getValue());
+			setCurrImage(getDisplayedImageStack().getBufferedImage());
 			this.getInfoPanel().setHistogramVisibility(false, false, false);
 			break;
 		case 1:
-			displayedImageStack = new ImagePlus(imageStack.getTitle(), merge.mergeStacks(imageStack.getWidth(),
-					imageStack.getHeight(), imageStack.getNSlices(), null, null, imageStackLayers[2], true));
-			displayedImageStack.setZ(ControlPanel.currentLayerSlider.getValue());
-			currImage = displayedImageStack.getBufferedImage();
+			setDisplayedImageStack(new ImagePlus(getImageStack().getTitle(), merge.mergeStacks(getImageStack().getWidth(),
+					getImageStack().getHeight(), getImageStack().getNSlices(), null, null, getImageStackLayers()[2], true)));
+			getDisplayedImageStack().setZ(ControlPanel.currentLayerSlider.getValue());
+			setCurrImage(getDisplayedImageStack().getBufferedImage());
 			this.getInfoPanel().setHistogramVisibility(false, false, true);
 			break;
 		case 2:
-			displayedImageStack = new ImagePlus(imageStack.getTitle(), merge.mergeStacks(imageStack.getWidth(),
-					imageStack.getHeight(), imageStack.getNSlices(), null, imageStackLayers[1], null, true));
-			displayedImageStack.setZ(ControlPanel.currentLayerSlider.getValue());
-			currImage = displayedImageStack.getBufferedImage();
+			setDisplayedImageStack(new ImagePlus(getImageStack().getTitle(), merge.mergeStacks(getImageStack().getWidth(),
+					getImageStack().getHeight(), getImageStack().getNSlices(), null, getImageStackLayers()[1], null, true)));
+			getDisplayedImageStack().setZ(ControlPanel.currentLayerSlider.getValue());
+			setCurrImage(getDisplayedImageStack().getBufferedImage());
 			this.getInfoPanel().setHistogramVisibility(false, true, false);
 			break;
 		case 3:
-			displayedImageStack = new ImagePlus(imageStack.getTitle(),
-					merge.mergeStacks(imageStack.getWidth(), imageStack.getHeight(), imageStack.getNSlices(), null,
-							imageStackLayers[1], imageStackLayers[2], true));
-			displayedImageStack.setZ(ControlPanel.currentLayerSlider.getValue());
-			currImage = displayedImageStack.getBufferedImage();
+			setDisplayedImageStack(new ImagePlus(getImageStack().getTitle(),
+					merge.mergeStacks(getImageStack().getWidth(), getImageStack().getHeight(), getImageStack().getNSlices(), null,
+							getImageStackLayers()[1], getImageStackLayers()[2], true)));
+			getDisplayedImageStack().setZ(ControlPanel.currentLayerSlider.getValue());
+			setCurrImage(getDisplayedImageStack().getBufferedImage());
 			this.getInfoPanel().setHistogramVisibility(false, true, true);
 			break;
 		case 4:
-			displayedImageStack = new ImagePlus(imageStack.getTitle(), merge.mergeStacks(imageStack.getWidth(),
-					imageStack.getHeight(), imageStack.getNSlices(), imageStackLayers[0], null, null, true));
-			displayedImageStack.setZ(ControlPanel.currentLayerSlider.getValue());
-			currImage = displayedImageStack.getBufferedImage();
+			setDisplayedImageStack(new ImagePlus(getImageStack().getTitle(), merge.mergeStacks(getImageStack().getWidth(),
+					getImageStack().getHeight(), getImageStack().getNSlices(), getImageStackLayers()[0], null, null, true)));
+			getDisplayedImageStack().setZ(ControlPanel.currentLayerSlider.getValue());
+			setCurrImage(getDisplayedImageStack().getBufferedImage());
 			this.getInfoPanel().setHistogramVisibility(true, false, false);
 			break;
 		case 5:
-			displayedImageStack = new ImagePlus(imageStack.getTitle(),
-					merge.mergeStacks(imageStack.getWidth(), imageStack.getHeight(), imageStack.getNSlices(),
-							imageStackLayers[0], null, imageStackLayers[2], true));
-			displayedImageStack.setZ(ControlPanel.currentLayerSlider.getValue());
-			currImage = displayedImageStack.getBufferedImage();
+			setDisplayedImageStack(new ImagePlus(getImageStack().getTitle(),
+					merge.mergeStacks(getImageStack().getWidth(), getImageStack().getHeight(), getImageStack().getNSlices(),
+							getImageStackLayers()[0], null, getImageStackLayers()[2], true)));
+			getDisplayedImageStack().setZ(ControlPanel.currentLayerSlider.getValue());
+			setCurrImage(getDisplayedImageStack().getBufferedImage());
 			this.getInfoPanel().setHistogramVisibility(true, false, true);
 			break;
 		case 6:
-			displayedImageStack = new ImagePlus(imageStack.getTitle(),
-					merge.mergeStacks(imageStack.getWidth(), imageStack.getHeight(), imageStack.getNSlices(),
-							imageStackLayers[0], imageStackLayers[1], null, true));
-			displayedImageStack.setZ(ControlPanel.currentLayerSlider.getValue());
-			currImage = displayedImageStack.getBufferedImage();
+			setDisplayedImageStack(new ImagePlus(getImageStack().getTitle(),
+					merge.mergeStacks(getImageStack().getWidth(), getImageStack().getHeight(), getImageStack().getNSlices(),
+							getImageStackLayers()[0], getImageStackLayers()[1], null, true)));
+			getDisplayedImageStack().setZ(ControlPanel.currentLayerSlider.getValue());
+			setCurrImage(getDisplayedImageStack().getBufferedImage());
 			this.getInfoPanel().setHistogramVisibility(true, true, false);
 			break;
 		case 7:
-			displayedImageStack = new ImagePlus(imageStack.getTitle(),
-					merge.mergeStacks(imageStack.getWidth(), imageStack.getHeight(), imageStack.getNSlices(),
-							imageStackLayers[0], imageStackLayers[1], imageStackLayers[2], true));
-			displayedImageStack.setZ(ControlPanel.currentLayerSlider.getValue());
-			currImage = displayedImageStack.getBufferedImage();
+			setDisplayedImageStack(new ImagePlus(getImageStack().getTitle(),
+					merge.mergeStacks(getImageStack().getWidth(), getImageStack().getHeight(), getImageStack().getNSlices(),
+							getImageStackLayers()[0], getImageStackLayers()[1], getImageStackLayers()[2], true)));
+			getDisplayedImageStack().setZ(ControlPanel.currentLayerSlider.getValue());
+			setCurrImage(getDisplayedImageStack().getBufferedImage());
 			this.getInfoPanel().setHistogramVisibility(true, true, true);
 		}
 		setScaledImage(ControlPanel.scaleSlider.getValue() / 100.0);
-		infoPanel.repaint();
+		getInfoPanel().repaint();
 		drawImageOverlay();
 	}
 
@@ -588,11 +588,11 @@ public class KappaFrame extends JFrame {
 		int[] rgb;
 		int channel, intensity;
 		channel = InfoPanel.thresholdChannelsComboBox.getSelectedIndex();
-		for (int i = 0; i < currImage.getWidth(); i++) {
-			for (int j = 0; j < currImage.getHeight(); j++) {
+		for (int i = 0; i < getCurrImage().getWidth(); i++) {
+			for (int j = 0; j < getCurrImage().getHeight(); j++) {
 
 				// Checks the intensity level and compares it to the threshold level
-				rgb = BezierCurve.getRGB(displayedImageStack, i, j);
+				rgb = BezierCurve.getRGB(getDisplayedImageStack(), i, j);
 				switch (channel) {
 				case 0:
 					intensity = rgb[0];
@@ -608,7 +608,7 @@ public class KappaFrame extends JFrame {
 					break;
 				}
 
-				thresholded[i][j] = (intensity < thresholdLevel);
+				getThresholded()[i][j] = (intensity < thresholdLevel);
 			}
 		}
 		setScaledImage(ControlPanel.scaleSlider.getValue() / 100.0);
@@ -625,35 +625,35 @@ public class KappaFrame extends JFrame {
 	 * @return The translated (x,y) point
 	 */
 	private Point mapPoint(Point p) {
-		Point ref = scrollPane.getViewport().getViewPosition();
+		Point ref = getScrollPane().getViewport().getViewPosition();
 
 		// If both scrollbars are visible, then the we want to translate p by the
 		// coordinates of the viewpoint origin
 		// 3 px is for the border for the scrollPane
-		if (scrollPane.getHorizontalScrollBar().isVisible() && scrollPane.getVerticalScrollBar().isVisible()) {
+		if (getScrollPane().getHorizontalScrollBar().isVisible() && getScrollPane().getVerticalScrollBar().isVisible()) {
 			return new Point(p.x + ref.x - 3, p.y + ref.y - 3);
 		} // If only one of the scrollbars are visible, then only one of the coordinates
 			// will directly correspond.
 			// If none are visible, none will directly correspond, and we have to obtain
 			// these coordinates directly,
 			// using the the width and height of the bounding box and the image.
-		else if (scrollPane.getVerticalScrollBar().isVisible()) {
+		else if (getScrollPane().getVerticalScrollBar().isVisible()) {
 			return new Point(
-					p.x - (currImageLabel.getWidth()
-							- (int) (ControlPanel.scaleSlider.getValue() / 100.0 * currImage.getWidth())) / 2 - 3,
+					p.x - (getCurrImageLabel().getWidth()
+							- (int) (ControlPanel.scaleSlider.getValue() / 100.0 * getCurrImage().getWidth())) / 2 - 3,
 					p.y + ref.y - 3);
-		} else if (scrollPane.getHorizontalScrollBar().isVisible()) {
+		} else if (getScrollPane().getHorizontalScrollBar().isVisible()) {
 			return new Point(
 					p.x + ref.x - 3, p.y
-							- (currImageLabel.getHeight()
-									- (int) (ControlPanel.scaleSlider.getValue() / 100.0 * currImage.getHeight())) / 2
+							- (getCurrImageLabel().getHeight()
+									- (int) (ControlPanel.scaleSlider.getValue() / 100.0 * getCurrImage().getHeight())) / 2
 							- 3);
 		}
 		return new Point(
-				p.x - (currImageLabel.getWidth()
-						- (int) (ControlPanel.scaleSlider.getValue() / 100.0 * currImage.getWidth())) / 2 - 3,
-				p.y - (currImageLabel.getHeight()
-						- (int) (ControlPanel.scaleSlider.getValue() / 100.0 * currImage.getHeight())) / 2 - 3);
+				p.x - (getCurrImageLabel().getWidth()
+						- (int) (ControlPanel.scaleSlider.getValue() / 100.0 * getCurrImage().getWidth())) / 2 - 3,
+				p.y - (getCurrImageLabel().getHeight()
+						- (int) (ControlPanel.scaleSlider.getValue() / 100.0 * getCurrImage().getHeight())) / 2 - 3);
 	}
 
 	/**
@@ -697,7 +697,7 @@ public class KappaFrame extends JFrame {
 	private List<Double> getWeights(List<Point2D> dataPoints) {
 		List<Double> weights = new ArrayList<>(dataPoints.size());
 		for (Point2D p : dataPoints) {
-			int[] rgb = BezierCurve.getRGB(displayedImageStack, (int) p.getX(), (int) p.getY());
+			int[] rgb = BezierCurve.getRGB(getDisplayedImageStack(), (int) p.getX(), (int) p.getY());
 
 			int channel = InfoPanel.fittingChannelsComboBox.getSelectedIndex();
 			double intensity = 0;
@@ -717,12 +717,12 @@ public class KappaFrame extends JFrame {
 			// we're looking for darker pixels in the image. Hence we adjust the weights
 			// here
 			if (InfoPanel.dataRangeComboBox.getSelectedIndex() == 1) {
-				if (displayedImageStack.getBitDepth() == 24) // RGB Colour
+				if (getDisplayedImageStack().getBitDepth() == 24) // RGB Colour
 				{
 					intensity = 256 - intensity;
 				} else // Grayscale, then 2^bitdepth is the max intensity.
 				{
-					intensity = (int) (Math.pow(2, displayedImageStack.getBitDepth()) - intensity);
+					intensity = (int) (Math.pow(2, getDisplayedImageStack().getBitDepth()) - intensity);
 				}
 			}
 			weights.add(intensity);
@@ -743,23 +743,23 @@ public class KappaFrame extends JFrame {
 
 	protected void enterCurve() {
 		// Enters a new Bezier Curve or B-Spline when the user presses ENTER
-		if (inputType == B_SPLINE) {
-			curves.addCurve(points, ControlPanel.currentLayerSlider.getValue(), currCtrlPt, B_SPLINE,
-					(bsplineType == BSpline.OPEN), (Integer) (InfoPanel.thresholdRadiusSpinner.getValue()));
+		if (getInputType() == B_SPLINE) {
+			getCurves().addCurve(getPoints(), ControlPanel.currentLayerSlider.getValue(), getCurrCtrlPt(), B_SPLINE,
+					(getBsplineType() == BSpline.OPEN), (Integer) (InfoPanel.thresholdRadiusSpinner.getValue()));
 		} else {
-			curves.addCurve(points, ControlPanel.currentLayerSlider.getValue(), currCtrlPt, BEZIER_CURVE, true,
+			getCurves().addCurve(getPoints(), ControlPanel.currentLayerSlider.getValue(), getCurrCtrlPt(), BEZIER_CURVE, true,
 					(Integer) (InfoPanel.thresholdRadiusSpinner.getValue()));
 		}
 		this.getInfoPanel().updateHistograms();
 
 		// Updates our list after adding the curve
-		InfoPanel.listData.addElement("  CURVE " + curves.getCount());
+		InfoPanel.listData.addElement("  CURVE " + getCurves().getCount());
 		InfoPanel.list.setListData(InfoPanel.listData);
-		InfoPanel.list.setSelectedIndex(curves.size() - 1);
+		InfoPanel.list.setSelectedIndex(getCurves().size() - 1);
 		InfoPanel.curvesList.revalidate();
 		InfoPanel.pointSlider.setEnabled(true);
 		InfoPanel.pointSlider.setValue(0);
-		currCtrlPt = 0;
+		setCurrCtrlPt(0);
 		KappaMenuBar.enter.setEnabled(false);
 		drawImageOverlay();
 	}
@@ -767,8 +767,8 @@ public class KappaFrame extends JFrame {
 	protected void deleteCurve() {
 		// Deletes a curve when the user presses DELETE
 		// Deletes any control points not formed into a curve
-		if (currCtrlPt != 0) {
-			currCtrlPt = 0;
+		if (getCurrCtrlPt() != 0) {
+			setCurrCtrlPt(0);
 		}
 
 		// We go down the list of indices so that the array indices don't get changed
@@ -780,13 +780,13 @@ public class KappaFrame extends JFrame {
 		int[] selectedIndices = InfoPanel.list.getSelectedIndices();
 		for (int i = selectedIndices.length - 1; i >= 0; i--) {
 			InfoPanel.listData.removeElementAt(selectedIndices[i]);
-			curves.remove(selectedIndices[i]);
+			getCurves().remove(selectedIndices[i]);
 		}
 		InfoPanel.list.setListData(InfoPanel.listData);
-		scrollPane.revalidate();
+		getScrollPane().revalidate();
 		drawImageOverlay();
-		infoPanel.repaint();
-		controlPanel.repaint();
+		getInfoPanel().repaint();
+		getControlPanel().repaint();
 	}
 
 	// Inner class for the drawing pane. We make it scrollable but also make it so
@@ -816,22 +816,22 @@ public class KappaFrame extends JFrame {
 			@Override
 			public void mousePressed(MouseEvent event) {
 				// The point slider is only enabled if displaying curves is enabled
-				InfoPanel.pointSlider.setEnabled(curves.isCurveSelected());
+				InfoPanel.pointSlider.setEnabled(getCurves().isCurveSelected());
 
 				// Clicking when the selection tool is enabled will select anything in the
 				// region.
-				if (toolPanel.isSelected(0)) {
+				if (getToolPanel().isSelected(0)) {
 					Curve c;
 
 					// Selecting a control point
 					boolean anythingClicked = false;
-					for (Curve curve : curves.getSelected()) {
+					for (Curve curve : getCurves().getSelected()) {
 						if (curve.controlPointIndex(mapPoint(event.getPoint()),
 								ControlPanel.currentLayerSlider.getValue(), ControlPanel.scaleSlider.getValue() / 100.0,
 								true) != -1) {
 							anythingClicked = true;
-							currEditedCurve = curve;
-							controlPointSelected = true;
+							setCurrEditedCurve(curve);
+							setControlPointSelected(true);
 						}
 					}
 					if (anythingClicked) {
@@ -839,30 +839,30 @@ public class KappaFrame extends JFrame {
 					}
 
 					// Selecting a curve
-					for (int i = 0; i < curves.size(); i++) {
-						if ((c = curves.get(i)).isPointOnCurve(mapPoint(event.getPoint()),
+					for (int i = 0; i < getCurves().size(); i++) {
+						if ((c = getCurves().get(i)).isPointOnCurve(mapPoint(event.getPoint()),
 								ControlPanel.currentLayerSlider.getValue(),
 								ControlPanel.scaleSlider.getValue() / 100.0)) {
 							anythingClicked = true;
-							if (!shiftPressed) {
-								curves.setAllUnselected();
+							if (!isShiftPressed()) {
+								getCurves().setAllUnselected();
 							}
 
 							// If the curve is still selected, this means that shift must have been pressed.
 							// Consequently, clicking the curve once it's already selected while shift is
 							// pressed implies de-selection
 							if (c.isSelected()) {
-								curves.setUnselected(c);
-								if (!shiftPressed) {
+								getCurves().setUnselected(c);
+								if (!isShiftPressed()) {
 									InfoPanel.list.clearSelection();
 								} else {
 									InfoPanel.list.removeSelectionInterval(i, i);
 								}
 							} // Otherwise, we set the curve to selected
 							else {
-								curves.setSelected(c);
+								getCurves().setSelected(c);
 								getInfoPanel().updateHistograms();
-								if (!shiftPressed) {
+								if (!isShiftPressed()) {
 									InfoPanel.list.setSelectedIndex(i);
 								} else {
 									InfoPanel.list.addSelectionInterval(i, i);
@@ -877,8 +877,8 @@ public class KappaFrame extends JFrame {
 
 					// If a control point wasn't clicked, or a curve wasn't clicked, then we
 					// deselect everything (if SHIFT isn't being pressed)
-					if (!shiftPressed) {
-						curves.setAllUnselected();
+					if (!isShiftPressed()) {
+						getCurves().setAllUnselected();
 						InfoPanel.list.clearSelection();
 						getInfoPanel().updateHistograms();
 					}
@@ -886,54 +886,54 @@ public class KappaFrame extends JFrame {
 
 				// If the hand mode is enabled, then clicking defines the start point for
 				// dragging
-				if (toolPanel.isSelected(1)) {
+				if (getToolPanel().isSelected(1)) {
 					startPoint = event.getPoint();
-					startOrigin = scrollPane.getViewport().getViewPosition();
+					startOrigin = getScrollPane().getViewport().getViewPosition();
 				}
 
 				// If the control point tool is selected, clicking defines a new control point
-				if (toolPanel.isSelected(2)) {
+				if (getToolPanel().isSelected(2)) {
 					// Once we start a new curve, any previous curves are not selected anymore
-					if (currCtrlPt == 0) {
-						curves.setAllUnselected();
+					if (getCurrCtrlPt() == 0) {
+						getCurves().setAllUnselected();
 						InfoPanel.list.clearSelection();
 						getInfoPanel().updateHistograms();
-						points = new ArrayList<>(DEFAULT_NO_CTRL_PTS);
+						setPoints(new ArrayList<>(DEFAULT_NO_CTRL_PTS));
 						KappaMenuBar.delete.setEnabled(true);
 					}
 
 					Point2D mappedPoint = mapPoint(event.getPoint());
 					double scale = ControlPanel.scaleSlider.getValue() / 100.0;
-					points.add(new Point2D.Double(mappedPoint.getX() / scale, mappedPoint.getY() / scale));
-					currCtrlPt++;
+					getPoints().add(new Point2D.Double(mappedPoint.getX() / scale, mappedPoint.getY() / scale));
+					setCurrCtrlPt(getCurrCtrlPt() + 1);
 
 					// If the input type is a BSpline, then pressing enter will be enabled after the
 					// base case.
-					if (currCtrlPt == BSpline.B_SPLINE_DEGREE + 1 && inputType == B_SPLINE) {
+					if (getCurrCtrlPt() == BSpline.B_SPLINE_DEGREE + 1 && getInputType() == B_SPLINE) {
 						KappaMenuBar.enter.setEnabled(true);
 					} // The minimum size Bezier Curve we allow is a quadradic bezier curve
-					else if (currCtrlPt >= 3 && inputType == BEZIER_CURVE) {
+					else if (getCurrCtrlPt() >= 3 && getInputType() == BEZIER_CURVE) {
 						KappaMenuBar.enter.setEnabled(true);
 					}
-					infoPanel.repaint();
+					getInfoPanel().repaint();
 					drawImageOverlay();
 				}
 			}
 
 			@Override
 			public void mouseReleased(MouseEvent event) {
-				if (toolPanel.isSelected(2) && currCtrlPt == 0) {
-					controlPanel.repaint();
+				if (getToolPanel().isSelected(2) && getCurrCtrlPt() == 0) {
+					getControlPanel().repaint();
 				}
 
 				// Releasing the mouse deselects the control point
-				if (toolPanel.isSelected(0)) {
-					if (controlPointSelected) {
-						currEditedCurve.resetControlPointSelection();
+				if (getToolPanel().isSelected(0)) {
+					if (isControlPointSelected()) {
+						getCurrEditedCurve().resetControlPointSelection();
 					}
-					controlPointSelected = false;
+					setControlPointSelected(false);
 					drawImageOverlay();
-					controlPanel.repaint();
+					getControlPanel().repaint();
 				}
 			}
 		}
@@ -945,8 +945,8 @@ public class KappaFrame extends JFrame {
 			public void mouseMoved(MouseEvent event) {
 				requestFocusInWindow();
 				int index;
-				if (toolPanel.isSelected(0) && curves.getNoSelected() != 0) {
-					for (Curve c : curves.getSelected()) {
+				if (getToolPanel().isSelected(0) && getCurves().getNoSelected() != 0) {
+					for (Curve c : getCurves().getSelected()) {
 						if ((index = c.controlPointIndex(mapPoint(event.getPoint()),
 								ControlPanel.currentLayerSlider.getValue(), ControlPanel.scaleSlider.getValue() / 100.0,
 								false)) != -1) {
@@ -960,7 +960,7 @@ public class KappaFrame extends JFrame {
 					// update the screen.
 					// Saves computation time.
 					boolean noneHovered = true;
-					for (Curve c : curves.getSelected()) {
+					for (Curve c : getCurves().getSelected()) {
 						if (c.getHoveredControlPoint() != -1) {
 							noneHovered = false;
 						}
@@ -970,34 +970,34 @@ public class KappaFrame extends JFrame {
 					}
 
 					// If we haven't returned yet, none of the control points are hovered over.
-					for (Curve c : curves.getSelected()) {
+					for (Curve c : getCurves().getSelected()) {
 						c.setHoveredControlPoint(-1);
 					}
-					infoPanel.repaint();
+					getInfoPanel().repaint();
 					drawImageOverlay();
 				}
 			}
 
 			@Override
 			public void mouseDragged(MouseEvent event) {
-				if (toolPanel.isSelected(0)) {
+				if (getToolPanel().isSelected(0)) {
 					// If the selection tool is enabled, and a control point is selected, dragging
 					// moves the control point
-					if (controlPointSelected) {
+					if (isControlPointSelected()) {
 						Point2D newPt = mapPoint(event.getPoint());
 						double scale = ControlPanel.scaleSlider.getValue() / 100.0;
-						currEditedCurve.addKeyFrame(new Point2D.Double(newPt.getX() / scale, newPt.getY() / scale),
+						getCurrEditedCurve().addKeyFrame(new Point2D.Double(newPt.getX() / scale, newPt.getY() / scale),
 								ControlPanel.currentLayerSlider.getValue());
 						getInfoPanel().updateHistograms();
-						infoPanel.repaint();
+						getInfoPanel().repaint();
 						drawImageOverlay();
 					}
 				}
 
 				// If the hand mode is enabled, dragging pans the viewport.
-				if (toolPanel.isSelected(1)) {
+				if (getToolPanel().isSelected(1)) {
 					Point currentPoint = event.getPoint();
-					JViewport currentPort = scrollPane.getViewport();
+					JViewport currentPort = getScrollPane().getViewport();
 					int dx = (int) (currentPoint.x - startPoint.x);
 					int dy = (int) (currentPoint.y - startPoint.y);
 					int nx = startOrigin.x - dx;
@@ -1007,10 +1007,10 @@ public class KappaFrame extends JFrame {
 					// The maximum viewport origin point is off by the thickness of the scrollbar,
 					// so we modify the bounds depending on if the scrollbar is visible or not.
 					int mx = 4, my = 4;
-					if (scrollPane.getHorizontalScrollBar().isVisible()) {
+					if (getScrollPane().getHorizontalScrollBar().isVisible()) {
 						mx = SCROLL_BAR_THICKNESS;
 					}
-					if (scrollPane.getVerticalScrollBar().isVisible()) {
+					if (getScrollPane().getVerticalScrollBar().isVisible()) {
 						my = SCROLL_BAR_THICKNESS;
 					}
 					if (nx > currentPort.getViewSize().width - getWidth() + mx) {
@@ -1027,7 +1027,7 @@ public class KappaFrame extends JFrame {
 					}
 
 					// Only pans the viewport if the new one is bounded by the image
-					scrollPane.getViewport().setViewPosition(new Point(nx, ny));
+					getScrollPane().getViewport().setViewPosition(new Point(nx, ny));
 				}
 			}
 		}
@@ -1095,8 +1095,8 @@ public class KappaFrame extends JFrame {
 		// We ignore the first and last x percent of the sine curve because of end
 		// conditions.
 		for (BezierPoint p : c.getDigitizedPoints()) {
-			if (p.getX() >= currImage.getWidth() * PERCENT_END_CONDITIONS
-					&& p.getX() <= currImage.getWidth() * (1 - PERCENT_END_CONDITIONS)) {
+			if (p.getX() >= getCurrImage().getWidth() * PERCENT_END_CONDITIONS
+					&& p.getX() <= getCurrImage().getWidth() * (1 - PERCENT_END_CONDITIONS)) {
 				totalCurvatureError += Math.abs(p.k - computeCurvature(p.getX(), a, b));
 				noPoints++;
 			}
@@ -1144,26 +1144,206 @@ public class KappaFrame extends JFrame {
 		// intensity
 		// Compute the mean image intensity
 		double avgIntensity = 0;
-		for (int x = 0; x < currImage.getWidth(); x++) {
-			for (int y = 0; y < currImage.getHeight(); y++) {
-				avgIntensity += BezierCurve.getRGB(displayedImageStack, x, y)[0];
+		for (int x = 0; x < getCurrImage().getWidth(); x++) {
+			for (int y = 0; y < getCurrImage().getHeight(); y++) {
+				avgIntensity += BezierCurve.getRGB(getDisplayedImageStack(), x, y)[0];
 			}
 		}
-		avgIntensity /= (currImage.getWidth() * currImage.getHeight());
+		avgIntensity /= (getCurrImage().getWidth() * getCurrImage().getHeight());
 
 		// Compute the intensity standard deviation
 		double stdDev = 0;
-		for (int x = 0; x < currImage.getWidth(); x++) {
-			for (int y = 0; y < currImage.getHeight(); y++) {
-				stdDev += squared(BezierCurve.getRGB(displayedImageStack, x, y)[0] - avgIntensity);
+		for (int x = 0; x < getCurrImage().getWidth(); x++) {
+			for (int y = 0; y < getCurrImage().getHeight(); y++) {
+				stdDev += squared(BezierCurve.getRGB(getDisplayedImageStack(), x, y)[0] - avgIntensity);
 			}
 		}
-		stdDev /= (currImage.getWidth() * currImage.getHeight()) - 1;
+		stdDev /= (getCurrImage().getWidth() * getCurrImage().getHeight()) - 1;
 		stdDev = Math.sqrt(stdDev);
 
 		// Set the intensity threshold
 		System.out.println("Intensity Threshold: " + (int) (avgIntensity + sigma * stdDev));
 		InfoPanel.dataThresholdSlider.setValue(Math.min((int) (avgIntensity + sigma * stdDev), 256 - 1));
+	}
+
+	public void setDisplayedImageStack(ImagePlus displayedImageStack) {
+		this.displayedImageStack = displayedImageStack;
+	}
+
+	public void setImageStack(ImagePlus imageStack) {
+		this.imageStack = imageStack;
+	}
+
+	public ImageStack[] getImageStackLayers() {
+		return imageStackLayers;
+	}
+
+	public void setImageStackLayers(ImageStack[] imageStackLayers) {
+		this.imageStackLayers = imageStackLayers;
+	}
+
+	public void setCurrImage(BufferedImage currImage) {
+		this.currImage = currImage;
+	}
+
+	public BufferedImage getScaled() {
+		return scaled;
+	}
+
+	public void setScaled(BufferedImage scaled) {
+		this.scaled = scaled;
+	}
+
+	public void setCurrImageLabel(JLabel currImageLabel) {
+		this.currImageLabel = currImageLabel;
+	}
+
+	protected boolean[][] getThresholded() {
+		return thresholded;
+	}
+
+	protected void setThresholded(boolean[][] thresholded) {
+		this.thresholded = thresholded;
+	}
+
+	public ScrollDrawingPane getScrollPane() {
+		return scrollPane;
+	}
+
+	public void setScrollPane(ScrollDrawingPane scrollPane) {
+		this.scrollPane = scrollPane;
+	}
+
+	public void setInfoPanel(InfoPanel infoPanel) {
+		this.infoPanel = infoPanel;
+	}
+
+	public void setExportPanel(ExportPanel exportPanel) {
+		this.exportPanel = exportPanel;
+	}
+
+	public void setControlPanel(ControlPanel controlPanel) {
+		this.controlPanel = controlPanel;
+	}
+
+	public void setToolPanel(ToolPanel toolPanel) {
+		this.toolPanel = toolPanel;
+	}
+
+	public void setKappaMenubar(KappaMenuBar kappaMenubar) {
+		this.kappaMenubar = kappaMenubar;
+	}
+
+	public int getMaxLayerDigits() {
+		return maxLayerDigits;
+	}
+
+	public void setMaxLayerDigits(int maxLayerDigits) {
+		this.maxLayerDigits = maxLayerDigits;
+	}
+
+	public int getMaxLayer() {
+		return maxLayer;
+	}
+
+	public void setMaxLayer(int maxLayer) {
+		this.maxLayer = maxLayer;
+	}
+
+	public int getINIT_LAYER() {
+		return INIT_LAYER;
+	}
+
+	public int getPrevIndex() {
+		return prevIndex;
+	}
+
+	public void setPrevIndex(int prevIndex) {
+		this.prevIndex = prevIndex;
+	}
+
+	public boolean isFittingRunning() {
+		return fittingRunning;
+	}
+
+	public void setFittingRunning(boolean fittingRunning) {
+		this.fittingRunning = fittingRunning;
+	}
+
+	public boolean isDragged() {
+		return dragged;
+	}
+
+	public void setDragged(boolean dragged) {
+		this.dragged = dragged;
+	}
+
+	public boolean isShiftPressed() {
+		return shiftPressed;
+	}
+
+	public void setShiftPressed(boolean shiftPressed) {
+		this.shiftPressed = shiftPressed;
+	}
+
+	public boolean isControlPointSelected() {
+		return controlPointSelected;
+	}
+
+	public void setControlPointSelected(boolean controlPointSelected) {
+		this.controlPointSelected = controlPointSelected;
+	}
+
+	public int getCurrCtrlPt() {
+		return currCtrlPt;
+	}
+
+	public void setCurrCtrlPt(int currCtrlPt) {
+		this.currCtrlPt = currCtrlPt;
+	}
+
+	public Curve getCurrEditedCurve() {
+		return currEditedCurve;
+	}
+
+	public void setCurrEditedCurve(Curve currEditedCurve) {
+		this.currEditedCurve = currEditedCurve;
+	}
+
+	public void setPoints(List<Point2D> points) {
+		this.points = points;
+	}
+
+	public void setCurves(BezierGroup curves) {
+		this.curves = curves;
+	}
+
+	public void setOverlay(Overlay overlay) {
+		this.overlay = overlay;
+	}
+
+	public String getFittingAlgorithm() {
+		return fittingAlgorithm;
+	}
+
+	public void setFittingAlgorithm(String fittingAlgorithm) {
+		this.fittingAlgorithm = fittingAlgorithm;
+	}
+
+	public int getInputType() {
+		return inputType;
+	}
+
+	public void setInputType(int inputType) {
+		this.inputType = inputType;
+	}
+
+	public int getBsplineType() {
+		return bsplineType;
+	}
+
+	public void setBsplineType(int bsplineType) {
+		this.bsplineType = bsplineType;
 	}
 
 }

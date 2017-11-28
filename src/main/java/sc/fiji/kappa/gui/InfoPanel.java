@@ -204,7 +204,7 @@ public class InfoPanel extends JPanel {
 				if (event.getSource() == list && !event.getValueIsAdjusting()) {
 					int[] selectedIndices = list.getSelectedIndices();
 					if (selectedIndices.length == 0) {
-						frame.curves.setAllUnselected();
+						frame.getCurves().setAllUnselected();
 						updateHistograms();
 						KappaMenuBar.delete.setEnabled(false);
 
@@ -212,7 +212,7 @@ public class InfoPanel extends JPanel {
 						panels.hide("Curvature Distribution (absolute values)");
 						panels.hide("Intensity Distribution");
 					} else {
-						frame.curves.setSelected(selectedIndices);
+						frame.getCurves().setSelected(selectedIndices);
 						KappaMenuBar.delete.setEnabled(true);
 						if (selectedIndices.length == 1) {
 							updateHistograms();
@@ -223,12 +223,12 @@ public class InfoPanel extends JPanel {
 						}
 					}
 					frame.drawImageOverlay();
-					pointSlider.setEnabled(frame.curves.isCurveSelected());
-					if (!frame.curves.isCurveSelected()) {
+					pointSlider.setEnabled(frame.getCurves().isCurveSelected());
+					if (!frame.getCurves().isCurveSelected()) {
 						pointSlider.setValue(1);
 					}
 					repaint();
-					frame.controlPanel.repaint();
+					frame.getControlPanel().repaint();
 				}
 			}
 		});
@@ -271,7 +271,7 @@ public class InfoPanel extends JPanel {
 					try {
 						double newScaleFactor = Double.parseDouble(conversionField.getText());
 						Curve.setMicronPixelFactor(newScaleFactor);
-						frame.curves.recalculateCurvature(ControlPanel.currentLayerSlider.getValue());
+						frame.getCurves().recalculateCurvature(ControlPanel.currentLayerSlider.getValue());
 					} catch (Exception err) {
 						Curve.setMicronPixelFactor(oldScaleFactor);
 					}
@@ -287,19 +287,19 @@ public class InfoPanel extends JPanel {
 
 		curveComboBox = new JComboBox<String>(frame.CURVE_TYPES);
 		curveComboBox.setSelectedIndex(1);
-		frame.inputType = curveComboBox.getSelectedIndex();
+		frame.setInputType(curveComboBox.getSelectedIndex());
 		curveComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Bezier Curves are viable with 3 control points but Cubic B-Splines need at
 				// least 4.
-				frame.inputType = curveComboBox.getSelectedIndex();
+				frame.setInputType(curveComboBox.getSelectedIndex());
 
-				bsplineComboBox.setEnabled(frame.inputType == frame.B_SPLINE);
-				bsplineOptionLabel.setEnabled(frame.inputType == frame.B_SPLINE);
-				if (frame.currCtrlPt == 3) {
-					KappaMenuBar.enter.setEnabled(frame.inputType == frame.BEZIER_CURVE);
+				bsplineComboBox.setEnabled(frame.getInputType() == frame.B_SPLINE);
+				bsplineOptionLabel.setEnabled(frame.getInputType() == frame.B_SPLINE);
+				if (frame.getCurrCtrlPt() == 3) {
+					KappaMenuBar.enter.setEnabled(frame.getInputType() == frame.BEZIER_CURVE);
 				}
-				frame.scrollPane.requestFocusInWindow();
+				frame.getScrollPane().requestFocusInWindow();
 			}
 		});
 		curveComboBox.setBounds(CURVE_COMBO_BOX_BOUNDS);
@@ -312,7 +312,7 @@ public class InfoPanel extends JPanel {
 		bsplineOptionLabel = new JLabel("B-Spline Type: ");
 		bsplineOptionLabel.setBounds(BSPLINE_OPTION_LABEL_BOUNDS);
 		bsplineOptionLabel.setFont(bsplineOptionLabel.getFont().deriveFont(Font.PLAIN));
-		bsplineOptionLabel.setEnabled(frame.inputType == frame.B_SPLINE);
+		bsplineOptionLabel.setEnabled(frame.getInputType() == frame.B_SPLINE);
 		this.add(bsplineOptionLabel);
 		inputOptionsPanel.addComponent(bsplineOptionLabel);
 
@@ -320,12 +320,12 @@ public class InfoPanel extends JPanel {
 		bsplineComboBox.setSelectedIndex(0);
 		bsplineComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frame.bsplineType = bsplineComboBox.getSelectedIndex();
-				frame.scrollPane.requestFocusInWindow();
+				frame.setBsplineType(bsplineComboBox.getSelectedIndex());
+				frame.getScrollPane().requestFocusInWindow();
 				frame.drawImageOverlay();
 			}
 		});
-		bsplineComboBox.setEnabled(frame.inputType == frame.B_SPLINE);
+		bsplineComboBox.setEnabled(frame.getInputType() == frame.B_SPLINE);
 		bsplineComboBox.setBounds(BSPLINE_COMBO_BOX_BOUNDS);
 		if (System.getProperty("os.name").equals("Mac OS X")) {
 			bsplineComboBox.setSize(bsplineComboBox.getWidth(), frame.COMBO_BOX_HEIGHT_OSX);
@@ -386,9 +386,9 @@ public class InfoPanel extends JPanel {
 					dataThresholdLabel.setText(dataThresholdSlider.getValue() + " / " + "256");
 				} else {
 					dataThresholdLabel.setText(dataThresholdSlider.getValue() + " / "
-							+ (int) Math.pow(2, frame.displayedImageStack.getBitDepth()));
+							+ (int) Math.pow(2, frame.getDisplayedImageStack().getBitDepth()));
 				}
-				for (Curve curve : frame.curves) {
+				for (Curve curve : frame.getCurves()) {
 					curve.evaluateThresholdedPixels();
 				}
 				frame.drawImageOverlay();
@@ -410,7 +410,7 @@ public class InfoPanel extends JPanel {
 		fittingChannelsComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Reevaluate all the thresholded pixels
-				for (Curve c : frame.curves) {
+				for (Curve c : frame.getCurves()) {
 					c.evaluateThresholdedPixels();
 				}
 				frame.drawImageOverlay();
@@ -428,8 +428,8 @@ public class InfoPanel extends JPanel {
 		fittingComboBox.setSelectedIndex(frame.DEFAULT_FITTING_ALGORITHM);
 		fittingComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frame.fittingAlgorithm = frame.FITTING_ALGORITHMS[fittingComboBox.getSelectedIndex()];
-				frame.scrollPane.requestFocusInWindow();
+				frame.setFittingAlgorithm(frame.FITTING_ALGORITHMS[fittingComboBox.getSelectedIndex()]);
+				frame.getScrollPane().requestFocusInWindow();
 			}
 		});
 		fittingComboBox.setBounds(FITTING_COMBO_BOX_BOUNDS);
@@ -443,7 +443,7 @@ public class InfoPanel extends JPanel {
 		dataRangeComboBox.setSelectedIndex(0);
 		dataRangeComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				for (Curve c : frame.curves) {
+				for (Curve c : frame.getCurves()) {
 					c.evaluateThresholdedPixels();
 				}
 				frame.drawImageOverlay();
@@ -460,7 +460,7 @@ public class InfoPanel extends JPanel {
 		thresholdRadiusSpinner.setBounds(THRESHOLD_RADIUS_SPINNER_BOUNDS);
 		thresholdRadiusSpinner.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent c) {
-				for (Curve curve : frame.curves) {
+				for (Curve curve : frame.getCurves()) {
 					curve.setDataRadius((Integer) thresholdRadiusSpinner.getValue());
 				}
 				frame.drawImageOverlay();
@@ -594,10 +594,10 @@ public class InfoPanel extends JPanel {
 	public void updateHistograms() {
 
 		// Updates the histograms
-		if (frame.curves.getNoSelected() == 0) {
+		if (frame.getCurves().getNoSelected() == 0) {
 			return;
 		}
-		Curve currEditedCurve = frame.curves.getSelected()[0];
+		Curve currEditedCurve = frame.getCurves().getSelected()[0];
 		currEditedCurve.updateIntensities();
 
 		List<Point2D> redIntensities = currEditedCurve.getIntensityDataRed();
@@ -623,7 +623,7 @@ public class InfoPanel extends JPanel {
 		if (frame.DEBUG_MODE) {
 			debugCurvatureChart.setData(currEditedCurve.getDebugCurveData());
 		}
-		frame.infoPanel.repaint();
+		frame.getInfoPanel().repaint();
 	}
 
 	protected void setHistogramVisibility(boolean showRed, boolean showGreen, boolean showBlue) {
@@ -652,7 +652,7 @@ public class InfoPanel extends JPanel {
 	 */
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		BezierGroup curves = frame.curves;
+		BezierGroup curves = frame.getCurves();
 
 		((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		panels.draw(g);

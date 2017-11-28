@@ -106,7 +106,7 @@ public class Overlay extends JComponent {
 				Thread.sleep(timeMillis);
 			} catch (Exception e) {
 			}
-			frame.overlay.setVisible(false);
+			frame.getOverlay().setVisible(false);
 		}
 	}
 }

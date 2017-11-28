@@ -59,9 +59,9 @@ public class CurvesExporter {
 
 		JFileChooser kappaExport = new JFileChooser();
 
-		String dirPath = frame.imageStack.getOriginalFileInfo().directory;
+		String dirPath = frame.getImageStack().getOriginalFileInfo().directory;
 		if (dirPath != null) {
-			String kappaPath = FilenameUtils.removeExtension(frame.imageStack.getOriginalFileInfo().fileName);
+			String kappaPath = FilenameUtils.removeExtension(frame.getImageStack().getOriginalFileInfo().fileName);
 			kappaPath += ".csv";
 			File fullPath = new File(dirPath, kappaPath);
 			kappaExport.setSelectedFile(fullPath);
@@ -84,7 +84,7 @@ public class CurvesExporter {
 
 	public void exportToFile(File file, boolean exportAveragePerCurve) throws IOException {
 
-		BezierGroup curves = frame.curves;
+		BezierGroup curves = frame.getCurves();
 
 		// Appends a .csv
 		if (!file.getPath().toLowerCase().endsWith(".csv")) {
@@ -111,8 +111,8 @@ public class CurvesExporter {
 		writer.writeNext(headers.stream().toArray(String[]::new));
 
 		// Not used anymore
-		int w = frame.currImage.getWidth();
-		int h = frame.currImage.getHeight();
+		int w = frame.getCurrImage().getWidth();
+		int h = frame.getCurrImage().getHeight();
 		double[][] averaged = new double[w][h];
 
 		StringWriter out = new StringWriter();
