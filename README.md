@@ -23,11 +23,9 @@ It allows a user to measure curvature in images in a convenient way. You can tra
 
 ## Documentation
 
-See documentation [here](./doc/Kappa_User_Manual.pdf).
+See documentation in the [docs/ folder](./doc/).
 
-**Note**: the documentation has been written for the first version of Kappa. The software has evolved a bit since that time so you might see some features that are not available anymore.
-
-A more updated documentation will be created on the [ImageJ Wiki page](https://imagej.net/Kappa) soon.
+The documentation is also available on the [ImageJ Wiki page](https://imagej.net/Kappa).
 
 ## Authors
 
