@@ -81,7 +81,7 @@ public class KappaFrame extends JFrame {
 
 	// Whether we allow for control point adjustment or not
 	public static final boolean DEFAULT_CTRL_PT_ADJUSTMENT = false;
-	public static boolean enableCtrlPtAdjustment = DEFAULT_CTRL_PT_ADJUSTMENT;
+	private boolean enableCtrlPtAdjustment = DEFAULT_CTRL_PT_ADJUSTMENT;
 
 	// Application Constants
 	public static final String APPLICATION_NAME = "Kappa";
@@ -353,14 +353,14 @@ public class KappaFrame extends JFrame {
 				// Sets the x and y coordinate to (x-1, y-1), because the image is zero-indexed
 				// in java,
 				// we want to 'de-shift' it when we fit the curve
-				c.deshiftControlPoints(ControlPanel.currentLayerSlider.getValue());
+				c.deshiftControlPoints(this.getControlPanel().getCurrentLayerSlider().getValue());
 
 				// If the b-spline is closed, we convert it to an open curve for fitting.
 				// Converts it to an open B-Spline for fitting if it was originally a closed
 				// spline
 				boolean wasOpen = ((BSpline) c).isOpen();
 				if (!((BSpline) c).isOpen()) {
-					((BSpline) c).convertToOpen(ControlPanel.currentLayerSlider.getValue());
+					((BSpline) c).convertToOpen(this.getControlPanel().getCurrentLayerSlider().getValue());
 				}
 				do {
 					oldError = error;
@@ -370,21 +370,22 @@ public class KappaFrame extends JFrame {
 
 					weights = getWeights(dataPoints);
 					error = ((BSpline) c).fittingIteration(dataPoints, weights,
-							ControlPanel.currentLayerSlider.getValue());
+							this.getControlPanel().getCurrentLayerSlider().getValue());
 				} while (oldError > error);
 				error = oldError;
 
 				// Once the fitting has been done, we remove unnecessary control points.
-				if (enableCtrlPtAdjustment) {
-					((BSpline) c).adjustControlPoints(dataPoints, weights, ControlPanel.currentLayerSlider.getValue());
+				if (isEnableCtrlPtAdjustment()) {
+					((BSpline) c).adjustControlPoints(dataPoints, weights,
+							this.getControlPanel().getCurrentLayerSlider().getValue());
 				}
 				if (!wasOpen) {
-					((BSpline) c).convertToClosed(ControlPanel.currentLayerSlider.getValue());
+					((BSpline) c).convertToClosed(this.getControlPanel().getCurrentLayerSlider().getValue());
 				}
 
 				// Sets the x and y coordinate to (x+1, y+1), because the image is zero-indexed
 				// in java, so there's a 1 pixel offset
-				c.shiftControlPoints(ControlPanel.currentLayerSlider.getValue());
+				c.shiftControlPoints(this.getControlPanel().getCurrentLayerSlider().getValue());
 
 				// Updates curve display
 				getInfoPanel().repaint();
@@ -455,7 +456,7 @@ public class KappaFrame extends JFrame {
 		if (getCurrImage() == null) {
 			return;
 		}
-		double scale = ControlPanel.scaleSlider.getValue() / 100.0;
+		double scale = this.getControlPanel().getScaleSlider().getValue() / 100.0;
 		BufferedImage combined = new BufferedImage(getScaled().getWidth(), getScaled().getHeight(),
 				BufferedImage.TYPE_INT_RGB);
 		Graphics2D g2 = (Graphics2D) combined.getGraphics();
@@ -524,7 +525,7 @@ public class KappaFrame extends JFrame {
 			setDisplayedImageStack(
 					new ImagePlus(getImageStack().getTitle(), merge.mergeStacks(getImageStack().getWidth(),
 							getImageStack().getHeight(), getImageStack().getNSlices(), null, null, null, true)));
-			getDisplayedImageStack().setZ(ControlPanel.currentLayerSlider.getValue());
+			getDisplayedImageStack().setZ(this.getControlPanel().getCurrentLayerSlider().getValue());
 			setCurrImage(getDisplayedImageStack().getBufferedImage());
 			this.getInfoPanel().setHistogramVisibility(false, false, false);
 			break;
@@ -532,7 +533,7 @@ public class KappaFrame extends JFrame {
 			setDisplayedImageStack(new ImagePlus(getImageStack().getTitle(),
 					merge.mergeStacks(getImageStack().getWidth(), getImageStack().getHeight(),
 							getImageStack().getNSlices(), null, null, getImageStackLayers()[2], true)));
-			getDisplayedImageStack().setZ(ControlPanel.currentLayerSlider.getValue());
+			getDisplayedImageStack().setZ(this.getControlPanel().getCurrentLayerSlider().getValue());
 			setCurrImage(getDisplayedImageStack().getBufferedImage());
 			this.getInfoPanel().setHistogramVisibility(false, false, true);
 			break;
@@ -540,7 +541,7 @@ public class KappaFrame extends JFrame {
 			setDisplayedImageStack(new ImagePlus(getImageStack().getTitle(),
 					merge.mergeStacks(getImageStack().getWidth(), getImageStack().getHeight(),
 							getImageStack().getNSlices(), null, getImageStackLayers()[1], null, true)));
-			getDisplayedImageStack().setZ(ControlPanel.currentLayerSlider.getValue());
+			getDisplayedImageStack().setZ(this.getControlPanel().getCurrentLayerSlider().getValue());
 			setCurrImage(getDisplayedImageStack().getBufferedImage());
 			this.getInfoPanel().setHistogramVisibility(false, true, false);
 			break;
@@ -549,7 +550,7 @@ public class KappaFrame extends JFrame {
 					merge.mergeStacks(getImageStack().getWidth(), getImageStack().getHeight(),
 							getImageStack().getNSlices(), null, getImageStackLayers()[1], getImageStackLayers()[2],
 							true)));
-			getDisplayedImageStack().setZ(ControlPanel.currentLayerSlider.getValue());
+			getDisplayedImageStack().setZ(this.getControlPanel().getCurrentLayerSlider().getValue());
 			setCurrImage(getDisplayedImageStack().getBufferedImage());
 			this.getInfoPanel().setHistogramVisibility(false, true, true);
 			break;
@@ -557,7 +558,7 @@ public class KappaFrame extends JFrame {
 			setDisplayedImageStack(new ImagePlus(getImageStack().getTitle(),
 					merge.mergeStacks(getImageStack().getWidth(), getImageStack().getHeight(),
 							getImageStack().getNSlices(), getImageStackLayers()[0], null, null, true)));
-			getDisplayedImageStack().setZ(ControlPanel.currentLayerSlider.getValue());
+			getDisplayedImageStack().setZ(this.getControlPanel().getCurrentLayerSlider().getValue());
 			setCurrImage(getDisplayedImageStack().getBufferedImage());
 			this.getInfoPanel().setHistogramVisibility(true, false, false);
 			break;
@@ -566,7 +567,7 @@ public class KappaFrame extends JFrame {
 					merge.mergeStacks(getImageStack().getWidth(), getImageStack().getHeight(),
 							getImageStack().getNSlices(), getImageStackLayers()[0], null, getImageStackLayers()[2],
 							true)));
-			getDisplayedImageStack().setZ(ControlPanel.currentLayerSlider.getValue());
+			getDisplayedImageStack().setZ(this.getControlPanel().getCurrentLayerSlider().getValue());
 			setCurrImage(getDisplayedImageStack().getBufferedImage());
 			this.getInfoPanel().setHistogramVisibility(true, false, true);
 			break;
@@ -575,7 +576,7 @@ public class KappaFrame extends JFrame {
 					merge.mergeStacks(getImageStack().getWidth(), getImageStack().getHeight(),
 							getImageStack().getNSlices(), getImageStackLayers()[0], getImageStackLayers()[1], null,
 							true)));
-			getDisplayedImageStack().setZ(ControlPanel.currentLayerSlider.getValue());
+			getDisplayedImageStack().setZ(this.getControlPanel().getCurrentLayerSlider().getValue());
 			setCurrImage(getDisplayedImageStack().getBufferedImage());
 			this.getInfoPanel().setHistogramVisibility(true, true, false);
 			break;
@@ -584,11 +585,11 @@ public class KappaFrame extends JFrame {
 					merge.mergeStacks(getImageStack().getWidth(), getImageStack().getHeight(),
 							getImageStack().getNSlices(), getImageStackLayers()[0], getImageStackLayers()[1],
 							getImageStackLayers()[2], true)));
-			getDisplayedImageStack().setZ(ControlPanel.currentLayerSlider.getValue());
+			getDisplayedImageStack().setZ(this.getControlPanel().getCurrentLayerSlider().getValue());
 			setCurrImage(getDisplayedImageStack().getBufferedImage());
 			this.getInfoPanel().setHistogramVisibility(true, true, true);
 		}
-		setScaledImage(ControlPanel.scaleSlider.getValue() / 100.0);
+		setScaledImage(this.getControlPanel().getScaleSlider().getValue() / 100.0);
 		getInfoPanel().repaint();
 		drawImageOverlay();
 	}
@@ -622,7 +623,7 @@ public class KappaFrame extends JFrame {
 				getThresholded()[i][j] = (intensity < thresholdLevel);
 			}
 		}
-		setScaledImage(ControlPanel.scaleSlider.getValue() / 100.0);
+		setScaledImage(this.getControlPanel().getScaleSlider().getValue() / 100.0);
 		drawImageOverlay();
 	}
 
@@ -650,21 +651,19 @@ public class KappaFrame extends JFrame {
 			// these coordinates directly,
 			// using the the width and height of the bounding box and the image.
 		else if (getScrollPane().getVerticalScrollBar().isVisible()) {
-			return new Point(
-					p.x - (getCurrImageLabel().getWidth()
-							- (int) (ControlPanel.scaleSlider.getValue() / 100.0 * getCurrImage().getWidth())) / 2 - 3,
-					p.y + ref.y - 3);
+			return new Point(p.x - (getCurrImageLabel().getWidth()
+					- (int) (this.getControlPanel().getScaleSlider().getValue() / 100.0 * getCurrImage().getWidth()))
+					/ 2 - 3, p.y + ref.y - 3);
 		} else if (getScrollPane().getHorizontalScrollBar().isVisible()) {
-			return new Point(p.x + ref.x - 3,
-					p.y - (getCurrImageLabel().getHeight()
-							- (int) (ControlPanel.scaleSlider.getValue() / 100.0 * getCurrImage().getHeight())) / 2
-							- 3);
+			return new Point(p.x + ref.x - 3, p.y - (getCurrImageLabel().getHeight()
+					- (int) (this.getControlPanel().getScaleSlider().getValue() / 100.0 * getCurrImage().getHeight()))
+					/ 2 - 3);
 		}
-		return new Point(
-				p.x - (getCurrImageLabel().getWidth()
-						- (int) (ControlPanel.scaleSlider.getValue() / 100.0 * getCurrImage().getWidth())) / 2 - 3,
-				p.y - (getCurrImageLabel().getHeight()
-						- (int) (ControlPanel.scaleSlider.getValue() / 100.0 * getCurrImage().getHeight())) / 2 - 3);
+		return new Point(p.x - (getCurrImageLabel().getWidth()
+				- (int) (this.getControlPanel().getScaleSlider().getValue() / 100.0 * getCurrImage().getWidth())) / 2
+				- 3,
+				p.y - (getCurrImageLabel().getHeight() - (int) (this.getControlPanel().getScaleSlider().getValue()
+						/ 100.0 * getCurrImage().getHeight())) / 2 - 3);
 	}
 
 	/**
@@ -755,12 +754,13 @@ public class KappaFrame extends JFrame {
 	protected void enterCurve() {
 		// Enters a new Bezier Curve or B-Spline when the user presses ENTER
 		if (getInputType() == B_SPLINE) {
-			getCurves().addCurve(getPoints(), ControlPanel.currentLayerSlider.getValue(), getCurrCtrlPt(), B_SPLINE,
-					(getBsplineType() == BSpline.OPEN),
+			getCurves().addCurve(getPoints(), this.getControlPanel().getCurrentLayerSlider().getValue(),
+					getCurrCtrlPt(), B_SPLINE, (getBsplineType() == BSpline.OPEN),
 					(Integer) (getInfoPanel().getThresholdRadiusSpinner().getValue()));
 		} else {
-			getCurves().addCurve(getPoints(), ControlPanel.currentLayerSlider.getValue(), getCurrCtrlPt(), BEZIER_CURVE,
-					true, (Integer) (getInfoPanel().getThresholdRadiusSpinner().getValue()));
+			getCurves().addCurve(getPoints(), this.getControlPanel().getCurrentLayerSlider().getValue(),
+					getCurrCtrlPt(), BEZIER_CURVE, true,
+					(Integer) (getInfoPanel().getThresholdRadiusSpinner().getValue()));
 		}
 		this.getInfoPanel().updateHistograms();
 
@@ -839,8 +839,8 @@ public class KappaFrame extends JFrame {
 					boolean anythingClicked = false;
 					for (Curve curve : getCurves().getSelected()) {
 						if (curve.controlPointIndex(mapPoint(event.getPoint()),
-								ControlPanel.currentLayerSlider.getValue(), ControlPanel.scaleSlider.getValue() / 100.0,
-								true) != -1) {
+								getControlPanel().getCurrentLayerSlider().getValue(),
+								getControlPanel().getScaleSlider().getValue() / 100.0, true) != -1) {
 							anythingClicked = true;
 							setCurrEditedCurve(curve);
 							setControlPointSelected(true);
@@ -853,8 +853,8 @@ public class KappaFrame extends JFrame {
 					// Selecting a curve
 					for (int i = 0; i < getCurves().size(); i++) {
 						if ((c = getCurves().get(i)).isPointOnCurve(mapPoint(event.getPoint()),
-								ControlPanel.currentLayerSlider.getValue(),
-								ControlPanel.scaleSlider.getValue() / 100.0)) {
+								getControlPanel().getCurrentLayerSlider().getValue(),
+								getControlPanel().getScaleSlider().getValue() / 100.0)) {
 							anythingClicked = true;
 							if (!isShiftPressed()) {
 								getCurves().setAllUnselected();
@@ -915,7 +915,7 @@ public class KappaFrame extends JFrame {
 					}
 
 					Point2D mappedPoint = mapPoint(event.getPoint());
-					double scale = ControlPanel.scaleSlider.getValue() / 100.0;
+					double scale = getControlPanel().getScaleSlider().getValue() / 100.0;
 					getPoints().add(new Point2D.Double(mappedPoint.getX() / scale, mappedPoint.getY() / scale));
 					setCurrCtrlPt(getCurrCtrlPt() + 1);
 
@@ -960,8 +960,8 @@ public class KappaFrame extends JFrame {
 				if (getToolPanel().isSelected(0) && getCurves().getNoSelected() != 0) {
 					for (Curve c : getCurves().getSelected()) {
 						if ((index = c.controlPointIndex(mapPoint(event.getPoint()),
-								ControlPanel.currentLayerSlider.getValue(), ControlPanel.scaleSlider.getValue() / 100.0,
-								false)) != -1) {
+								getControlPanel().getCurrentLayerSlider().getValue(),
+								getControlPanel().getScaleSlider().getValue() / 100.0, false)) != -1) {
 							c.setHoveredControlPoint(index);
 							drawImageOverlay();
 							return;
@@ -997,9 +997,9 @@ public class KappaFrame extends JFrame {
 					// moves the control point
 					if (isControlPointSelected()) {
 						Point2D newPt = mapPoint(event.getPoint());
-						double scale = ControlPanel.scaleSlider.getValue() / 100.0;
+						double scale = getControlPanel().getScaleSlider().getValue() / 100.0;
 						getCurrEditedCurve().addKeyFrame(new Point2D.Double(newPt.getX() / scale, newPt.getY() / scale),
-								ControlPanel.currentLayerSlider.getValue());
+								getControlPanel().getCurrentLayerSlider().getValue());
 						getInfoPanel().updateHistograms();
 						getInfoPanel().repaint();
 						drawImageOverlay();
@@ -1049,31 +1049,34 @@ public class KappaFrame extends JFrame {
 			@Override
 			public void mouseWheelMoved(MouseWheelEvent e) {
 				int notches = e.getWheelRotation();
-				double scale = ControlPanel.scaleSlider.getValue() / 100.0;
+				double scale = getControlPanel().getScaleSlider().getValue() / 100.0;
 				if (notches < 0) {
 					// If we are at the min scaling increment or lower, we can't zoom out
-					if (scale <= ControlPanel.SCALE_INCREMENTS[0]) {
+					if (scale <= getControlPanel().SCALE_INCREMENTS[0]) {
 						return;
 					}
 
 					// Finds the next smallest scaling increment and sets the scale to that.
 					int i = 1;
-					while (i < ControlPanel.SCALE_INCREMENTS.length && ControlPanel.SCALE_INCREMENTS[i] < scale) {
+					while (i < getControlPanel().SCALE_INCREMENTS.length
+							&& getControlPanel().SCALE_INCREMENTS[i] < scale) {
 						i++;
 					}
-					ControlPanel.scaleSlider.setValue((int) Math.floor(100.0 * ControlPanel.SCALE_INCREMENTS[--i]));
+					getControlPanel().getScaleSlider()
+							.setValue((int) Math.floor(100.0 * getControlPanel().SCALE_INCREMENTS[--i]));
 				} else {
 					// If we are at the max scaling increment or higher, we can't zoom in
-					if (scale >= ControlPanel.SCALE_INCREMENTS[ControlPanel.SCALE_INCREMENTS.length - 1]) {
+					if (scale >= getControlPanel().SCALE_INCREMENTS[getControlPanel().SCALE_INCREMENTS.length - 1]) {
 						return;
 					}
 
 					// Finds the next largest scaling increment and sets the scale to that.
-					int i = ControlPanel.SCALE_INCREMENTS.length - 2;
-					while (i > 0 && ControlPanel.SCALE_INCREMENTS[i] > scale) {
+					int i = getControlPanel().SCALE_INCREMENTS.length - 2;
+					while (i > 0 && getControlPanel().SCALE_INCREMENTS[i] > scale) {
 						i--;
 					}
-					ControlPanel.scaleSlider.setValue((int) Math.ceil(100.0 * ControlPanel.SCALE_INCREMENTS[++i]));
+					getControlPanel().getScaleSlider()
+							.setValue((int) Math.ceil(100.0 * getControlPanel().SCALE_INCREMENTS[++i]));
 				}
 			}
 		}
@@ -1356,6 +1359,14 @@ public class KappaFrame extends JFrame {
 
 	public void setBsplineType(int bsplineType) {
 		this.bsplineType = bsplineType;
+	}
+
+	public boolean isEnableCtrlPtAdjustment() {
+		return enableCtrlPtAdjustment;
+	}
+
+	public void setEnableCtrlPtAdjustment(boolean enableCtrlPtAdjustment) {
+		this.enableCtrlPtAdjustment = enableCtrlPtAdjustment;
 	}
 
 }

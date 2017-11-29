@@ -438,7 +438,7 @@ public class ExportPanel extends JPanel {
 
 					if (EXPORT_HEADERS) {
 						// If the number of images in the stack is 1, then we ignore the stack options.
-						if (ControlPanel.currentLayerSlider.getMaximum() == 1) {
+						if (frame.getControlPanel().getCurrentLayerSlider().getMaximum() == 1) {
 							// Either exports all the curves or only the selected curves, depending on the
 							// export option.
 							if (exportAllCurves.isSelected()) {
@@ -453,7 +453,7 @@ public class ExportPanel extends JPanel {
 						} // TODO keyframe based export.
 						else // All frames.
 						if (exportEachFrame.isSelected()) {
-							for (int frame = 1; frame <= ControlPanel.currentLayerSlider.getMaximum(); frame++) {
+							for (int i = 1; i <= frame.getControlPanel().getCurrentLayerSlider().getMaximum(); i++) {
 
 							}
 						} else {
@@ -461,7 +461,7 @@ public class ExportPanel extends JPanel {
 						}
 					} else // TODO remove later
 					// If the number of images in the stack is 1, then we ignore the stack options.
-					if (ControlPanel.currentLayerSlider.getMaximum() == 1) {
+					if (frame.getControlPanel().getCurrentLayerSlider().getMaximum() == 1) {
 						// Either exports all the curves or only the selected curves, depending on the
 						// export option.
 						printHeaders(out);

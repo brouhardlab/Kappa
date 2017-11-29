@@ -48,7 +48,7 @@ public class TestScripting {
 		frame.getKappaMenubar().openImageFile(imageFile);
 		frame.getKappaMenubar().loadCurveFile(kappaFile);
 
-		KappaFrame.enableCtrlPtAdjustment = true;
+		frame.setEnableCtrlPtAdjustment(true);
 		frame.getInfoPanel().getThresholdRadiusSpinner().setValue(60);
 		frame.getInfoPanel().getThresholdSlider().setValue(160);
 		frame.getInfoPanel().getConversionField().setText(Double.toString(0.04));

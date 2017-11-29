@@ -70,16 +70,16 @@ public class ControlPanel extends JPanel {
 	final int KEYFRAME_MARKER_Y_SIZE = 7;
 
 	// Control Panel Sliders
-	public static JSlider scaleSlider;
-	public static JSlider currentLayerSlider;
+	private JSlider scaleSlider;
+	private JSlider currentLayerSlider;
 
 	// Buttons for the image channels to be displayed.
-	static JToggleButton[] channelButtons = new JToggleButton[3];
+	private JToggleButton[] channelButtons = new JToggleButton[3];
 	final static String[] CHANNEL_TOOLTIPS = { "Display Red Channel", "Display Green Channel", "Display Blue Channel" };
 	final static String[] CHANNEL_FILENAMES = { "red.jpg", "green.jpg", "blue.jpg" };
 
 	private static final long serialVersionUID = 1L;
-	JLabel layerLabel, scaleLabel;
+	private JLabel layerLabel, scaleLabel;
 
 	private KappaFrame frame;
 
@@ -95,16 +95,16 @@ public class ControlPanel extends JPanel {
 		this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 
 		// Create the slider and a label for it
-		currentLayerSlider = new JSlider(JSlider.HORIZONTAL, 1, 200, frame.getINIT_LAYER());
+		setCurrentLayerSlider(new JSlider(JSlider.HORIZONTAL, 1, 200, frame.getINIT_LAYER()));
 		layerLabel = new JLabel("");
 		layerLabel.setPreferredSize(new Dimension(65, Short.MAX_VALUE));
-		currentLayerSlider.addChangeListener(new LayerChanger());
-		currentLayerSlider.setPaintTicks(false);
-		currentLayerSlider.setEnabled(false);
+		getCurrentLayerSlider().addChangeListener(new LayerChanger());
+		getCurrentLayerSlider().setPaintTicks(false);
+		getCurrentLayerSlider().setEnabled(false);
 
 		// Add the slider and the label to the control panel
 		this.add(Box.createRigidArea(new Dimension(15, 0)));
-		this.add(currentLayerSlider);
+		this.add(getCurrentLayerSlider());
 		this.add(Box.createRigidArea(new Dimension(8, 0)));
 		this.add(layerLabel);
 
@@ -138,20 +138,20 @@ public class ControlPanel extends JPanel {
 		}
 
 		// Adds another slider for the scale factor
-		scaleSlider = new JSlider(JSlider.HORIZONTAL, MIN_SCALE, MAX_SCALE, DEFAULT_SCALE);
-		scaleSlider.setMajorTickSpacing(100);
-		scaleSlider.setMinorTickSpacing(50);
-		scaleSlider.setPaintTicks(true);
-		scaleSlider.setMaximumSize(new Dimension(200, Short.MAX_VALUE));
-		scaleSlider.addChangeListener(new ScaleChanger());
+		setScaleSlider(new JSlider(JSlider.HORIZONTAL, MIN_SCALE, MAX_SCALE, DEFAULT_SCALE));
+		getScaleSlider().setMajorTickSpacing(100);
+		getScaleSlider().setMinorTickSpacing(50);
+		getScaleSlider().setPaintTicks(true);
+		getScaleSlider().setMaximumSize(new Dimension(200, Short.MAX_VALUE));
+		getScaleSlider().addChangeListener(new ScaleChanger());
 		scaleLabel = new JLabel(frame.formatNumber(DEFAULT_SCALE, DIGITS_MAX_SCALE));
 		scaleLabel.setPreferredSize(new Dimension(40, Short.MAX_VALUE));
-		scaleSlider.setEnabled(false);
+		getScaleSlider().setEnabled(false);
 
 		this.add(Box.createHorizontalGlue());
 		this.add(Box.createHorizontalGlue());
 		this.add(new JLabel("SCALE: "));
-		this.add(scaleSlider);
+		this.add(getScaleSlider());
 		this.add(Box.createRigidArea(new Dimension(4, 0)));
 		this.add(scaleLabel);
 		addSpacer(25);
@@ -174,7 +174,7 @@ public class ControlPanel extends JPanel {
 
 		// Draws keyframe markers. Position affected by Swing UI style, which differs
 		// between OS X and Windows
-		Rectangle bounds = currentLayerSlider.getBounds();
+		Rectangle bounds = getCurrentLayerSlider().getBounds();
 		if (frame.getCurves().getNoSelected() == 1) {
 			g.setColor(Color.RED);
 			Curve currentCurve = frame.getCurves().getSelected()[0];
@@ -183,10 +183,10 @@ public class ControlPanel extends JPanel {
 				int centerX;
 				if (System.getProperty("os.name").equals("Mac OS X")) {
 					centerX = bounds.x + SLIDER_OFFSET_OSX + (int) ((frameLayer - 1.0)
-							/ (currentLayerSlider.getMaximum() - 1) * (bounds.width - 2 * SLIDER_OFFSET_OSX));
+							/ (getCurrentLayerSlider().getMaximum() - 1) * (bounds.width - 2 * SLIDER_OFFSET_OSX));
 				} else {
 					centerX = bounds.x + SLIDER_OFFSET_WIN + (int) ((frameLayer - 1.0)
-							/ (currentLayerSlider.getMaximum() - 1) * (bounds.width - 2 * SLIDER_OFFSET_WIN));
+							/ (getCurrentLayerSlider().getMaximum() - 1) * (bounds.width - 2 * SLIDER_OFFSET_WIN));
 				}
 				g.fillRect(centerX - KEYFRAME_MARKER_X_SIZE, bounds.y + KEYFRAME_MARKER_Y_OFFSET,
 						2 * KEYFRAME_MARKER_X_SIZE, KEYFRAME_MARKER_Y_SIZE);
@@ -206,18 +206,39 @@ public class ControlPanel extends JPanel {
 	private class LayerChanger implements ChangeListener {
 
 		public void stateChanged(ChangeEvent ce) {
-			layerLabel.setText(frame.formatNumber(currentLayerSlider.getValue(), frame.getMaxLayerDigits()) + " / "
+			layerLabel.setText(frame.formatNumber(getCurrentLayerSlider().getValue(), frame.getMaxLayerDigits()) + " / "
 					+ frame.getMaxLayer());
-			frame.setLayer(currentLayerSlider.getValue(), scaleSlider.getValue() / 100.0);
+			frame.setLayer(getCurrentLayerSlider().getValue(), getScaleSlider().getValue() / 100.0);
 		}
 	}
 
 	private class ScaleChanger implements ChangeListener {
 
 		public void stateChanged(ChangeEvent ce) {
-			scaleLabel.setText(frame.formatNumber(scaleSlider.getValue(), DIGITS_MAX_SCALE) + "%");
-			frame.setScaledImage(scaleSlider.getValue() / 100.0);
+			scaleLabel.setText(frame.formatNumber(getScaleSlider().getValue(), DIGITS_MAX_SCALE) + "%");
+			frame.setScaledImage(getScaleSlider().getValue() / 100.0);
 			frame.drawImageOverlay();
 		}
 	}
+
+	public JToggleButton[] getChannelButtons() {
+		return channelButtons;
+	}
+
+	public JSlider getScaleSlider() {
+		return scaleSlider;
+	}
+
+	public void setScaleSlider(JSlider scaleSlider) {
+		this.scaleSlider = scaleSlider;
+	}
+
+	public JSlider getCurrentLayerSlider() {
+		return currentLayerSlider;
+	}
+
+	public void setCurrentLayerSlider(JSlider currentLayerSlider) {
+		this.currentLayerSlider = currentLayerSlider;
+	}
+
 }

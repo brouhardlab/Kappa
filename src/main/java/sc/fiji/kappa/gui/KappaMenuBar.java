@@ -249,10 +249,10 @@ public class KappaMenuBar extends JMenuBar {
 		// runTestScript.setAccelerator (KeyStroke.getKeyStroke(KeyEvent.VK_S, 0));
 		// toolMenu.add(runTestScript);
 		JCheckBoxMenuItem toggleCtrlPtAdjustment = new JCheckBoxMenuItem("Enable Control Point Adjustment");
-		toggleCtrlPtAdjustment.setState(frame.enableCtrlPtAdjustment);
+		toggleCtrlPtAdjustment.setState(frame.isEnableCtrlPtAdjustment());
 		toggleCtrlPtAdjustment.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frame.enableCtrlPtAdjustment = !frame.enableCtrlPtAdjustment;
+				frame.setEnableCtrlPtAdjustment(!frame.isEnableCtrlPtAdjustment());
 				;
 			}
 		});
@@ -274,14 +274,16 @@ public class KappaMenuBar extends JMenuBar {
 		nextKeyframe.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, DEFAULT_MASK));
 		prevFrame.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				ControlPanel.currentLayerSlider.setValue(Math.max(ControlPanel.currentLayerSlider.getValue() - 1,
-						ControlPanel.currentLayerSlider.getMinimum()));
+				frame.getControlPanel().getCurrentLayerSlider()
+						.setValue(Math.max(frame.getControlPanel().getCurrentLayerSlider().getValue() - 1,
+								frame.getControlPanel().getCurrentLayerSlider().getMinimum()));
 			}
 		});
 		nextFrame.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				ControlPanel.currentLayerSlider.setValue(Math.min(ControlPanel.currentLayerSlider.getValue() + 1,
-						ControlPanel.currentLayerSlider.getMaximum()));
+				frame.getControlPanel().getCurrentLayerSlider()
+						.setValue(Math.min(frame.getControlPanel().getCurrentLayerSlider().getValue() + 1,
+								frame.getControlPanel().getCurrentLayerSlider().getMaximum()));
 			}
 		});
 		prevKeyframe.addActionListener(new ActionListener() {
@@ -331,11 +333,11 @@ public class KappaMenuBar extends JMenuBar {
 					}
 
 					for (int i = 0; i < 3; i++) {
-						ControlPanel.channelButtons[i].setSelected(false);
-						ControlPanel.channelButtons[i].setEnabled(false);
+						frame.getControlPanel().getChannelButtons()[i].setSelected(false);
+						frame.getControlPanel().getChannelButtons()[i].setEnabled(false);
 					}
 					frame.setCurrImage(frame.getDisplayedImageStack().getBufferedImage());
-					frame.setScaledImage(ControlPanel.scaleSlider.getValue() / 100.0);
+					frame.setScaledImage(frame.getControlPanel().getScaleSlider().getValue() / 100.0);
 					frame.getInfoPanel().repaint();
 					frame.drawImageOverlay();
 				} catch (IllegalArgumentException err) {
@@ -359,11 +361,11 @@ public class KappaMenuBar extends JMenuBar {
 					}
 
 					for (int i = 0; i < 3; i++) {
-						ControlPanel.channelButtons[i].setSelected(false);
-						ControlPanel.channelButtons[i].setEnabled(false);
+						frame.getControlPanel().getChannelButtons()[i].setSelected(false);
+						frame.getControlPanel().getChannelButtons()[i].setEnabled(false);
 					}
 					frame.setCurrImage(frame.getDisplayedImageStack().getBufferedImage());
-					frame.setScaledImage(ControlPanel.scaleSlider.getValue() / 100.0);
+					frame.setScaledImage(frame.getControlPanel().getScaleSlider().getValue() / 100.0);
 					frame.getInfoPanel().repaint();
 					frame.drawImageOverlay();
 				} catch (IllegalArgumentException err) {
@@ -387,11 +389,11 @@ public class KappaMenuBar extends JMenuBar {
 					}
 
 					for (int i = 0; i < 3; i++) {
-						ControlPanel.channelButtons[i].setSelected(false);
-						ControlPanel.channelButtons[i].setEnabled(false);
+						frame.getControlPanel().getChannelButtons()[i].setSelected(false);
+						frame.getControlPanel().getChannelButtons()[i].setEnabled(false);
 					}
 					frame.setCurrImage(frame.getDisplayedImageStack().getBufferedImage());
-					frame.setScaledImage(ControlPanel.scaleSlider.getValue() / 100.0);
+					frame.setScaledImage(frame.getControlPanel().getScaleSlider().getValue() / 100.0);
 					frame.getInfoPanel().repaint();
 					frame.drawImageOverlay();
 				} catch (IllegalArgumentException err) {
@@ -417,11 +419,11 @@ public class KappaMenuBar extends JMenuBar {
 								frame.getImageStackLayers()[1], frame.getImageStackLayers()[2], true)));
 
 				for (int i = 0; i < 3; i++) {
-					ControlPanel.channelButtons[i].setSelected(true);
-					ControlPanel.channelButtons[i].setEnabled(true);
+					frame.getControlPanel().getChannelButtons()[i].setSelected(true);
+					frame.getControlPanel().getChannelButtons()[i].setEnabled(true);
 				}
 				frame.setCurrImage(frame.getDisplayedImageStack().getBufferedImage());
-				frame.setScaledImage(ControlPanel.scaleSlider.getValue() / 100.0);
+				frame.setScaledImage(frame.getControlPanel().getScaleSlider().getValue() / 100.0);
 				frame.getInfoPanel().repaint();
 				frame.drawImageOverlay();
 			}
@@ -448,8 +450,8 @@ public class KappaMenuBar extends JMenuBar {
 		JMenu viewMenu = new JMenu("View");
 		zoomIn = new JMenuItem("Zoom In");
 		zoomOut = new JMenuItem("Zoom Out");
-		zoomIn.addActionListener(new ZoomInListener());
-		zoomOut.addActionListener(new ZoomOutListener());
+		zoomIn.addActionListener(new ZoomInListener(frame.getControlPanel()));
+		zoomOut.addActionListener(new ZoomOutListener(frame.getControlPanel()));
 		zoomIn.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, DEFAULT_MASK));
 		zoomOut.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, DEFAULT_MASK));
 		zoomIn.setEnabled(false);
@@ -523,7 +525,7 @@ public class KappaMenuBar extends JMenuBar {
 		getAntialiasingMenu().setState(false);
 		getAntialiasingMenu().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent a) {
-				frame.setScaledImage(ControlPanel.scaleSlider.getValue() / 100.0);
+				frame.setScaledImage(frame.getControlPanel().getScaleSlider().getValue() / 100.0);
 				frame.drawImageOverlay();
 			}
 		});
@@ -639,12 +641,12 @@ public class KappaMenuBar extends JMenuBar {
 
 		frame.setMaxLayer(frame.getImageStack().getNSlices());
 		frame.setMaxLayerDigits(Integer.toString(frame.getMaxLayer()).length());
-		ControlPanel.currentLayerSlider.setValue(frame.getINIT_LAYER());
-		ControlPanel.currentLayerSlider.setMaximum(frame.getMaxLayer());
-		ControlPanel.currentLayerSlider.setMajorTickSpacing(frame.getImageStack().getNSlices() / 10);
-		ControlPanel.currentLayerSlider.setPaintTicks(true);
-		ControlPanel.currentLayerSlider.setEnabled(true);
-		ControlPanel.scaleSlider.setEnabled(true);
+		frame.getControlPanel().getCurrentLayerSlider().setValue(frame.getINIT_LAYER());
+		frame.getControlPanel().getCurrentLayerSlider().setMaximum(frame.getMaxLayer());
+		frame.getControlPanel().getCurrentLayerSlider().setMajorTickSpacing(frame.getImageStack().getNSlices() / 10);
+		frame.getControlPanel().getCurrentLayerSlider().setPaintTicks(true);
+		frame.getControlPanel().getCurrentLayerSlider().setEnabled(true);
+		frame.getControlPanel().getScaleSlider().setEnabled(true);
 
 		// Sets the maximum intensity depending on the bit depth of the image.
 		if (getRGBColor().isSelected()) {
@@ -665,8 +667,10 @@ public class KappaMenuBar extends JMenuBar {
 		// Sets the buttons to active and selected if the image type is a Color one.
 		// Otherwise sets them to inactive
 		for (int i = 0; i < 3; i++) {
-			ControlPanel.channelButtons[i].setEnabled(frame.getImageStack().getType() == ImagePlus.COLOR_RGB);
-			ControlPanel.channelButtons[i].setSelected(frame.getImageStack().getType() == ImagePlus.COLOR_RGB);
+			frame.getControlPanel().getChannelButtons()[i]
+					.setEnabled(frame.getImageStack().getType() == ImagePlus.COLOR_RGB);
+			frame.getControlPanel().getChannelButtons()[i]
+					.setSelected(frame.getImageStack().getType() == ImagePlus.COLOR_RGB);
 		}
 
 		// Sets the scroll pane in the drawing panel to display the first layer of the
@@ -680,8 +684,8 @@ public class KappaMenuBar extends JMenuBar {
 		// occuring.
 		// We set the maximum image size to about 2000 x 2000 pixels = 4,000,000 pixels.
 		int avgPixelDim = (frame.getCurrImage().getWidth() + frame.getCurrImage().getHeight()) / 2;
-		ControlPanel.scaleSlider.setValue(ControlPanel.DEFAULT_SCALE);
-		ControlPanel.scaleSlider
+		frame.getControlPanel().getScaleSlider().setValue(ControlPanel.DEFAULT_SCALE);
+		frame.getControlPanel().getScaleSlider()
 				.setMaximum(Math.min(ControlPanel.MAX_SCALE, ControlPanel.MAX_AVG_PIXEL_DIM / avgPixelDim * 100));
 
 		this.frame.updateThresholded();
@@ -801,12 +805,13 @@ public class KappaMenuBar extends JMenuBar {
 			// images of different sizes
 			if (frame.DEBUG_MODE) {
 				for (Curve c : frame.getCurves()) {
-					c.scale(frame.getCurrImage().getWidth() / 82.0, ControlPanel.currentLayerSlider.getValue());
+					c.scale(frame.getCurrImage().getWidth() / 82.0,
+							frame.getControlPanel().getCurrentLayerSlider().getValue());
 				}
 			}
 
 			// Translates all the curves to their position at the current frame.
-			frame.getCurves().changeFrame(ControlPanel.currentLayerSlider.getValue());
+			frame.getCurves().changeFrame(frame.getControlPanel().getCurrentLayerSlider().getValue());
 
 			frame.drawImageOverlay();
 			in.close();
@@ -855,7 +860,7 @@ public class KappaMenuBar extends JMenuBar {
 				}
 
 				// Writes the control points and what keyframe they are at for each curve.
-				for (Curve.BControlPoints b : c.keyframes) {
+				for (Curve.BControlPoints b : c.getKeyframes()) {
 					out.println(b.t);
 
 					// If it's a closed B-Spline, we don't output the last redundant points that

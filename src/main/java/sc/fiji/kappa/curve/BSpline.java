@@ -127,7 +127,7 @@ public class BSpline extends Curve {
 			}
 			this.noCtrlPts = noCtrlPts + n;
 			fillPoints(this.ctrlPts, t);
-			keyframes.add(new BControlPoints(this.ctrlPts, t));
+			getKeyframes().add(new BControlPoints(this.ctrlPts, t));
 		}
 	}
 
@@ -165,7 +165,7 @@ public class BSpline extends Curve {
 		}
 		this.isOpen = !this.isOpen;
 		fillPoints(this.ctrlPts, t);
-		keyframes.add(new BControlPoints(this.ctrlPts, t));
+		getKeyframes().add(new BControlPoints(this.ctrlPts, t));
 	}
 
 	public void convertToClosed(int t) {
@@ -196,7 +196,7 @@ public class BSpline extends Curve {
 		}
 		this.isOpen = !this.isOpen;
 		fillPoints(this.ctrlPts, t);
-		keyframes.add(new BControlPoints(this.ctrlPts, t));
+		getKeyframes().add(new BControlPoints(this.ctrlPts, t));
 	}
 
 	protected List<Point2D> generateOffsetBounds(List<Point2D> bounds, int radius) {
@@ -591,10 +591,10 @@ public class BSpline extends Curve {
 		if (newError >= oldError) {
 			this.ctrlPts = oldCtrlPts;
 			fillPoints(ctrlPts, t);
-			keyframes.add(new BControlPoints(this.ctrlPts, t));
+			getKeyframes().add(new BControlPoints(this.ctrlPts, t));
 			return oldError / this.getNoPoints();
 		}
-		keyframes.add(new BControlPoints(this.ctrlPts, t));
+		getKeyframes().add(new BControlPoints(this.ctrlPts, t));
 		return newError / this.getNoPoints();
 	}
 
@@ -762,7 +762,7 @@ public class BSpline extends Curve {
 
 		computeSpline(ctrlPts, t);
 		fillPoints(ctrlPts, t);
-		keyframes.add(new BControlPoints(this.ctrlPts, t));
+		getKeyframes().add(new BControlPoints(this.ctrlPts, t));
 		return true;
 	}
 
@@ -777,7 +777,7 @@ public class BSpline extends Curve {
 
 		computeSpline(ctrlPts, t);
 		fillPoints(ctrlPts, t);
-		keyframes.add(new BControlPoints(this.ctrlPts, t));
+		getKeyframes().add(new BControlPoints(this.ctrlPts, t));
 	}
 
 	// TODO This and the local error evaluation do the same computation.
@@ -887,9 +887,9 @@ public class BSpline extends Curve {
 				} else {
 					ctrlPts.set(selectedCtrlPtIndex - ctrlPts.size() + B_SPLINE_DEGREE, newCtrlPt);
 				}
-				keyframes.add(new BControlPoints(ctrlPts, t));
+				getKeyframes().add(new BControlPoints(ctrlPts, t));
 				fillPoints(ctrlPts, t);
-				boundingBox = keyframes.getBounds(t);
+				boundingBox = getKeyframes().getBounds(t);
 			}
 		}
 	}

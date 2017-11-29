@@ -61,21 +61,21 @@ public abstract class Curve {
 	public static final int STRETCH_FACTOR = 1;
 
 	// The index of the selected control point. -1 if no control point is selected
-	int selectedCtrlPtIndex;
-	String name;
-	List<Point2D> ctrlPts;
-	int noCtrlPts;
-	int hoveredCtrlPt;
-	int dataRadius;
-	boolean selected;
-	public BArrayList keyframes;
-	Rectangle2D boundingBox;
-	List<Point2D> bounds;
-	Polygon scaledBounds;
-	List<Point2D> dataFittingBounds;
-	Polygon scaledDataBounds;
-	List<Point2D> thresholdedPixels;
-	private int t;
+	protected int selectedCtrlPtIndex;
+	protected String name;
+	protected List<Point2D> ctrlPts;
+	protected int noCtrlPts;
+	protected int hoveredCtrlPt;
+	protected int dataRadius;
+	protected boolean selected;
+	protected BArrayList keyframes;
+	protected Rectangle2D boundingBox;
+	protected List<Point2D> bounds;
+	protected Polygon scaledBounds;
+	protected List<Point2D> dataFittingBounds;
+	protected Polygon scaledDataBounds;
+	protected List<Point2D> thresholdedPixels;
+	protected int t;
 
 	// um/pixel conversion factor
 	protected static double micronPixelFactor = DEFAULT_MICRON_PIXEL_FACTOR;
@@ -84,15 +84,16 @@ public abstract class Curve {
 
 	public Curve(List<Point2D> ctrlPts, int t, int noCtrlPts, String name, int dataRadius, KappaFrame frame) {
 		this.frame = frame;
+
 		this.selected = true;
 		this.name = name;
 		this.ctrlPts = ctrlPts;
 		this.selectedCtrlPtIndex = -1;
 		this.noCtrlPts = noCtrlPts;
 		this.hoveredCtrlPt = -1;
-		keyframes = new BArrayList();
-		keyframes.add(new BControlPoints(this.ctrlPts, t));
-		this.boundingBox = keyframes.getBounds(t);
+		setKeyframes(new BArrayList());
+		getKeyframes().add(new BControlPoints(this.ctrlPts, t));
+		this.boundingBox = getKeyframes().getBounds(t);
 		this.dataRadius = dataRadius;
 		this.t = t;
 
@@ -163,8 +164,8 @@ public abstract class Curve {
 			// If the previous value is the same as the next value, then we're at a
 			// keyframe.
 			// Then we return these bounds, with the thresholding
-			BControlPoints prev = keyframes.getInclusivePrev(t);
-			BControlPoints next = keyframes.getInclusiveNext(t);
+			BControlPoints prev = getKeyframes().getInclusivePrev(t);
+			BControlPoints next = getKeyframes().getInclusiveNext(t);
 			if (prev.t == next.t) {
 				return new Rectangle2D.Double(prev.minX, prev.minY, prev.maxX - prev.minX, prev.maxY - prev.minY);
 			}
@@ -224,8 +225,8 @@ public abstract class Curve {
 	 */
 	public void translateCurve(int t) {
 		// Obtains the previous and subsequent keyframes for the Bezier Curve
-		BControlPoints prev = keyframes.getInclusivePrev(t);
-		BControlPoints next = keyframes.getInclusiveNext(t);
+		BControlPoints prev = getKeyframes().getInclusivePrev(t);
+		BControlPoints next = getKeyframes().getInclusiveNext(t);
 
 		// If this is a keyframe, (or any region past or before a defined keyframe),
 		// this will set the control points to
@@ -247,7 +248,7 @@ public abstract class Curve {
 					prev.defPoints[i].getY() + ((next.defPoints[i].getY() - prev.defPoints[i].getY()) * scaleFactor)));
 		}
 		fillPoints(ctrlPts, t);
-		this.boundingBox = keyframes.getBounds(t);
+		this.boundingBox = getKeyframes().getBounds(t);
 	}
 
 	public void addKeyFrame(Point2D newCtrlPt, int t) {
@@ -256,9 +257,9 @@ public abstract class Curve {
 			return;
 		}
 		ctrlPts.set(selectedCtrlPtIndex, newCtrlPt);
-		keyframes.add(new BControlPoints(ctrlPts, t));
+		getKeyframes().add(new BControlPoints(ctrlPts, t));
 		fillPoints(ctrlPts, t);
-		boundingBox = keyframes.getBounds(t);
+		boundingBox = getKeyframes().getBounds(t);
 
 		// Resets the minimum errors if a control point has been moved
 		minimumGlobalError = Double.MAX_VALUE;
@@ -266,13 +267,13 @@ public abstract class Curve {
 	}
 
 	public void addKeyframe(List<Point2D> newCtrlPts, int t) {
-		keyframes.add(new BControlPoints(ctrlPts, t));
+		getKeyframes().add(new BControlPoints(ctrlPts, t));
 	}
 
 	public int[] getKeyframeLayers() {
-		int[] keyframeLayers = new int[keyframes.size()];
+		int[] keyframeLayers = new int[getKeyframes().size()];
 		int i = 0;
-		for (BControlPoints p : keyframes) {
+		for (BControlPoints p : getKeyframes()) {
 			keyframeLayers[i++] = p.t;
 		}
 		return keyframeLayers;
@@ -416,7 +417,7 @@ public abstract class Curve {
 	}
 
 	public int getNoKeyframes() {
-		return keyframes.size();
+		return getKeyframes().size();
 	}
 
 	public int getNoCtrlPts() {
@@ -439,6 +440,14 @@ public abstract class Curve {
 
 	public List<Point2D> getCtrlPts() {
 		return ctrlPts;
+	}
+
+	public BArrayList getKeyframes() {
+		return keyframes;
+	}
+
+	public void setKeyframes(BArrayList keyframes) {
+		this.keyframes = keyframes;
 	}
 
 }

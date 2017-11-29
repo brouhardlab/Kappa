@@ -26,12 +26,15 @@
 package sc.fiji.kappa.gui;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-public class ZoomOutListener implements ActionListener {
+public class ZoomOutListener extends ZoomListener {
+
+	public ZoomOutListener(ControlPanel controlPanel) {
+		super(controlPanel);
+	}
 
 	public void actionPerformed(ActionEvent e) {
-		double scale = ControlPanel.scaleSlider.getValue() / 100.0;
+		double scale = controlPanel.getScaleSlider().getValue() / 100.0;
 
 		// If we are at the min scaling increment or lower, we can't zoom out
 		if (scale <= ControlPanel.SCALE_INCREMENTS[0]) {
@@ -43,6 +46,6 @@ public class ZoomOutListener implements ActionListener {
 		while (i < ControlPanel.SCALE_INCREMENTS.length && ControlPanel.SCALE_INCREMENTS[i] < scale) {
 			i++;
 		}
-		ControlPanel.scaleSlider.setValue((int) Math.floor(100.0 * ControlPanel.SCALE_INCREMENTS[--i]));
+		controlPanel.getScaleSlider().setValue((int) Math.floor(100.0 * ControlPanel.SCALE_INCREMENTS[--i]));
 	}
 }

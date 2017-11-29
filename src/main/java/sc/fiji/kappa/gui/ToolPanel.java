@@ -133,8 +133,8 @@ public class ToolPanel extends JPanel {
 		this.add(inspector);
 
 		// Sets up the listeners and keyboard shortcuts for our toolbar buttons
-		otherButtons[0].addActionListener(new ZoomInListener());
-		otherButtons[1].addActionListener(new ZoomOutListener());
+		otherButtons[0].addActionListener(new ZoomInListener(frame.getControlPanel()));
+		otherButtons[1].addActionListener(new ZoomOutListener(frame.getControlPanel()));
 	}
 
 	/**

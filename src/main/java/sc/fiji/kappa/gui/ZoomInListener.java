@@ -26,12 +26,15 @@
 package sc.fiji.kappa.gui;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-public class ZoomInListener implements ActionListener {
+public class ZoomInListener extends ZoomListener {
+
+	public ZoomInListener(ControlPanel controlPanel) {
+		super(controlPanel);
+	}
 
 	public void actionPerformed(ActionEvent e) {
-		double scale = ControlPanel.scaleSlider.getValue() / 100.0;
+		double scale = controlPanel.getScaleSlider().getValue() / 100.0;
 
 		// If we are at the max scaling increment or higher, we can't zoom in
 		if (scale >= ControlPanel.SCALE_INCREMENTS[ControlPanel.SCALE_INCREMENTS.length - 1]) {
@@ -43,6 +46,6 @@ public class ZoomInListener implements ActionListener {
 		while (i > 0 && ControlPanel.SCALE_INCREMENTS[i] > scale) {
 			i--;
 		}
-		ControlPanel.scaleSlider.setValue((int) Math.ceil(100.0 * ControlPanel.SCALE_INCREMENTS[++i]));
+		controlPanel.getScaleSlider().setValue((int) Math.ceil(100.0 * ControlPanel.SCALE_INCREMENTS[++i]));
 	}
 }

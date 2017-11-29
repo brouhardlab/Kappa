@@ -72,7 +72,7 @@ public class InfoPanel extends JPanel {
 
 	// Offset Curve Radius
 	public static final int DEFAULT_OFFSET_RADIUS = 10;
-	protected static int offsetRadius = DEFAULT_OFFSET_RADIUS;
+	private int offsetRadius = DEFAULT_OFFSET_RADIUS;
 
 	// Constants for sidebar coordinates
 	final static String[] DEFAULT_TITLES = { "Selected Curve: ", "Avg. Curvature: ", "Curve Length (~): ",
@@ -81,10 +81,10 @@ public class InfoPanel extends JPanel {
 	final static String[] MULT_SELECTED_TITLES = { "Selected Curves: ", "Avg. Mean Curvature: ",
 			"Avg. Curve Length (~)", "σ² of Avg. Curvatures: ", "Avg. Point Curvature: " };
 	final static int NO_STATS = DEFAULT_TITLES.length;
-	JLabel pointLabel;
-	JLabel[] statLabels;
-	JLabel[] valueLabels;
-	JLabel[] unitLabels;
+	private JLabel pointLabel;
+	private JLabel[] statLabels;
+	private JLabel[] valueLabels;
+	private JLabel[] unitLabels;
 	final static int[] TITLE_X = { 10, 10, 10, 10, 10 };
 	final static int[] TITLE_Y = { 25, 59, 76, 93, 110 };
 	final static int[] VALUE_X = { 10, 135, 135, 135, 135 };
@@ -271,7 +271,8 @@ public class InfoPanel extends JPanel {
 					try {
 						double newScaleFactor = Double.parseDouble(getConversionField().getText());
 						Curve.setMicronPixelFactor(newScaleFactor);
-						frame.getCurves().recalculateCurvature(ControlPanel.currentLayerSlider.getValue());
+						frame.getCurves()
+								.recalculateCurvature(frame.getControlPanel().getCurrentLayerSlider().getValue());
 					} catch (Exception err) {
 						Curve.setMicronPixelFactor(oldScaleFactor);
 					}
@@ -559,7 +560,7 @@ public class InfoPanel extends JPanel {
 				getThresholdSlider().setValue(frame.DEFAULT_BG_THRESHOLD);
 				getBgCheckBox().setSelected(false);
 				getRangeAveragingSpinner().setValue(3);
-				frame.setScaledImage(ControlPanel.scaleSlider.getValue() / 100.0);
+				frame.setScaledImage(frame.getControlPanel().getScaleSlider().getValue() / 100.0);
 				frame.drawImageOverlay();
 			}
 		});
@@ -904,6 +905,14 @@ public class InfoPanel extends JPanel {
 
 	public void setThresholdSlider(JSlider thresholdSlider) {
 		this.thresholdSlider = thresholdSlider;
+	}
+
+	protected int getOffsetRadius() {
+		return offsetRadius;
+	}
+
+	protected void setOffsetRadius(int offsetRadius) {
+		this.offsetRadius = offsetRadius;
 	}
 
 	// Refreshes the info panel value when the point slider changes

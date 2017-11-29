@@ -93,39 +93,39 @@ public class ContrastAdjuster extends PlugInFrame
 	static final String[] channelLabels = { "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "All" };
 	static final int[] channelConstants = { 4, 2, 1, 3, 5, 6, 7 };
 
-	ContrastPlot plot = new ContrastPlot();
-	Thread thread;
+	private ContrastPlot plot = new ContrastPlot();
+	private Thread thread;
 	private static Frame instance;
 
-	int minSliderValue = -1, maxSliderValue = -1, brightnessValue = -1, contrastValue = -1;
-	int sliderRange = 256;
-	boolean doAutoAdjust, doReset, doSet, doApplyLut;
+	private int minSliderValue = -1, maxSliderValue = -1, brightnessValue = -1, contrastValue = -1;
+	private int sliderRange = 256;
+	private boolean doAutoAdjust, doReset, doSet, doApplyLut;
 
-	JPanel panel;
-	Panel tPanel;
-	Button autoB, resetB;
-	int previousImageID;
-	int previousType;
-	int previousSlice = 1;
-	Object previousSnapshot;
-	ImageJ ij;
-	double min, max;
-	double previousMin, previousMax;
-	double defaultMin, defaultMax;
-	int contrast, brightness;
-	boolean RGBImage;
-	Scrollbar minSlider, maxSlider, contrastSlider, brightnessSlider;
-	Label minLabel, maxLabel, windowLabel, levelLabel;
-	boolean done;
-	int autoThreshold;
-	GridBagLayout gridbag;
-	GridBagConstraints c;
-	int y = 0;
-	boolean windowLevel, balance;
-	Font monoFont = new Font("Monospaced", Font.PLAIN, 12);
-	Font sanFont = new Font("SansSerif", Font.PLAIN, 12);
-	int channels = 7; // RGB
-	Choice choice;
+	private JPanel panel;
+	private Panel tPanel;
+	private Button autoB, resetB;
+	private int previousImageID;
+	private int previousType;
+	private int previousSlice = 1;
+	private Object previousSnapshot;
+	private ImageJ ij;
+	private double min, max;
+	private double previousMin, previousMax;
+	private double defaultMin, defaultMax;
+	private int contrast, brightness;
+	private boolean RGBImage;
+	private Scrollbar minSlider, maxSlider, contrastSlider, brightnessSlider;
+	private Label minLabel, maxLabel, windowLabel, levelLabel;
+	private boolean done;
+	private int autoThreshold;
+	private GridBagLayout gridbag;
+	private GridBagConstraints c;
+	private int y = 0;
+	private boolean windowLevel, balance;
+	private Font monoFont = new Font("Monospaced", Font.PLAIN, 12);
+	private Font sanFont = new Font("SansSerif", Font.PLAIN, 12);
+	private int channels = 7; // RGB
+	private Choice choice;
 
 	private KappaFrame frame;
 
@@ -944,7 +944,7 @@ public class ContrastAdjuster extends PlugInFrame
 
 		// Updates the adjusted image.
 		frame.setCurrImage(frame.getDisplayedImageStack().getBufferedImage());
-		frame.setScaledImage(ControlPanel.scaleSlider.getValue() / 100.0);
+		frame.setScaledImage(frame.getControlPanel().getScaleSlider().getValue() / 100.0);
 		frame.drawImageOverlay();
 
 		frame.getCurves().updateIntensities();
