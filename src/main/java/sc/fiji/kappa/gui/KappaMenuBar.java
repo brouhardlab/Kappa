@@ -118,10 +118,12 @@ public class KappaMenuBar extends JMenuBar {
 		kappaOpen.setFileFilter(filter);
 
 		// File chooser for curve data
-		kappaLoad = new JFileChooser();
 		FileNameExtensionFilter kappaFilter = new FileNameExtensionFilter("Kappa Files", "kapp");
+
+		kappaLoad = new JFileChooser();
 		kappaLoad.setFileFilter(kappaFilter);
 		kappaLoad.setDialogTitle("Load Existing Curve Data");
+
 		kappaSave = new JFileChooser();
 		kappaSave.setFileFilter(kappaFilter);
 		kappaSave.setDialogTitle("Save Curve Data");
@@ -165,16 +167,17 @@ public class KappaMenuBar extends JMenuBar {
 		JMenuItem saveMenu = new JMenuItem("Save Curve Data");
 		saveMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, DEFAULT_MASK));
 		saveMenu.addActionListener(e -> {
-			// Handles save button action.
-			int returnVal = kappaSave.showSaveDialog(this.frame);
 
 			String dirPath = frame.getImageStack().getOriginalFileInfo().directory;
 			if (dirPath != null) {
 				String kappaPath = FilenameUtils.removeExtension(frame.getImageStack().getOriginalFileInfo().fileName);
-				kappaPath += ".csv";
+				kappaPath += ".kapp";
 				File fullPath = new File(dirPath, kappaPath);
 				kappaSave.setSelectedFile(fullPath);
 			}
+
+			// Handles save button action.
+			int returnVal = kappaSave.showSaveDialog(this.frame);
 
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				file = kappaSave.getSelectedFile();
