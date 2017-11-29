@@ -659,13 +659,13 @@ public class KappaMenuBar extends JMenuBar {
 					.setMaximum((int) (Math.pow(2, frame.getDisplayedImageStack().getBitDepth())));
 		}
 
-		// We disable export options for stacks if this is just a single image.
-		if (frame.getMaxLayer() == 1) {
-			frame.getExportPanel().getPerStackPanel().hide();
-		} else if (frame.getMaxLayer() > 1) {
-			frame.getExportPanel().getPerStackPanel().show();
-		}
-		frame.getExportPanel().repaint();
+		/*
+		 * // We disable export options for stacks if this is just a single image. if
+		 * (frame.getMaxLayer() == 1) {
+		 * frame.getExportPanel().getPerStackPanel().hide(); } else if
+		 * (frame.getMaxLayer() > 1) { frame.getExportPanel().getPerStackPanel().show();
+		 * } frame.getExportPanel().repaint();
+		 */
 
 		// Sets the buttons to active and selected if the image type is a Color one.
 		// Otherwise sets them to inactive

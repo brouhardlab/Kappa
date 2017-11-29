@@ -34,11 +34,8 @@ import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -149,7 +146,6 @@ public class KappaFrame extends JFrame {
 
 	// Panels
 	private InfoPanel infoPanel;
-	private ExportPanel exportPanel;
 	private ControlPanel controlPanel;
 	private ToolPanel toolPanel;
 	private KappaMenuBar kappaMenubar;
@@ -162,8 +158,6 @@ public class KappaFrame extends JFrame {
 		// Set up the original frame
 		super(APPLICATION_NAME);
 
-		resetKappaPlugin();
-
 		context.inject(this);
 
 		setSize(APP_DEFAULT_WIDTH, APP_DEFAULT_HEIGHT);
@@ -171,7 +165,6 @@ public class KappaFrame extends JFrame {
 
 		setLayout(new BorderLayout());
 		setInfoPanel(new InfoPanel(this));
-		setExportPanel(new ExportPanel(this));
 		setControlPanel(new ControlPanel(this));
 		setToolPanel(new ToolPanel(this));
 		add(getInfoPanel(), BorderLayout.EAST);
@@ -256,20 +249,6 @@ public class KappaFrame extends JFrame {
 		this.setKappaMenubar(new KappaMenuBar(context, this));
 		this.setJMenuBar(this.getKappaMenubar());
 
-		// Moves the export button position when the window is resized.
-		this.getRootPane().addComponentListener(new ComponentAdapter() {
-			@Override
-			public void componentResized(ComponentEvent e) {
-				if (System.getProperty("os.name").equals("Mac OS X")) {
-					getExportPanel().getExportButton()
-							.setBounds(new Rectangle(20, getHeight() - 150, PANEL_WIDTH - 40, 25));
-				} else {
-					getExportPanel().getExportButton()
-							.setBounds(new Rectangle(20, getHeight() - 200, PANEL_WIDTH - 40, 25));
-				}
-			}
-		});
-
 		this.setFocusable(true);
 		this.requestFocusInWindow();
 	}
@@ -278,20 +257,12 @@ public class KappaFrame extends JFrame {
 		return infoPanel;
 	}
 
-	public ExportPanel getExportPanel() {
-		return exportPanel;
-	}
-
 	public ControlPanel getControlPanel() {
 		return controlPanel;
 	}
 
 	public ToolPanel getToolPanel() {
 		return toolPanel;
-	}
-
-	private void resetKappaPlugin() {
-
 	}
 
 	public Overlay getOverlay() {
@@ -1231,10 +1202,6 @@ public class KappaFrame extends JFrame {
 
 	public void setInfoPanel(InfoPanel infoPanel) {
 		this.infoPanel = infoPanel;
-	}
-
-	public void setExportPanel(ExportPanel exportPanel) {
-		this.exportPanel = exportPanel;
 	}
 
 	public void setControlPanel(ControlPanel controlPanel) {
