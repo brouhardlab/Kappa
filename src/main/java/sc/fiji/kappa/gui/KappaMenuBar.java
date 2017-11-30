@@ -796,15 +796,6 @@ public class KappaMenuBar extends JMenuBar {
 				}
 			}
 
-			// Scales the test curves I generated (from an 82 pixel wide image), for use on
-			// images of different sizes
-			if (frame.DEBUG_MODE) {
-				for (Curve c : frame.getCurves()) {
-					c.scale(frame.getCurrImage().getWidth() / 82.0,
-							frame.getControlPanel().getCurrentLayerSlider().getValue());
-				}
-			}
-
 			// Translates all the curves to their position at the current frame.
 			frame.getCurves().changeFrame(frame.getControlPanel().getCurrentLayerSlider().getValue());
 
