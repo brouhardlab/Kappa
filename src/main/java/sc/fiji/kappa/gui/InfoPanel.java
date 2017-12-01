@@ -267,16 +267,7 @@ public class InfoPanel extends JPanel {
 					e.consume();
 				}
 				if (c == KeyEvent.VK_ENTER) {
-					Double oldScaleFactor = Curve.getMicronPixelFactor();
-					try {
-						double newScaleFactor = Double.parseDouble(getConversionField().getText());
-						Curve.setMicronPixelFactor(newScaleFactor);
-						frame.getCurves()
-								.recalculateCurvature(frame.getControlPanel().getCurrentLayerSlider().getValue());
-					} catch (Exception err) {
-						Curve.setMicronPixelFactor(oldScaleFactor);
-					}
-					repaint();
+					updateConversionField(getConversionField().getText());
 				}
 			}
 		});
@@ -935,5 +926,17 @@ public class InfoPanel extends JPanel {
 			panels.toggleVisibility(event.getPoint());
 			repaint();
 		}
+	}
+
+	public void updateConversionField(String newValue) {
+		Double oldScaleFactor = Curve.getMicronPixelFactor();
+		try {
+			double newScaleFactor = Double.parseDouble(newValue);
+			Curve.setMicronPixelFactor(newScaleFactor);
+			frame.getCurves().recalculateCurvature(frame.getControlPanel().getCurrentLayerSlider().getValue());
+		} catch (Exception err) {
+			Curve.setMicronPixelFactor(oldScaleFactor);
+		}
+		repaint();
 	}
 }
