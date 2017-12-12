@@ -38,6 +38,7 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -53,10 +54,15 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.commons.io.FilenameUtils;
 import org.scijava.Context;
 import org.scijava.convert.ConvertService;
+import org.scijava.log.LogService;
+import org.scijava.plugin.Parameter;
 
 import ij.ImagePlus;
+import ij.gui.PolygonRoi;
+import ij.gui.Roi;
 import ij.plugin.ChannelSplitter;
 import ij.plugin.RGBStackMerge;
+import ij.plugin.frame.RoiManager;
 import ij.process.ImageConverter;
 import ij.process.StackConverter;
 import net.imagej.display.ImageDisplay;
@@ -76,6 +82,9 @@ public class KappaMenuBar extends JMenuBar {
 	// 2 = Parameterized by Point Index
 	public static final int DEFAULT_DISTRIBUTION_DISPLAY = 2;
 	public static int distributionDisplay;
+
+	@Parameter
+	private LogService log;
 
 	// File handlers
 	private File file;
@@ -150,6 +159,13 @@ public class KappaMenuBar extends JMenuBar {
 			openActiveImage(context);
 		});
 		fileMenu.add(openActiveMenu);
+		fileMenu.addSeparator();
+
+		JMenuItem importROIsAsCurvesMenu = new JMenuItem("Import ROIs as curves");
+		importROIsAsCurvesMenu.addActionListener(e -> {
+			importROIsAsCurves(context);
+		});
+		fileMenu.add(importROIsAsCurvesMenu);
 		fileMenu.addSeparator();
 
 		JMenuItem loadMenu = new JMenuItem("Load Curve Data");
@@ -590,6 +606,67 @@ public class KappaMenuBar extends JMenuBar {
 		helpMenu.add(userManualLink);
 		helpMenu.add(aboutMenuItem);
 		this.add(helpMenu);
+	}
+
+	private void importROIsAsCurves(Context context) {
+
+		RoiManager rm = RoiManager.getInstance();
+		if (rm == null) {
+			log.warn("RoiManager is empty. No curves imported.");
+			return;
+		}
+
+		Roi[] rois = rm.getRoisAsArray();
+		Roi roi;
+		PolygonRoi polygonRoi;
+		List<Point2D> points;
+		float x;
+		float y;
+		for (int i = 0; i < rois.length; i++) {
+			roi = rois[i];
+
+			if (roi.getTypeAsString().equals("Polyline")) {
+
+				polygonRoi = (PolygonRoi) roi;
+
+				if (polygonRoi.getXCoordinates().length < 4) {
+					log.warn("Polyline needs at least 4 points.");
+					return;
+				}
+
+				points = new ArrayList<>();
+
+				for (int j = 0; j < polygonRoi.getFloatPolygon().xpoints.length; j++) {
+					x = polygonRoi.getFloatPolygon().xpoints[j];
+					y = polygonRoi.getFloatPolygon().ypoints[j];
+					points.add(new Point2D.Double(x, y));
+				}
+
+				// Enters a new Bezier Curve or B-Spline when the user presses ENTER
+				if (frame.getInputType() == frame.B_SPLINE) {
+					frame.getCurves().addCurve(points, frame.getControlPanel().getCurrentLayerSlider().getValue(),
+							points.size(), frame.B_SPLINE, (frame.getBsplineType() == BSpline.OPEN),
+							(Integer) (frame.getInfoPanel().getThresholdRadiusSpinner().getValue()));
+				} else {
+					frame.getCurves().addCurve(points, frame.getControlPanel().getCurrentLayerSlider().getValue(),
+							points.size(), frame.BEZIER_CURVE, true,
+							(Integer) (frame.getInfoPanel().getThresholdRadiusSpinner().getValue()));
+				}
+
+				// Updates our list after adding the curve
+				frame.getInfoPanel().getListData().addElement("  CURVE " + frame.getCurves().getCount());
+				frame.getInfoPanel().getList().setListData(frame.getInfoPanel().getListData());
+				//
+
+			}
+		}
+		frame.getInfoPanel().getList().setSelectedIndex(frame.getCurves().size() - 1);
+		frame.getInfoPanel().getCurvesList().revalidate();
+		frame.getInfoPanel().getPointSlider().setEnabled(true);
+		frame.getInfoPanel().getPointSlider().setValue(0);
+		frame.setCurrCtrlPt(0);
+		frame.getKappaMenubar().getEnter().setEnabled(false);
+		frame.drawImageOverlay();
 	}
 
 	public void openImageFile(String file) {
