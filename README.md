@@ -35,4 +35,4 @@ This work started in 2013 in the [Gary Brouhard laboratory](http://brouhardlab.m
 
 ## License
 
-MIT license. See [LICENSE.txt](LICENSE.txt)
+MIT. See [LICENSE.txt](LICENSE.txt)
