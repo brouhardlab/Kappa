@@ -117,6 +117,10 @@ public class KappaFrame extends JFrame {
 	public static final int DEFAULT_FITTING_ALGORITHM = 0;
 	private String fittingAlgorithm;
 
+	// The global percent increase in error we allow to simplify the fitted curve.
+	private double globalThreshold = 0.04;
+	private double localThreshold = 0.05;
+
 	private Overlay overlay;
 
 	// Bezier Curve information
@@ -1334,6 +1338,22 @@ public class KappaFrame extends JFrame {
 
 	public void setEnableCtrlPtAdjustment(boolean enableCtrlPtAdjustment) {
 		this.enableCtrlPtAdjustment = enableCtrlPtAdjustment;
+	}
+
+	public double getGlobalThreshold() {
+		return globalThreshold;
+	}
+
+	public void setGlobalThreshold(double globalThreshold) {
+		this.globalThreshold = globalThreshold;
+	}
+
+	public double getLocalThreshold() {
+		return localThreshold;
+	}
+
+	public void setLocalThreshold(double localThreshold) {
+		this.localThreshold = localThreshold;
 	}
 
 }

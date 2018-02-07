@@ -123,6 +123,8 @@ public class InfoPanel extends JPanel {
 	final static Rectangle THRESHOLD_RADIUS_SPINNER_BOUNDS = new Rectangle(169, 165, 45, 23);
 	final static Rectangle SHOW_RADIUS_CHECKBOX_BOUNDS = new Rectangle(192, 185, 25, 25);
 	final static Rectangle SHOW_DATAPOINTS_CHECKBOX_BOUNDS = new Rectangle(192, 202, 25, 25);
+	final static Rectangle GLOBAL_ERROR_LABEL_BOUNDS = new Rectangle(192, 225, 25, 25);
+	
 	public static final String[] FITTING_CHANNELS = { "The Red Channel", "The Green Channel", "The Blue Channel",
 			"All Channels" };
 	public static final String[] DATA_RANGE_OPTIONS = { "Brighter", "Darker" };
@@ -370,6 +372,7 @@ public class InfoPanel extends JPanel {
 		addLabelComponent("Show Data Points: ", curveFittingPanel, SHOW_DATA_POINTS_LABEL_BOUNDS);
 		addLabelComponent("Choose points", curveFittingPanel, CHOOSE_RANGE_BOUNDS_1);
 		addLabelComponent("than:", curveFittingPanel, CHOOSE_RANGE_BOUNDS_2);
+		addLabelComponent("Global Error Threshold: ", curveFittingPanel, GLOBAL_ERROR_LABEL_BOUNDS);
 
 		setDataThresholdSlider(new JSlider(JSlider.HORIZONTAL, 0, 256, DEFAULT_DATA_THRESHOLD));
 		getDataThresholdSlider().addChangeListener(new ChangeListener() {

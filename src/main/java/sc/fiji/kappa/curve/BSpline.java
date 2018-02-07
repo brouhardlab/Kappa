@@ -55,10 +55,6 @@ public class BSpline extends Curve {
 	// Regularization term when fitting.
 	public static final double SMOOTHNESS_FACTOR = 10;
 
-	// The global percent increase in error we allow to simplify the fitted curve.
-	public static final double GLOBAL_THRESHOLD = 0.04;
-	public static final double LOCAL_THRESHOLD = 0.05;
-
 	private int[] oldFootpoints;
 	private Point2D[] dataPointsCopy;
 
@@ -648,8 +644,8 @@ public class BSpline extends Curve {
 			// Repeat until the error has increased by more than a certain scalar multiple
 			// of the minimum error
 			// observed so far, or if it cannot be reduced further.
-		} while (globalError < minimumGlobalError * (1 + GLOBAL_THRESHOLD)
-				&& localError < minimumLocalError * (1 + LOCAL_THRESHOLD) && wasReduced);
+		} while (globalError < minimumGlobalError * (1 + frame.getGlobalThreshold())
+				&& localError < minimumLocalError * (1 + frame.getLocalThreshold()) && wasReduced);
 
 		// Reverts the control points to the previous optimal result.
 		if (wasReduced) {
@@ -697,7 +693,7 @@ public class BSpline extends Curve {
 
 			// If the minimum error from any of the removed ctrl points still satisfies our
 			// thresholds, we remove it
-			if (minimumErrorIndex != -1 && minimumError < minimumLocalError * (1 + LOCAL_THRESHOLD)) {
+			if (minimumErrorIndex != -1 && minimumError < minimumLocalError * (1 + frame.getLocalThreshold())) {
 				reduceCurve(minimumErrorIndex, t);
 				globalError = fittingIteration(dataPoints, weights, t);
 				localError = evaluateMaxLocalError(dataPoints, weights) / BezierCurve.NO_CURVE_POINTS;
@@ -1310,4 +1306,5 @@ public class BSpline extends Curve {
 		}
 		return max;
 	}
+
 }
