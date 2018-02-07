@@ -123,8 +123,11 @@ public class InfoPanel extends JPanel {
 	final static Rectangle THRESHOLD_RADIUS_SPINNER_BOUNDS = new Rectangle(169, 165, 45, 23);
 	final static Rectangle SHOW_RADIUS_CHECKBOX_BOUNDS = new Rectangle(192, 185, 25, 25);
 	final static Rectangle SHOW_DATAPOINTS_CHECKBOX_BOUNDS = new Rectangle(192, 202, 25, 25);
-	final static Rectangle GLOBAL_ERROR_LABEL_BOUNDS = new Rectangle(192, 225, 25, 25);
-	
+	final static Rectangle GLOBAL_ERROR_LABEL_BOUNDS = new Rectangle(10, 225, 145, 25);
+	final static Rectangle GLOBAL_ERROR_SPINNER_BOUNDS = new Rectangle(155, 225, 50, 25);
+	final static Rectangle LOCAL_ERROR_LABEL_BOUNDS = new Rectangle(10, 253, 145, 25);
+	final static Rectangle LOCAL_ERROR_SPINNER_BOUNDS = new Rectangle(155, 253, 50, 25);
+
 	public static final String[] FITTING_CHANNELS = { "The Red Channel", "The Green Channel", "The Blue Channel",
 			"All Channels" };
 	public static final String[] DATA_RANGE_OPTIONS = { "Brighter", "Darker" };
@@ -363,7 +366,7 @@ public class InfoPanel extends JPanel {
 			statisticsPanel.addComponent(unitLabels[i]);
 		}
 
-		Panel curveFittingPanel = new Panel(227, "CURVE FITTING OPTIONS");
+		Panel curveFittingPanel = new Panel(280, "CURVE FITTING OPTIONS");
 		panels.addPanel(curveFittingPanel);
 		addLabelComponent("Fit Points Using: ", curveFittingPanel, FITTING_CHANNEL_LABEL_BOUNDS);
 		addLabelComponent("Data Fitting Algorithm: ", curveFittingPanel, FITTING_LABEL_BOUNDS);
@@ -373,6 +376,7 @@ public class InfoPanel extends JPanel {
 		addLabelComponent("Choose points", curveFittingPanel, CHOOSE_RANGE_BOUNDS_1);
 		addLabelComponent("than:", curveFittingPanel, CHOOSE_RANGE_BOUNDS_2);
 		addLabelComponent("Global Error Threshold: ", curveFittingPanel, GLOBAL_ERROR_LABEL_BOUNDS);
+		addLabelComponent("Local Error Threshold: ", curveFittingPanel, LOCAL_ERROR_LABEL_BOUNDS);
 
 		setDataThresholdSlider(new JSlider(JSlider.HORIZONTAL, 0, 256, DEFAULT_DATA_THRESHOLD));
 		getDataThresholdSlider().addChangeListener(new ChangeListener() {
@@ -463,6 +467,26 @@ public class InfoPanel extends JPanel {
 		});
 		this.add(getThresholdRadiusSpinner());
 		curveFittingPanel.addComponent(getThresholdRadiusSpinner());
+
+		JSpinner globalErrorSpinner = new JSpinner(new SpinnerNumberModel(frame.getGlobalThreshold(), 0, 1, 0.01));
+		globalErrorSpinner.setBounds(GLOBAL_ERROR_SPINNER_BOUNDS);
+		globalErrorSpinner.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent c) {
+				frame.setGlobalThreshold((double) globalErrorSpinner.getValue());
+			}
+		});
+		this.add(globalErrorSpinner);
+		curveFittingPanel.addComponent(globalErrorSpinner);
+
+		JSpinner localErrorSpinner = new JSpinner(new SpinnerNumberModel(frame.getLocalThreshold(), 0, 1, 0.01));
+		localErrorSpinner.setBounds(LOCAL_ERROR_SPINNER_BOUNDS);
+		localErrorSpinner.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent c) {
+				frame.setLocalThreshold((double) localErrorSpinner.getValue());
+			}
+		});
+		this.add(localErrorSpinner);
+		curveFittingPanel.addComponent(localErrorSpinner);
 
 		setShowRadiusCheckBox(new JCheckBox());
 		getShowRadiusCheckBox().setBounds(SHOW_RADIUS_CHECKBOX_BOUNDS);
