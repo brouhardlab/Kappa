@@ -571,7 +571,7 @@ public class BezierCurve extends Curve {
 			}
 			Point2D p = this.getPoint(currentPoint);
 			Point2D dp = hodographPoints
-					.get((int) ((BezierCurve.NO_CURVE_POINTS - 1) * currentPoint / KappaFrame.UNIT_SCALE));
+					.get((int) ((BezierCurve.NO_CURVE_POINTS - 1) * currentPoint / frame.getNumberOfPointsPerCurve()));
 
 			if (showTangent) {
 				// Draws a tangent line at the point
@@ -629,7 +629,7 @@ public class BezierCurve extends Curve {
 	}
 
 	public double getPointCurvature(int percentage) {
-		int n = (int) ((BezierCurve.NO_CURVE_POINTS - 1) * percentage / KappaFrame.UNIT_SCALE);
+		int n = (int) ((BezierCurve.NO_CURVE_POINTS - 1) * percentage / frame.getNumberOfPointsPerCurve());
 		return getExactPointCurvature(n);
 	}
 
@@ -851,7 +851,7 @@ public class BezierCurve extends Curve {
 	}
 
 	public BezierPoint getPoint(int percentage) {
-		int n = (int) ((BezierCurve.NO_CURVE_POINTS - 1) * percentage / KappaFrame.UNIT_SCALE);
+		int n = (int) ((BezierCurve.NO_CURVE_POINTS - 1) * percentage / frame.getNumberOfPointsPerCurve());
 		return getExactPoint(n);
 	}
 

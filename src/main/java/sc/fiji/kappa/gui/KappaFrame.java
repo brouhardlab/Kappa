@@ -82,7 +82,6 @@ public class KappaFrame extends JFrame {
 
 	// Application Constants
 	public static final String APPLICATION_NAME = "Kappa";
-	public static final int UNIT_SCALE = 1000;
 	public static final int APP_DEFAULT_WIDTH = 1250;
 	public static final int APP_DEFAULT_HEIGHT = 950;
 	public static final int APP_MIN_WIDTH = 700;
@@ -120,6 +119,8 @@ public class KappaFrame extends JFrame {
 	// The global percent increase in error we allow to simplify the fitted curve.
 	private double globalThreshold = 0.04;
 	private double localThreshold = 0.05;
+
+	private static final int DEFAULT_NUMBER_POINTS = 1000;
 
 	private Overlay overlay;
 
@@ -447,9 +448,17 @@ public class KappaFrame extends JFrame {
 		// Draws all the Bezier Curves
 		g2.setColor(Color.GRAY);
 		g2.setStroke(new BasicStroke((int) (Curve.DEFAULT_STROKE_THICKNESS * scale)));
-		getCurves().draw(g2, scale, getInfoPanel().getPointSlider().getValue(),
-				getKappaMenubar().getBoundingBoxMenu().getState(), getKappaMenubar().getScaleCurvesMenu().getState(),
-				getKappaMenubar().getTangentMenu().getState(), getInfoPanel().getShowRadiusCheckBox().isSelected());
+
+		int currentPoint = getInfoPanel().getPointSlider().getValue();
+		if (curves.getSelected().length >= 1) {
+			if (currentPoint > curves.getSelected()[0].getNoPoints()) {
+				currentPoint = 0;
+			}
+		}
+
+		getCurves().draw(g2, scale, currentPoint, getKappaMenubar().getBoundingBoxMenu().getState(),
+				getKappaMenubar().getScaleCurvesMenu().getState(), getKappaMenubar().getTangentMenu().getState(),
+				getInfoPanel().getShowRadiusCheckBox().isSelected());
 
 		// Draws the points we've built so far if a complete Bezier Curve has not been
 		// formed
@@ -1026,32 +1035,40 @@ public class KappaFrame extends JFrame {
 				int notches = e.getWheelRotation();
 				double scale = getControlPanel().getScaleSlider().getValue() / 100.0;
 				if (notches < 0) {
+					getControlPanel();
 					// If we are at the min scaling increment or lower, we can't zoom out
-					if (scale <= getControlPanel().SCALE_INCREMENTS[0]) {
+					if (scale <= ControlPanel.SCALE_INCREMENTS[0]) {
 						return;
 					}
 
 					// Finds the next smallest scaling increment and sets the scale to that.
 					int i = 1;
-					while (i < getControlPanel().SCALE_INCREMENTS.length
-							&& getControlPanel().SCALE_INCREMENTS[i] < scale) {
+					getControlPanel();
+					getControlPanel();
+					while (i < ControlPanel.SCALE_INCREMENTS.length && ControlPanel.SCALE_INCREMENTS[i] < scale) {
 						i++;
 					}
+					getControlPanel();
 					getControlPanel().getScaleSlider()
-							.setValue((int) Math.floor(100.0 * getControlPanel().SCALE_INCREMENTS[--i]));
+							.setValue((int) Math.floor(100.0 * ControlPanel.SCALE_INCREMENTS[--i]));
 				} else {
+					getControlPanel();
+					getControlPanel();
 					// If we are at the max scaling increment or higher, we can't zoom in
-					if (scale >= getControlPanel().SCALE_INCREMENTS[getControlPanel().SCALE_INCREMENTS.length - 1]) {
+					if (scale >= ControlPanel.SCALE_INCREMENTS[ControlPanel.SCALE_INCREMENTS.length - 1]) {
 						return;
 					}
 
+					getControlPanel();
 					// Finds the next largest scaling increment and sets the scale to that.
-					int i = getControlPanel().SCALE_INCREMENTS.length - 2;
-					while (i > 0 && getControlPanel().SCALE_INCREMENTS[i] > scale) {
+					int i = ControlPanel.SCALE_INCREMENTS.length - 2;
+					getControlPanel();
+					while (i > 0 && ControlPanel.SCALE_INCREMENTS[i] > scale) {
 						i--;
 					}
+					getControlPanel();
 					getControlPanel().getScaleSlider()
-							.setValue((int) Math.ceil(100.0 * getControlPanel().SCALE_INCREMENTS[++i]));
+							.setValue((int) Math.ceil(100.0 * ControlPanel.SCALE_INCREMENTS[++i]));
 				}
 			}
 		}
@@ -1354,6 +1371,22 @@ public class KappaFrame extends JFrame {
 
 	public void setLocalThreshold(double localThreshold) {
 		this.localThreshold = localThreshold;
+	}
+
+	public int getNumberOfPointsPerCurve() {
+		int n;
+		if (curves.getSelected().length >= 1) {
+			n = curves.getSelected()[0].getNoPoints();
+		} else {
+			n = DEFAULT_NUMBER_POINTS;
+		}
+		if (infoPanel != null && infoPanel.getPointSlider() != null) {
+			if (n != infoPanel.getPointSlider().getMaximum()) {
+				infoPanel.getPointSlider().setMaximum(n);
+				infoPanel.getPointSlider().setValue(1);
+			}
+		}
+		return n;
 	}
 
 }

@@ -982,7 +982,8 @@ public class BSpline extends Curve {
 				}
 			}
 			Point2D p = this.getPoint(currentPoint);
-			int n = (int) (((noCurves * BezierCurve.NO_CURVE_POINTS - 1) * currentPoint) / KappaFrame.UNIT_SCALE);
+			int n = (int) (((noCurves * BezierCurve.NO_CURVE_POINTS - 1) * currentPoint)
+					/ frame.getNumberOfPointsPerCurve());
 			Point2D dp = spline[n / BezierCurve.NO_CURVE_POINTS].getHodographPoint(n % BezierCurve.NO_CURVE_POINTS);
 
 			if (showTangent) {
@@ -1033,7 +1034,7 @@ public class BSpline extends Curve {
 
 	@Override
 	public double getPointCurvature(int percentage) {
-		int n = (int) (((noCurves * BezierCurve.NO_CURVE_POINTS - 1) * percentage) / KappaFrame.UNIT_SCALE);
+		int n = (int) (((noCurves * BezierCurve.NO_CURVE_POINTS - 1) * percentage) / frame.getNumberOfPointsPerCurve());
 		int curve = n / BezierCurve.NO_CURVE_POINTS;
 		int point = n % BezierCurve.NO_CURVE_POINTS;
 		return spline[curve].getExactPointCurvature(point);
@@ -1243,11 +1244,10 @@ public class BSpline extends Curve {
 		return noCurves * BezierCurve.NO_CURVE_POINTS;
 	}
 
-	// Gets a point a certain percentage along the way. In this case, the percentage
-	// is out of 1000.
+	// Gets a point a certain percentage along the way.
 	@Override
 	public Point2D.Double getPoint(int percentage) {
-		int n = (int) (((noCurves * BezierCurve.NO_CURVE_POINTS - 1) * percentage) / KappaFrame.UNIT_SCALE);
+		int n = (int) (((noCurves * BezierCurve.NO_CURVE_POINTS - 1) * percentage) / frame.getNumberOfPointsPerCurve());
 		return spline[n / BezierCurve.NO_CURVE_POINTS].getExactPoint(n % BezierCurve.NO_CURVE_POINTS);
 	}
 

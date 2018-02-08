@@ -248,13 +248,13 @@ public class InfoPanel extends JPanel {
 		curvesListPanel.addComponent(getCurvesList());
 
 		// Slider and Label for traversal of Points along a Bezier Curve
-		setPointSlider(new JSlider(JSlider.HORIZONTAL, 0, frame.UNIT_SCALE, 0));
+		setPointSlider(new JSlider(JSlider.HORIZONTAL, 0, frame.getNumberOfPointsPerCurve(), 0));
 		getPointSlider().addChangeListener(new PointChanger());
 		getPointSlider().setBounds(POINT_SLIDER_BOUNDS);
 		getPointSlider().setEnabled(false);
 		pointLabel = new JLabel(
 				"Point " + frame.formatNumber(getPointSlider().getValue(), BezierCurve.NO_CURVE_POINTS_DIGITS) + " / "
-						+ frame.UNIT_SCALE);
+						+ frame.getNumberOfPointsPerCurve());
 		pointLabel.setFont(pointLabel.getFont().deriveFont(Font.PLAIN));
 		pointLabel.setForeground(Color.GRAY);
 		pointLabel.setPreferredSize(new Dimension(65, Short.MAX_VALUE));
@@ -939,7 +939,7 @@ public class InfoPanel extends JPanel {
 		public void stateChanged(ChangeEvent ce) {
 			pointLabel.setText(
 					"Point " + frame.formatNumber(getPointSlider().getValue(), BezierCurve.NO_CURVE_POINTS_DIGITS)
-							+ " / " + frame.UNIT_SCALE);
+							+ " / " + frame.getNumberOfPointsPerCurve());
 			frame.drawImageOverlay();
 			repaint();
 		}
