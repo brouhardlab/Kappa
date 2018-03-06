@@ -25,7 +25,7 @@ See also the [ImageJ Wiki page](https://imagej.net/Kappa).
 
 ## Documentation
 
-See documentation in the [docs/ folder](./doc/).
+See documentation in the [docs/ folder](./docs/).
 
 ## Authors
 
