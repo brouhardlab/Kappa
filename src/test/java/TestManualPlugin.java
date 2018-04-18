@@ -51,7 +51,7 @@ public class TestManualPlugin {
 		String fpath;
 		fpath = TestManualPlugin.class.getResource("/test-data/curve.tif").getPath();
 		fpath = "/home/hadim/Documents/Code/Postdoc/ij/testdata/composite_curvaturerecognition-small.tif";
-		
+
 		Dataset ds = ij.dataset().open(fpath);
 		ij.display().createDisplay(ds);
 

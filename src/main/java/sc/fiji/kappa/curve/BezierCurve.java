@@ -35,12 +35,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import ij.ImagePlus;
-import net.imglib2.RandomAccess;
-import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.img.display.imagej.ImageJFunctions;
-import net.imglib2.type.numeric.RealType;
-import net.imglib2.view.Views;
 import sc.fiji.kappa.gui.ImageUtils;
 import sc.fiji.kappa.gui.KappaFrame;
 import sc.fiji.kappa.gui.KappaMenuBar;
@@ -213,9 +207,9 @@ public class BezierCurve extends Curve {
 		for (Point2D p : dataFittingBounds) {
 			scaledDataBounds.addPoint((int) (p.getX()), (int) (p.getY()));
 		}
-		
+
 		ImageUtils imgUtils = new ImageUtils<>();
-		
+
 		for (int x = (int) boundingBox.getX() - dataRadius; x <= (int) boundingBox.getX() + (int) boundingBox.getWidth()
 				+ dataRadius; x++) {
 			for (int y = (int) boundingBox.getY() - dataRadius; y <= (int) boundingBox.getY()
@@ -268,15 +262,16 @@ public class BezierCurve extends Curve {
 		// algorithm for subdivision
 		// Simultaneously calculates the curvature at these points.
 		// We fill in the first two endpoint values manually.
-		
+
 		ImageUtils imgUtils = new ImageUtils<>();
-		
+
 		curvePoints.add(new BezierPoint(ctrlPts[0].getX(), ctrlPts[0].getY(), getCurvature(ctrlPts)));
 		RGBvals.add(imgUtils.getPixels(frame.getImageStack(), (int) ctrlPts[0].getX(), (int) ctrlPts[0].getY()));
 		fillBezierPoints(curvePoints, ctrlPts, noCtrlPts, RECURSE_DEPTH, 0, 1, true);
 		curvePoints.add(new BezierPoint(ctrlPts[noCtrlPts - 1].getX(), ctrlPts[noCtrlPts - 1].getY(),
 				getCurvature(reverse(ctrlPts))));
-		RGBvals.add(imgUtils.getPixels(frame.getImageStack(), (int) ctrlPts[noCtrlPts - 1].getX(), (int) ctrlPts[noCtrlPts - 1].getY()));
+		RGBvals.add(imgUtils.getPixels(frame.getImageStack(), (int) ctrlPts[noCtrlPts - 1].getX(),
+				(int) ctrlPts[noCtrlPts - 1].getY()));
 
 		// Generates the hodograph, or first derivative curve for the Bezier Curve. (see
 		// section 2.7 of Sederberg's CAGD text)
@@ -447,7 +442,8 @@ public class BezierCurve extends Curve {
 				getCurvature(secondHalfPoints)));
 		if (addRGB) {
 			ImageUtils imgUtils = new ImageUtils<>();
-			RGBvals.add(imgUtils.getPixels(frame.getImageStack(), (int) points[0][noCtrlPts - 1].getX(), (int) points[0][noCtrlPts - 1].getY()));
+			RGBvals.add(imgUtils.getPixels(frame.getImageStack(), (int) points[0][noCtrlPts - 1].getX(),
+					(int) points[0][noCtrlPts - 1].getY()));
 		}
 		fillBezierPoints(curvePoints, secondHalfPoints, noCtrlPts, depth - 1, t1, t2, addRGB);
 	}

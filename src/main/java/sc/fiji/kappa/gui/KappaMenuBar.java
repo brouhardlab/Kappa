@@ -65,9 +65,6 @@ import ij.plugin.ChannelSplitter;
 import ij.plugin.frame.RoiManager;
 import net.imagej.display.ImageDisplay;
 import net.imagej.display.ImageDisplayService;
-import net.imglib2.RandomAccess;
-import net.imglib2.img.Img;
-import net.imglib2.img.display.imagej.ImageJFunctions;
 import sc.fiji.kappa.curve.BSpline;
 import sc.fiji.kappa.curve.Curve;
 
