@@ -381,7 +381,7 @@ public class InfoPanel extends JPanel {
 		setDataThresholdSlider(new JSlider(JSlider.HORIZONTAL, 0, 256, DEFAULT_DATA_THRESHOLD));
 		getDataThresholdSlider().addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent c) {
-				if (frame.getKappaMenubar().getRGBColor().isSelected()) {
+				if (frame.isImageRGBColor()) {
 					getDataThresholdLabel().setText(getDataThresholdSlider().getValue() + " / " + "256");
 				} else {
 					getDataThresholdLabel().setText(getDataThresholdSlider().getValue() + " / "

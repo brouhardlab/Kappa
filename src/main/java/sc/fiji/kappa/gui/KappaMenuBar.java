@@ -61,10 +61,7 @@ import ij.ImagePlus;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
 import ij.plugin.ChannelSplitter;
-import ij.plugin.RGBStackMerge;
 import ij.plugin.frame.RoiManager;
-import ij.process.ImageConverter;
-import ij.process.StackConverter;
 import net.imagej.display.ImageDisplay;
 import net.imagej.display.ImageDisplayService;
 import sc.fiji.kappa.curve.BSpline;
@@ -104,10 +101,6 @@ public class KappaMenuBar extends JMenuBar {
 	private JCheckBoxMenuItem scaleCurvesMenu;
 	private JCheckBoxMenuItem antialiasingMenu;
 	private JCheckBoxMenuItem tangentMenu;
-	private JCheckBoxMenuItem bit8;
-	private JCheckBoxMenuItem bit16;
-	private JCheckBoxMenuItem bit32;
-	private JCheckBoxMenuItem RGBColor;
 
 	private KappaFrame frame;
 
@@ -325,135 +318,8 @@ public class KappaMenuBar extends JMenuBar {
 
 		// Image options.
 		JMenu imageMenu = new JMenu("Image");
-		JMenu imageTypeSubmenu = new JMenu("Image Type");
-		ButtonGroup imageTypeGroup = new ButtonGroup();
-		bit8 = new JCheckBoxMenuItem("8-Bit Grayscale");
-		bit16 = new JCheckBoxMenuItem("16-Bit Grayscale");
-		bit32 = new JCheckBoxMenuItem("32-Bit Grayscale");
-		setRGBColor(new JCheckBoxMenuItem("RGB Color"));
-		bit8.setEnabled(false);
-		bit16.setEnabled(false);
-		bit32.setEnabled(false);
-		getRGBColor().setEnabled(false);
-		imageTypeGroup.add(bit8);
-		imageTypeGroup.add(bit16);
-		imageTypeGroup.add(bit32);
-		imageTypeGroup.add(getRGBColor());
-
-		// 8-Bit conversion. Uses ImageJ libraries to convert, which handles unallowed
-		// conversion schemes.
-		bit8.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					if (frame.getDisplayedImageStack().getNSlices() > 1) {
-						(new StackConverter(frame.getDisplayedImageStack())).convertToGray8();
-					} else {
-						(new ImageConverter(frame.getDisplayedImageStack())).convertToGray8();
-					}
-
-					for (int i = 0; i < 3; i++) {
-						frame.getControlPanel().getChannelButtons()[i].setSelected(false);
-						frame.getControlPanel().getChannelButtons()[i].setEnabled(false);
-					}
-					frame.setCurrImage(frame.getDisplayedImageStack().getBufferedImage());
-					frame.setScaledImage(frame.getControlPanel().getScaleSlider().getValue() / 100.0);
-					frame.getInfoPanel().repaint();
-					frame.drawImageOverlay();
-				} catch (IllegalArgumentException err) {
-					frame.getOverlay().setVisible(true);
-					frame.getOverlay().drawNotification("Illegal Conversion Option",
-							frame.getScrollPane().getVisibleRect());
-				}
-			}
-		});
-		imageTypeSubmenu.add(bit8);
-
-		// 16-Bit conversion. Uses ImageJ libraries to convert, which handles unallowed
-		// conversion schemes.
-		bit16.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					if (frame.getDisplayedImageStack().getNSlices() > 1) {
-						(new StackConverter(frame.getDisplayedImageStack())).convertToGray16();
-					} else {
-						(new ImageConverter(frame.getDisplayedImageStack())).convertToGray16();
-					}
-
-					for (int i = 0; i < 3; i++) {
-						frame.getControlPanel().getChannelButtons()[i].setSelected(false);
-						frame.getControlPanel().getChannelButtons()[i].setEnabled(false);
-					}
-					frame.setCurrImage(frame.getDisplayedImageStack().getBufferedImage());
-					frame.setScaledImage(frame.getControlPanel().getScaleSlider().getValue() / 100.0);
-					frame.getInfoPanel().repaint();
-					frame.drawImageOverlay();
-				} catch (IllegalArgumentException err) {
-					frame.getOverlay().setVisible(true);
-					frame.getOverlay().drawNotification("Illegal Conversion Option",
-							frame.getScrollPane().getVisibleRect());
-				}
-			}
-		});
-		imageTypeSubmenu.add(bit16);
-
-		// 32-Bit conversion. Uses ImageJ libraries to convert, which handles unallowed
-		// conversion schemes.
-		bit32.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					if (frame.getDisplayedImageStack().getNSlices() > 1) {
-						(new StackConverter(frame.getDisplayedImageStack())).convertToGray32();
-					} else {
-						(new ImageConverter(frame.getDisplayedImageStack())).convertToGray32();
-					}
-
-					for (int i = 0; i < 3; i++) {
-						frame.getControlPanel().getChannelButtons()[i].setSelected(false);
-						frame.getControlPanel().getChannelButtons()[i].setEnabled(false);
-					}
-					frame.setCurrImage(frame.getDisplayedImageStack().getBufferedImage());
-					frame.setScaledImage(frame.getControlPanel().getScaleSlider().getValue() / 100.0);
-					frame.getInfoPanel().repaint();
-					frame.drawImageOverlay();
-				} catch (IllegalArgumentException err) {
-					frame.getOverlay().setVisible(true);
-					frame.getOverlay().drawNotification("Illegal Conversion Option",
-							frame.getScrollPane().getVisibleRect());
-				}
-			}
-		});
-		imageTypeSubmenu.add(bit32);
-
-		// RGB Color conversion.
-		getRGBColor().addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// Merges the red, green and blue channels from the original image. If this was
-				// originally grayscale
-				// the merged image is grayscale. If it was originally color, the merged image
-				// is color.
-				RGBStackMerge merge = new RGBStackMerge();
-				frame.setDisplayedImageStack(new ImagePlus(frame.getImageStack().getTitle(),
-						merge.mergeStacks(frame.getImageStack().getWidth(), frame.getImageStack().getHeight(),
-								frame.getImageStack().getNSlices(), frame.getImageStackLayers()[0],
-								frame.getImageStackLayers()[1], frame.getImageStackLayers()[2], true)));
-
-				for (int i = 0; i < 3; i++) {
-					frame.getControlPanel().getChannelButtons()[i].setSelected(true);
-					frame.getControlPanel().getChannelButtons()[i].setEnabled(true);
-				}
-				frame.setCurrImage(frame.getDisplayedImageStack().getBufferedImage());
-				frame.setScaledImage(frame.getControlPanel().getScaleSlider().getValue() / 100.0);
-				frame.getInfoPanel().repaint();
-				frame.drawImageOverlay();
-			}
-		});
-		imageTypeSubmenu.add(getRGBColor());
-
-		// Adds the submenu to the menu
-		imageMenu.add(imageTypeSubmenu);
 
 		// Brightness and Contrast tool. Taken from ImageJ.
-		imageMenu.addSeparator();
 		adjustBrightnessContrast = new JMenuItem("Adjust Brightness/Contrast");
 		adjustBrightnessContrast.setEnabled(false);
 		adjustBrightnessContrast.addActionListener(new ActionListener() {
@@ -683,6 +549,8 @@ public class KappaMenuBar extends JMenuBar {
 		ConvertService convert = context.getService(ConvertService.class);
 		ImageDisplay imd = imds.getActiveImageDisplay();
 		ImagePlus imp = convert.convert(imd, ImagePlus.class);
+
+		// ImagePlus imp = WindowManager.getCurrentImage();
 		openImage(imp);
 	}
 
@@ -698,38 +566,25 @@ public class KappaMenuBar extends JMenuBar {
 		// Sets the displayed Image Stack to all the channels to begin with.
 		frame.setDisplayedImageStack(frame.getImageStack());
 
-		// Sets the image type in the menu
-		bit8.setEnabled(true);
-		bit16.setEnabled(true);
-		bit32.setEnabled(true);
-		getRGBColor().setEnabled(true);
+		log.info(frame.getDisplayedImageStack().getType());
+		log.info(frame.getNFrames());
+		log.info(frame.getDisplayedImageStack().getNFrames());
+		log.info(frame.getDisplayedImageStack().getNChannels());
+		log.info(ImagePlus.GRAY8);
+		log.info(ImagePlus.GRAY16);
+		log.info(ImagePlus.COLOR_RGB);
 
-		switch (frame.getDisplayedImageStack().getType()) {
-		case ImagePlus.GRAY8:
-			bit8.setSelected(true);
-			break;
-		case ImagePlus.GRAY16:
-			bit16.setSelected(true);
-			break;
-		case ImagePlus.GRAY32:
-			bit32.setSelected(true);
-			break;
-		default:
-			getRGBColor().setSelected(true);
-			break;
-		}
-
-		frame.setMaxLayer(frame.getImageStack().getNSlices());
+		frame.setMaxLayer(frame.getNFrames());
 		frame.setMaxLayerDigits(Integer.toString(frame.getMaxLayer()).length());
 		frame.getControlPanel().getCurrentLayerSlider().setValue(frame.getINIT_LAYER());
 		frame.getControlPanel().getCurrentLayerSlider().setMaximum(frame.getMaxLayer());
-		frame.getControlPanel().getCurrentLayerSlider().setMajorTickSpacing(frame.getImageStack().getNSlices() / 10);
+		frame.getControlPanel().getCurrentLayerSlider().setMajorTickSpacing(frame.getNFrames() / 10);
 		frame.getControlPanel().getCurrentLayerSlider().setPaintTicks(true);
 		frame.getControlPanel().getCurrentLayerSlider().setEnabled(true);
 		frame.getControlPanel().getScaleSlider().setEnabled(true);
 
 		// Sets the maximum intensity depending on the bit depth of the image.
-		if (getRGBColor().isSelected()) {
+		if (frame.isImageRGBColor()) {
 			frame.getInfoPanel().getDataThresholdSlider().setMaximum(256);
 		} else {
 			frame.getInfoPanel().getDataThresholdSlider()
@@ -739,15 +594,13 @@ public class KappaMenuBar extends JMenuBar {
 		// Sets the buttons to active and selected if the image type is a Color one.
 		// Otherwise sets them to inactive
 		for (int i = 0; i < 3; i++) {
-			frame.getControlPanel().getChannelButtons()[i]
-					.setEnabled(frame.getImageStack().getType() == ImagePlus.COLOR_RGB);
-			frame.getControlPanel().getChannelButtons()[i]
-					.setSelected(frame.getImageStack().getType() == ImagePlus.COLOR_RGB);
+			frame.getControlPanel().getChannelButtons()[i].setEnabled(frame.isImageRGBColor());
+			frame.getControlPanel().getChannelButtons()[i].setSelected(frame.isImageRGBColor());
 		}
 
 		// Sets the scroll pane in the drawing panel to display the first layer of the
 		// image now
-		frame.getImageStack().setZ(1);
+		frame.setFrame(1);
 		frame.setCurrImage(frame.getDisplayedImageStack().getBufferedImage());
 		frame.getCurrImageLabel().setIcon(new ImageIcon(frame.getCurrImage()));
 		frame.setThresholded(new boolean[frame.getCurrImage().getWidth()][frame.getCurrImage().getHeight()]);
@@ -951,10 +804,6 @@ public class KappaMenuBar extends JMenuBar {
 		}
 	}
 
-	public JCheckBoxMenuItem getRGBColor() {
-		return RGBColor;
-	}
-
 	public JMenuItem getDelete() {
 		return delete;
 	}
@@ -969,10 +818,6 @@ public class KappaMenuBar extends JMenuBar {
 
 	public void setEnter(JMenuItem enter) {
 		this.enter = enter;
-	}
-
-	public void setRGBColor(JCheckBoxMenuItem rGBColor) {
-		RGBColor = rGBColor;
 	}
 
 	public JCheckBoxMenuItem getTangentMenu() {

@@ -489,7 +489,7 @@ public class KappaFrame extends JFrame {
 	protected void setLayer(int layer, double scale) {
 		// If there is an open image stack, it will draw it in the drawing panel
 		// Also changes the frame for our bezier curves, for keyframing.
-		getDisplayedImageStack().setZ(layer);
+		setFrame(layer);
 		setCurrImage(this.getDisplayedImageStack().getBufferedImage());
 		setScaledImage(scale);
 		getCurves().changeFrame(layer);
@@ -508,68 +508,68 @@ public class KappaFrame extends JFrame {
 		case 0:
 			setDisplayedImageStack(
 					new ImagePlus(getImageStack().getTitle(), merge.mergeStacks(getImageStack().getWidth(),
-							getImageStack().getHeight(), getImageStack().getNSlices(), null, null, null, true)));
-			getDisplayedImageStack().setZ(this.getControlPanel().getCurrentLayerSlider().getValue());
+							getImageStack().getHeight(), getNFrames(), null, null, null, true)));
+			setFrame(this.getControlPanel().getCurrentLayerSlider().getValue());
 			setCurrImage(getDisplayedImageStack().getBufferedImage());
 			this.getInfoPanel().setHistogramVisibility(false, false, false);
 			break;
 		case 1:
 			setDisplayedImageStack(new ImagePlus(getImageStack().getTitle(),
 					merge.mergeStacks(getImageStack().getWidth(), getImageStack().getHeight(),
-							getImageStack().getNSlices(), null, null, getImageStackLayers()[2], true)));
-			getDisplayedImageStack().setZ(this.getControlPanel().getCurrentLayerSlider().getValue());
+							getNFrames(), null, null, getImageStackLayers()[2], true)));
+			setFrame(this.getControlPanel().getCurrentLayerSlider().getValue());
 			setCurrImage(getDisplayedImageStack().getBufferedImage());
 			this.getInfoPanel().setHistogramVisibility(false, false, true);
 			break;
 		case 2:
 			setDisplayedImageStack(new ImagePlus(getImageStack().getTitle(),
 					merge.mergeStacks(getImageStack().getWidth(), getImageStack().getHeight(),
-							getImageStack().getNSlices(), null, getImageStackLayers()[1], null, true)));
-			getDisplayedImageStack().setZ(this.getControlPanel().getCurrentLayerSlider().getValue());
+							getNFrames(), null, getImageStackLayers()[1], null, true)));
+			setFrame(this.getControlPanel().getCurrentLayerSlider().getValue());
 			setCurrImage(getDisplayedImageStack().getBufferedImage());
 			this.getInfoPanel().setHistogramVisibility(false, true, false);
 			break;
 		case 3:
 			setDisplayedImageStack(new ImagePlus(getImageStack().getTitle(),
 					merge.mergeStacks(getImageStack().getWidth(), getImageStack().getHeight(),
-							getImageStack().getNSlices(), null, getImageStackLayers()[1], getImageStackLayers()[2],
+							getNFrames(), null, getImageStackLayers()[1], getImageStackLayers()[2],
 							true)));
-			getDisplayedImageStack().setZ(this.getControlPanel().getCurrentLayerSlider().getValue());
+			setFrame(this.getControlPanel().getCurrentLayerSlider().getValue());
 			setCurrImage(getDisplayedImageStack().getBufferedImage());
 			this.getInfoPanel().setHistogramVisibility(false, true, true);
 			break;
 		case 4:
 			setDisplayedImageStack(new ImagePlus(getImageStack().getTitle(),
 					merge.mergeStacks(getImageStack().getWidth(), getImageStack().getHeight(),
-							getImageStack().getNSlices(), getImageStackLayers()[0], null, null, true)));
-			getDisplayedImageStack().setZ(this.getControlPanel().getCurrentLayerSlider().getValue());
+							getNFrames(), getImageStackLayers()[0], null, null, true)));
+			setFrame(this.getControlPanel().getCurrentLayerSlider().getValue());
 			setCurrImage(getDisplayedImageStack().getBufferedImage());
 			this.getInfoPanel().setHistogramVisibility(true, false, false);
 			break;
 		case 5:
 			setDisplayedImageStack(new ImagePlus(getImageStack().getTitle(),
 					merge.mergeStacks(getImageStack().getWidth(), getImageStack().getHeight(),
-							getImageStack().getNSlices(), getImageStackLayers()[0], null, getImageStackLayers()[2],
+							getNFrames(), getImageStackLayers()[0], null, getImageStackLayers()[2],
 							true)));
-			getDisplayedImageStack().setZ(this.getControlPanel().getCurrentLayerSlider().getValue());
+			setFrame(this.getControlPanel().getCurrentLayerSlider().getValue());
 			setCurrImage(getDisplayedImageStack().getBufferedImage());
 			this.getInfoPanel().setHistogramVisibility(true, false, true);
 			break;
 		case 6:
 			setDisplayedImageStack(new ImagePlus(getImageStack().getTitle(),
 					merge.mergeStacks(getImageStack().getWidth(), getImageStack().getHeight(),
-							getImageStack().getNSlices(), getImageStackLayers()[0], getImageStackLayers()[1], null,
+							getNFrames(), getImageStackLayers()[0], getImageStackLayers()[1], null,
 							true)));
-			getDisplayedImageStack().setZ(this.getControlPanel().getCurrentLayerSlider().getValue());
+			setFrame(this.getControlPanel().getCurrentLayerSlider().getValue());
 			setCurrImage(getDisplayedImageStack().getBufferedImage());
 			this.getInfoPanel().setHistogramVisibility(true, true, false);
 			break;
 		case 7:
 			setDisplayedImageStack(new ImagePlus(getImageStack().getTitle(),
 					merge.mergeStacks(getImageStack().getWidth(), getImageStack().getHeight(),
-							getImageStack().getNSlices(), getImageStackLayers()[0], getImageStackLayers()[1],
+							getNFrames(), getImageStackLayers()[0], getImageStackLayers()[1],
 							getImageStackLayers()[2], true)));
-			getDisplayedImageStack().setZ(this.getControlPanel().getCurrentLayerSlider().getValue());
+			setFrame(this.getControlPanel().getCurrentLayerSlider().getValue());
 			setCurrImage(getDisplayedImageStack().getBufferedImage());
 			this.getInfoPanel().setHistogramVisibility(true, true, true);
 		}
@@ -1387,6 +1387,27 @@ public class KappaFrame extends JFrame {
 			}
 		}
 		return n;
+	}
+
+	public boolean isImageRGBColor() {
+		return (getImageStack().getType() == ImagePlus.COLOR_RGB) || (getImageStack().getType() == ImagePlus.COLOR_256);
+	}
+
+	public int getNFrames() {
+		// Return the number of frames of imageStack
+		if (imageStack.getNSlices() > imageStack.getNFrames()) {
+			return imageStack.getNSlices();
+		} else {
+			return imageStack.getNFrames();
+		}
+	}
+	
+	public void setFrame(int frame) {
+		if (imageStack.getNSlices() > imageStack.getNFrames()) {
+			this.imageStack.setZ(frame);
+		} else {
+			this.imageStack.setT(frame);
+		}
 	}
 
 }
