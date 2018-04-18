@@ -37,11 +37,11 @@ import java.util.List;
 
 import ij.ImagePlus;
 import net.imglib2.RandomAccess;
-import net.imglib2.img.Img;
+import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.display.imagej.ImageJFunctions;
-import net.imglib2.type.numeric.integer.UnsignedByteType;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
-import net.imglib2.type.numeric.real.FloatType;
+import net.imglib2.type.numeric.RealType;
+import net.imglib2.view.Views;
+import sc.fiji.kappa.gui.ImageUtils;
 import sc.fiji.kappa.gui.KappaFrame;
 import sc.fiji.kappa.gui.KappaMenuBar;
 
@@ -203,99 +203,6 @@ public class BezierCurve extends Curve {
 		return rev;
 	}
 
-	public static int[] getRGB(ImagePlus imp, int x, int y) {
-		int[] avg = new int[3];
-		if (x >= 0 && y >= 0 && x < imp.getWidth() && y < imp.getHeight()) {
-			int[] rgb;
-
-			// Gets the intensity levels depending on the image type.
-			// Yes this is ugly I know that... I whish I could use Numpy here...
-			switch (imp.getBitDepth()) {
-			case 8:
-			case 16:
-			case 32:
-
-				if (imp.getBitDepth() == 8) {
-					Img<UnsignedByteType> img = ImageJFunctions.wrap(imp);
-					RandomAccess<UnsignedByteType> ra = img.randomAccess();
-
-					for (int k = 0; k < 3; k++) {
-						if (imp.getNChannels() > 1) {
-							ra.setPosition(k, 2);
-							if (imp.getNFrames() > 1) {
-								ra.setPosition(imp.getT() - 1, 3);
-							}
-						} else {
-							if (imp.getNFrames() > 1) {
-								ra.setPosition(imp.getT() - 1, 2);
-							}
-						}
-						ra.setPosition(x, 0);
-						ra.setPosition(y, 1);
-						avg[k] += (int) ra.get().get();
-					}
-
-				} else if (imp.getBitDepth() == 16) {
-					Img<UnsignedShortType> img = ImageJFunctions.wrap(imp);
-					RandomAccess<UnsignedShortType> ra = img.randomAccess();
-
-					for (int k = 0; k < 3; k++) {
-						if (imp.getNChannels() > 1) {
-							ra.setPosition(k, 2);
-							if (imp.getNFrames() > 1) {
-								ra.setPosition(imp.getT() - 1, 3);
-							}
-						} else {
-							if (imp.getNFrames() > 1) {
-								ra.setPosition(imp.getT() - 1, 2);
-							}
-						}
-						ra.setPosition(x, 0);
-						ra.setPosition(y, 1);
-						avg[k] += (int) ra.get().get();
-					}
-
-				} else if (imp.getBitDepth() == 32) {
-					Img<FloatType> img = ImageJFunctions.wrap(imp);
-					RandomAccess<FloatType> ra = img.randomAccess();
-
-					for (int k = 0; k < 3; k++) {
-						if (imp.getNChannels() > 1) {
-							ra.setPosition(k, 2);
-							if (imp.getNFrames() > 1) {
-								ra.setPosition(imp.getT() - 1, 3);
-							}
-						} else {
-							if (imp.getNFrames() > 1) {
-								ra.setPosition(imp.getT() - 1, 2);
-							}
-						}
-						ra.setPosition(x, 0);
-						ra.setPosition(y, 1);
-						avg[k] += (int) ra.get().get();
-					}
-
-				}
-
-				// Here we assume that when there is more than 1 channel, the index of it is 2.
-
-				break;
-			case 24: // RGB Color. Here the first 3 elements are their corresponding intensities
-				rgb = imp.getPixel(x, y);
-				for (int k = 0; k < 3; k++) {
-					avg[k] += rgb[k];
-				}
-				break;
-			}
-		}
-		return avg;
-	}
-
-	public int[] getRGB(int x, int y) {
-		ImagePlus imp = frame.getDisplayedImageStack();
-		return BezierCurve.getRGB(frame.getDisplayedImageStack(), x, y);
-	}
-
 	public void evaluateThresholdedPixels() {
 		int pixelThreshold = frame.getInfoPanel().getDataThresholdSlider().getValue();
 		boolean isBrighter = frame.getInfoPanel().getDataRangeComboBox().getSelectedIndex() == 0;
@@ -306,12 +213,15 @@ public class BezierCurve extends Curve {
 		for (Point2D p : dataFittingBounds) {
 			scaledDataBounds.addPoint((int) (p.getX()), (int) (p.getY()));
 		}
+		
+		ImageUtils imgUtils = new ImageUtils<>();
+		
 		for (int x = (int) boundingBox.getX() - dataRadius; x <= (int) boundingBox.getX() + (int) boundingBox.getWidth()
 				+ dataRadius; x++) {
 			for (int y = (int) boundingBox.getY() - dataRadius; y <= (int) boundingBox.getY()
 					+ (int) boundingBox.getHeight() + dataRadius; y++) {
 				if (x >= 0 && x < frame.getCurrImage().getWidth() && y >= 0 && y < frame.getCurrImage().getHeight()) {
-					int[] rgb = getRGB(x, y);
+					int[] rgb = imgUtils.getPixels(frame.getImageStack(), x, y);
 
 					// Checks the correct channel depending on the UI preference
 					int channel = frame.getInfoPanel().getFittingChannelsComboBox().getSelectedIndex();
@@ -358,12 +268,15 @@ public class BezierCurve extends Curve {
 		// algorithm for subdivision
 		// Simultaneously calculates the curvature at these points.
 		// We fill in the first two endpoint values manually.
+		
+		ImageUtils imgUtils = new ImageUtils<>();
+		
 		curvePoints.add(new BezierPoint(ctrlPts[0].getX(), ctrlPts[0].getY(), getCurvature(ctrlPts)));
-		RGBvals.add(getRGB((int) ctrlPts[0].getX(), (int) ctrlPts[0].getY()));
+		RGBvals.add(imgUtils.getPixels(frame.getImageStack(), (int) ctrlPts[0].getX(), (int) ctrlPts[0].getY()));
 		fillBezierPoints(curvePoints, ctrlPts, noCtrlPts, RECURSE_DEPTH, 0, 1, true);
 		curvePoints.add(new BezierPoint(ctrlPts[noCtrlPts - 1].getX(), ctrlPts[noCtrlPts - 1].getY(),
 				getCurvature(reverse(ctrlPts))));
-		RGBvals.add(getRGB((int) ctrlPts[noCtrlPts - 1].getX(), (int) ctrlPts[noCtrlPts - 1].getY()));
+		RGBvals.add(imgUtils.getPixels(frame.getImageStack(), (int) ctrlPts[noCtrlPts - 1].getX(), (int) ctrlPts[noCtrlPts - 1].getY()));
 
 		// Generates the hodograph, or first derivative curve for the Bezier Curve. (see
 		// section 2.7 of Sederberg's CAGD text)
@@ -533,7 +446,8 @@ public class BezierCurve extends Curve {
 		curvePoints.add(new BezierPoint(points[0][noCtrlPts - 1].getX(), points[0][noCtrlPts - 1].getY(),
 				getCurvature(secondHalfPoints)));
 		if (addRGB) {
-			RGBvals.add(getRGB((int) points[0][noCtrlPts - 1].getX(), (int) points[0][noCtrlPts - 1].getY()));
+			ImageUtils imgUtils = new ImageUtils<>();
+			RGBvals.add(imgUtils.getPixels(frame.getImageStack(), (int) points[0][noCtrlPts - 1].getX(), (int) points[0][noCtrlPts - 1].getY()));
 		}
 		fillBezierPoints(curvePoints, secondHalfPoints, noCtrlPts, depth - 1, t1, t2, addRGB);
 	}
@@ -902,8 +816,9 @@ public class BezierCurve extends Curve {
 	public void updateIntensities() {
 		RGBvals = new ArrayList<int[]>();
 		int[] pixels;
+		ImageUtils imgUtils = new ImageUtils<>();
 		for (Point2D p : curvePoints) {
-			pixels = getRGB((int) p.getX(), (int) p.getY());
+			pixels = imgUtils.getPixels(frame.getImageStack(), (int) p.getX(), (int) p.getY());
 			RGBvals.add(pixels);
 		}
 	}

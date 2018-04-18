@@ -64,7 +64,6 @@ import org.scijava.plugin.Parameter;
 import ij.ImagePlus;
 import ij.ImageStack;
 import sc.fiji.kappa.curve.BSpline;
-import sc.fiji.kappa.curve.BezierCurve;
 import sc.fiji.kappa.curve.BezierGroup;
 import sc.fiji.kappa.curve.BezierPoint;
 import sc.fiji.kappa.curve.Curve;
@@ -510,11 +509,12 @@ public class KappaFrame extends JFrame {
 		int[] rgb;
 		int channel, intensity;
 		channel = getInfoPanel().getThresholdChannelsComboBox().getSelectedIndex();
+		ImageUtils imgUtils = new ImageUtils<>();
 		for (int i = 0; i < getCurrImage().getWidth(); i++) {
 			for (int j = 0; j < getCurrImage().getHeight(); j++) {
 
 				// Checks the intensity level and compares it to the threshold level
-				rgb = BezierCurve.getRGB(getDisplayedImageStack(), i, j);
+				rgb = imgUtils.getPixels(getDisplayedImageStack(), i, j);
 				switch (channel) {
 				case 0:
 					intensity = rgb[0];
@@ -616,8 +616,9 @@ public class KappaFrame extends JFrame {
 	 */
 	private List<Double> getWeights(List<Point2D> dataPoints) {
 		List<Double> weights = new ArrayList<>(dataPoints.size());
+		ImageUtils imgUtils = new ImageUtils<>();
 		for (Point2D p : dataPoints) {
-			int[] rgb = BezierCurve.getRGB(getDisplayedImageStack(), (int) p.getX(), (int) p.getY());
+			int[] rgb = imgUtils.getPixels(getDisplayedImageStack(), (int) p.getX(), (int) p.getY());
 
 			int channel = getInfoPanel().getFittingChannelsComboBox().getSelectedIndex();
 			double intensity = 0;
@@ -651,6 +652,10 @@ public class KappaFrame extends JFrame {
 	}
 
 	protected void updateDisplayed() {
+		this.updateDisplayed(true);
+	}
+
+	protected void updateDisplayed(boolean updateHistogram) {
 		// Updates the background thresholding display
 		if (getInfoPanel().getBgCheckBox().isSelected()) {
 			updateThresholded();
@@ -658,7 +663,9 @@ public class KappaFrame extends JFrame {
 
 		// Updates the image
 		drawImageOverlay();
-		this.getInfoPanel().updateHistograms();
+		if (updateHistogram) {
+			this.getInfoPanel().updateHistograms();
+		}
 	}
 
 	protected void enterCurve() {
@@ -1076,10 +1083,13 @@ public class KappaFrame extends JFrame {
 		// We set the intensity threshold to 2 standard deviations above the mean image
 		// intensity
 		// Compute the mean image intensity
+
+		ImageUtils imgUtils = new ImageUtils<>();
+
 		double avgIntensity = 0;
 		for (int x = 0; x < getCurrImage().getWidth(); x++) {
 			for (int y = 0; y < getCurrImage().getHeight(); y++) {
-				avgIntensity += BezierCurve.getRGB(getDisplayedImageStack(), x, y)[0];
+				avgIntensity += imgUtils.getPixels(getDisplayedImageStack(), x, y)[0];
 			}
 		}
 		avgIntensity /= (getCurrImage().getWidth() * getCurrImage().getHeight());
@@ -1088,7 +1098,7 @@ public class KappaFrame extends JFrame {
 		double stdDev = 0;
 		for (int x = 0; x < getCurrImage().getWidth(); x++) {
 			for (int y = 0; y < getCurrImage().getHeight(); y++) {
-				stdDev += squared(BezierCurve.getRGB(getDisplayedImageStack(), x, y)[0] - avgIntensity);
+				stdDev += squared(imgUtils.getPixels(getDisplayedImageStack(), x, y)[0] - avgIntensity);
 			}
 		}
 		stdDev /= (getCurrImage().getWidth() * getCurrImage().getHeight()) - 1;

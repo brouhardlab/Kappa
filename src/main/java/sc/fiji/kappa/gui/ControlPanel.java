@@ -194,6 +194,12 @@ public class ControlPanel extends JPanel {
 			layerLabel.setText(frame.formatNumber(getCurrentLayerSlider().getValue(), frame.getMaxLayerDigits()) + " / "
 					+ frame.getMaxLayer());
 			frame.setLayer(getCurrentLayerSlider().getValue(), getScaleSlider().getValue() / 100.0);
+
+			JSlider source = (JSlider) ce.getSource();
+			if (!source.getValueIsAdjusting()) {
+				frame.getInfoPanel().updateHistograms();
+			}
+
 		}
 	}
 
