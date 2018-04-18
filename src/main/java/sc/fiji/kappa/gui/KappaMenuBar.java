@@ -65,6 +65,9 @@ import ij.plugin.ChannelSplitter;
 import ij.plugin.frame.RoiManager;
 import net.imagej.display.ImageDisplay;
 import net.imagej.display.ImageDisplayService;
+import net.imglib2.RandomAccess;
+import net.imglib2.img.Img;
+import net.imglib2.img.display.imagej.ImageJFunctions;
 import sc.fiji.kappa.curve.BSpline;
 import sc.fiji.kappa.curve.Curve;
 
@@ -113,13 +116,6 @@ public class KappaMenuBar extends JMenuBar {
 
 		this.frame = frame;
 
-		// Creates a new file chooser. Same native image support as ImageJ since ImageJ
-		// libraries are used.
-		kappaOpen = new JFileChooser();
-		FileNameExtensionFilter filter = new FileNameExtensionFilter("Image Files", "tif", "tiff", "jpeg", "jpg", "bmp",
-				"fits", "pgm", "ppm", "pbm", "gif", "png", "dic", "dcm", "dicom", "lsm", "avi");
-		kappaOpen.setFileFilter(filter);
-
 		// File chooser for curve data
 		FileNameExtensionFilter kappaFilter = new FileNameExtensionFilter("Kappa Files", "kapp");
 
@@ -135,17 +131,21 @@ public class KappaMenuBar extends JMenuBar {
 		JMenu fileMenu = new JMenu("File");
 		fileMenu.setMnemonic('F');
 
-		// Menu Items for file operations
-		JMenuItem openMenu = new JMenuItem("Open Image File");
-		openMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, DEFAULT_MASK));
-		openMenu.addActionListener(e -> {
-			int returnVal = kappaOpen.showOpenDialog(this.frame);
-			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				openImageFile(kappaOpen.getSelectedFile());
-			}
-		});
-
-		fileMenu.add(openMenu);
+		/*
+		 * // Menu Items for file operations // Creates a new file chooser. Same native
+		 * image support as ImageJ since ImageJ // libraries are used. kappaOpen = new
+		 * JFileChooser(); FileNameExtensionFilter filter = new
+		 * FileNameExtensionFilter("Image Files", "tif", "tiff", "jpeg", "jpg", "bmp",
+		 * "fits", "pgm", "ppm", "pbm", "gif", "png", "dic", "dcm", "dicom", "lsm",
+		 * "avi"); kappaOpen.setFileFilter(filter);
+		 * 
+		 * JMenuItem openMenu = new JMenuItem("Open Image File");
+		 * openMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, DEFAULT_MASK));
+		 * openMenu.addActionListener(e -> { int returnVal =
+		 * kappaOpen.showOpenDialog(this.frame); if (returnVal ==
+		 * JFileChooser.APPROVE_OPTION) { openImageFile(kappaOpen.getSelectedFile()); }
+		 * }); fileMenu.add(openMenu);
+		 */
 
 		JMenuItem openActiveMenu = new JMenuItem("Open Active Image");
 		openActiveMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, DEFAULT_MASK));
@@ -550,8 +550,6 @@ public class KappaMenuBar extends JMenuBar {
 		ConvertService convert = context.getService(ConvertService.class);
 		ImageDisplay imd = imds.getActiveImageDisplay();
 		ImagePlus imp = convert.convert(imd, ImagePlus.class);
-
-		// ImagePlus imp = WindowManager.getCurrentImage();
 		openImage(imp);
 	}
 
@@ -650,13 +648,15 @@ public class KappaMenuBar extends JMenuBar {
 		this.frame.setTitle(frame.APPLICATION_NAME + "- " + imp.getTitle());
 
 		// Load Kappa file if available
-		String dirPath = imp.getOriginalFileInfo().directory;
-		if (dirPath != null) {
-			String kappaPath = FilenameUtils.removeExtension(imp.getOriginalFileInfo().fileName);
-			kappaPath += ".kapp";
-			File fullPath = new File(dirPath, kappaPath);
-			if (fullPath.exists()) {
-				loadCurveFile(fullPath);
+		if (imp.getOriginalFileInfo() != null) {
+			String dirPath = imp.getOriginalFileInfo().directory;
+			if (dirPath != null) {
+				String kappaPath = FilenameUtils.removeExtension(imp.getOriginalFileInfo().fileName);
+				kappaPath += ".kapp";
+				File fullPath = new File(dirPath, kappaPath);
+				if (fullPath.exists()) {
+					loadCurveFile(fullPath);
+				}
 			}
 		}
 	}

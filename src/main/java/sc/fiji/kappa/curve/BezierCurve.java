@@ -36,6 +36,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ij.ImagePlus;
+import net.imglib2.RandomAccess;
+import net.imglib2.img.Img;
+import net.imglib2.img.display.imagej.ImageJFunctions;
+import net.imglib2.type.numeric.integer.UnsignedByteType;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
+import net.imglib2.type.numeric.real.FloatType;
 import sc.fiji.kappa.gui.KappaFrame;
 import sc.fiji.kappa.gui.KappaMenuBar;
 
@@ -203,18 +209,76 @@ public class BezierCurve extends Curve {
 			int[] rgb;
 
 			// Gets the intensity levels depending on the image type.
+			// Yes this is ugly I know that... I whish I could use Numpy here...
 			switch (imp.getBitDepth()) {
 			case 8:
 			case 16:
 			case 32:
-				int oldActiveChannel = imp.getC();
 
-				for (int k = 0; k < 3; k++) {
-					imp.setC(k + 1);
-					rgb = imp.getPixel(x, y);
-					avg[k] += rgb[0];
+				if (imp.getBitDepth() == 8) {
+					Img<UnsignedByteType> img = ImageJFunctions.wrap(imp);
+					RandomAccess<UnsignedByteType> ra = img.randomAccess();
+
+					for (int k = 0; k < 3; k++) {
+						if (imp.getNChannels() > 1) {
+							ra.setPosition(k, 2);
+							if (imp.getNFrames() > 1) {
+								ra.setPosition(imp.getT() - 1, 3);
+							}
+						} else {
+							if (imp.getNFrames() > 1) {
+								ra.setPosition(imp.getT() - 1, 2);
+							}
+						}
+						ra.setPosition(x, 0);
+						ra.setPosition(y, 1);
+						avg[k] += (int) ra.get().get();
+					}
+
+				} else if (imp.getBitDepth() == 16) {
+					Img<UnsignedShortType> img = ImageJFunctions.wrap(imp);
+					RandomAccess<UnsignedShortType> ra = img.randomAccess();
+
+					for (int k = 0; k < 3; k++) {
+						if (imp.getNChannels() > 1) {
+							ra.setPosition(k, 2);
+							if (imp.getNFrames() > 1) {
+								ra.setPosition(imp.getT() - 1, 3);
+							}
+						} else {
+							if (imp.getNFrames() > 1) {
+								ra.setPosition(imp.getT() - 1, 2);
+							}
+						}
+						ra.setPosition(x, 0);
+						ra.setPosition(y, 1);
+						avg[k] += (int) ra.get().get();
+					}
+
+				} else if (imp.getBitDepth() == 32) {
+					Img<FloatType> img = ImageJFunctions.wrap(imp);
+					RandomAccess<FloatType> ra = img.randomAccess();
+
+					for (int k = 0; k < 3; k++) {
+						if (imp.getNChannels() > 1) {
+							ra.setPosition(k, 2);
+							if (imp.getNFrames() > 1) {
+								ra.setPosition(imp.getT() - 1, 3);
+							}
+						} else {
+							if (imp.getNFrames() > 1) {
+								ra.setPosition(imp.getT() - 1, 2);
+							}
+						}
+						ra.setPosition(x, 0);
+						ra.setPosition(y, 1);
+						avg[k] += (int) ra.get().get();
+					}
+
 				}
-				imp.setC(oldActiveChannel);
+
+				// Here we assume that when there is more than 1 channel, the index of it is 2.
+
 				break;
 			case 24: // RGB Color. Here the first 3 elements are their corresponding intensities
 				rgb = imp.getPixel(x, y);
@@ -229,8 +293,7 @@ public class BezierCurve extends Curve {
 
 	public int[] getRGB(int x, int y) {
 		ImagePlus imp = frame.getDisplayedImageStack();
-		return new int[] { 55, 23, 78 };
-		// return BezierCurve.getRGB(frame.getDisplayedImageStack(), x, y);
+		return BezierCurve.getRGB(frame.getDisplayedImageStack(), x, y);
 	}
 
 	public void evaluateThresholdedPixels() {
