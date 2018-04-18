@@ -625,8 +625,8 @@ public class InfoPanel extends JPanel {
 		List<Point2D> blueIntensities = currEditedCurve.getIntensityDataBlue();
 
 		double maxRedValue = redIntensities.stream().map(u -> u.getY()).max(Double::compareTo).get();
-		double maxGreenValue = redIntensities.stream().map(u -> u.getY()).max(Double::compareTo).get();
-		double maxBlueValue = redIntensities.stream().map(u -> u.getY()).max(Double::compareTo).get();
+		double maxGreenValue = greenIntensities.stream().map(u -> u.getY()).max(Double::compareTo).get();
+		double maxBlueValue = blueIntensities.stream().map(u -> u.getY()).max(Double::compareTo).get();
 
 		double maxValue = Math.max(maxRedValue, maxGreenValue);
 		maxValue = Math.max(maxValue, maxBlueValue);

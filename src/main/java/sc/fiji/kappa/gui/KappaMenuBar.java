@@ -57,6 +57,7 @@ import org.scijava.convert.ConvertService;
 import org.scijava.log.LogService;
 import org.scijava.plugin.Parameter;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
@@ -566,6 +567,8 @@ public class KappaMenuBar extends JMenuBar {
 		// Sets the displayed Image Stack to all the channels to begin with.
 		frame.setDisplayedImageStack(frame.getImageStack());
 
+		frame.getImageStack().setDisplayMode(IJ.COMPOSITE);
+
 		frame.setMaxLayer(frame.getNFrames());
 		frame.setMaxLayerDigits(Integer.toString(frame.getMaxLayer()).length());
 		frame.getControlPanel().getCurrentLayerSlider().setValue(frame.getINIT_LAYER());
@@ -583,11 +586,19 @@ public class KappaMenuBar extends JMenuBar {
 					.setMaximum((int) (Math.pow(2, frame.getDisplayedImageStack().getBitDepth())));
 		}
 
+		// Reset channel buttons
+		for (int i = 0; i < 3; i++) {
+			frame.getControlPanel().getChannelButtons()[i].setEnabled(false);
+			frame.getControlPanel().getChannelButtons()[i].setSelected(false);
+		}
+
 		// Sets the buttons to active and selected if the image type is a Color one.
 		// Otherwise sets them to inactive
-		for (int i = 0; i < 3; i++) {
-			frame.getControlPanel().getChannelButtons()[i].setEnabled(frame.isImageRGBColor());
-			frame.getControlPanel().getChannelButtons()[i].setSelected(frame.isImageRGBColor());
+		if (frame.getImageStack().getNChannels() > 1) {
+			for (int i = 0; i < frame.getImageStack().getNChannels(); i++) {
+				frame.getControlPanel().getChannelButtons()[i].setEnabled(true);
+				frame.getControlPanel().getChannelButtons()[i].setSelected(true);
+			}
 		}
 
 		// Sets the scroll pane in the drawing panel to display the first layer of the

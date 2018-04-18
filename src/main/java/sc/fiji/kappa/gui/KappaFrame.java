@@ -63,7 +63,6 @@ import org.scijava.plugin.Parameter;
 
 import ij.ImagePlus;
 import ij.ImageStack;
-import ij.plugin.RGBStackMerge;
 import sc.fiji.kappa.curve.BSpline;
 import sc.fiji.kappa.curve.BezierCurve;
 import sc.fiji.kappa.curve.BezierGroup;
@@ -498,81 +497,8 @@ public class KappaFrame extends JFrame {
 		updateDisplayed();
 	}
 
-	protected void setDisplayedChannels(int displayRange) {
-		RGBStackMerge merge = new RGBStackMerge();
-		// The currImage variable must be set before the histogram visibility is
-		// changed,
-		// otherwise the histograms may not update the image intensities in a newly
-		// displayed channel
-		switch (displayRange) {
-		case 0:
-			setDisplayedImageStack(
-					new ImagePlus(getImageStack().getTitle(), merge.mergeStacks(getImageStack().getWidth(),
-							getImageStack().getHeight(), getNFrames(), null, null, null, true)));
-			setFrame(this.getControlPanel().getCurrentLayerSlider().getValue());
-			setCurrImage(getDisplayedImageStack().getBufferedImage());
-			this.getInfoPanel().setHistogramVisibility(false, false, false);
-			break;
-		case 1:
-			setDisplayedImageStack(new ImagePlus(getImageStack().getTitle(),
-					merge.mergeStacks(getImageStack().getWidth(), getImageStack().getHeight(),
-							getNFrames(), null, null, getImageStackLayers()[2], true)));
-			setFrame(this.getControlPanel().getCurrentLayerSlider().getValue());
-			setCurrImage(getDisplayedImageStack().getBufferedImage());
-			this.getInfoPanel().setHistogramVisibility(false, false, true);
-			break;
-		case 2:
-			setDisplayedImageStack(new ImagePlus(getImageStack().getTitle(),
-					merge.mergeStacks(getImageStack().getWidth(), getImageStack().getHeight(),
-							getNFrames(), null, getImageStackLayers()[1], null, true)));
-			setFrame(this.getControlPanel().getCurrentLayerSlider().getValue());
-			setCurrImage(getDisplayedImageStack().getBufferedImage());
-			this.getInfoPanel().setHistogramVisibility(false, true, false);
-			break;
-		case 3:
-			setDisplayedImageStack(new ImagePlus(getImageStack().getTitle(),
-					merge.mergeStacks(getImageStack().getWidth(), getImageStack().getHeight(),
-							getNFrames(), null, getImageStackLayers()[1], getImageStackLayers()[2],
-							true)));
-			setFrame(this.getControlPanel().getCurrentLayerSlider().getValue());
-			setCurrImage(getDisplayedImageStack().getBufferedImage());
-			this.getInfoPanel().setHistogramVisibility(false, true, true);
-			break;
-		case 4:
-			setDisplayedImageStack(new ImagePlus(getImageStack().getTitle(),
-					merge.mergeStacks(getImageStack().getWidth(), getImageStack().getHeight(),
-							getNFrames(), getImageStackLayers()[0], null, null, true)));
-			setFrame(this.getControlPanel().getCurrentLayerSlider().getValue());
-			setCurrImage(getDisplayedImageStack().getBufferedImage());
-			this.getInfoPanel().setHistogramVisibility(true, false, false);
-			break;
-		case 5:
-			setDisplayedImageStack(new ImagePlus(getImageStack().getTitle(),
-					merge.mergeStacks(getImageStack().getWidth(), getImageStack().getHeight(),
-							getNFrames(), getImageStackLayers()[0], null, getImageStackLayers()[2],
-							true)));
-			setFrame(this.getControlPanel().getCurrentLayerSlider().getValue());
-			setCurrImage(getDisplayedImageStack().getBufferedImage());
-			this.getInfoPanel().setHistogramVisibility(true, false, true);
-			break;
-		case 6:
-			setDisplayedImageStack(new ImagePlus(getImageStack().getTitle(),
-					merge.mergeStacks(getImageStack().getWidth(), getImageStack().getHeight(),
-							getNFrames(), getImageStackLayers()[0], getImageStackLayers()[1], null,
-							true)));
-			setFrame(this.getControlPanel().getCurrentLayerSlider().getValue());
-			setCurrImage(getDisplayedImageStack().getBufferedImage());
-			this.getInfoPanel().setHistogramVisibility(true, true, false);
-			break;
-		case 7:
-			setDisplayedImageStack(new ImagePlus(getImageStack().getTitle(),
-					merge.mergeStacks(getImageStack().getWidth(), getImageStack().getHeight(),
-							getNFrames(), getImageStackLayers()[0], getImageStackLayers()[1],
-							getImageStackLayers()[2], true)));
-			setFrame(this.getControlPanel().getCurrentLayerSlider().getValue());
-			setCurrImage(getDisplayedImageStack().getBufferedImage());
-			this.getInfoPanel().setHistogramVisibility(true, true, true);
-		}
+	protected void setDisplayedChannels(boolean showRed, boolean showGreen, boolean showBlue) {
+		this.getInfoPanel().setHistogramVisibility(showRed, showGreen, showBlue);
 		setScaledImage(this.getControlPanel().getScaleSlider().getValue() / 100.0);
 		getInfoPanel().repaint();
 		drawImageOverlay();
@@ -1401,13 +1327,17 @@ public class KappaFrame extends JFrame {
 			return imageStack.getNFrames();
 		}
 	}
-	
+
 	public void setFrame(int frame) {
 		if (imageStack.getNSlices() > imageStack.getNFrames()) {
 			this.imageStack.setZ(frame);
 		} else {
 			this.imageStack.setT(frame);
 		}
+	}
+
+	public boolean hasMultipleChannels() {
+		return this.imageStack.getNChannels() > 1;
 	}
 
 }

@@ -200,19 +200,24 @@ public class BezierCurve extends Curve {
 	public static int[] getRGB(ImagePlus imp, int x, int y) {
 		int[] avg = new int[3];
 		if (x >= 0 && y >= 0 && x < imp.getWidth() && y < imp.getHeight()) {
-			int[] rgb = imp.getPixel(x, y);
+			int[] rgb;
 
 			// Gets the intensity levels depending on the image type.
 			switch (imp.getBitDepth()) {
 			case 8:
 			case 16:
-			case 32: // Grayscale (8, 16, 32 bit). The grayscale intensity is the first value in the
-						// array
+			case 32:
+				int oldActiveChannel = imp.getC();
+
 				for (int k = 0; k < 3; k++) {
+					imp.setC(k + 1);
+					rgb = imp.getPixel(x, y);
 					avg[k] += rgb[0];
 				}
+				imp.setC(oldActiveChannel);
 				break;
 			case 24: // RGB Color. Here the first 3 elements are their corresponding intensities
+				rgb = imp.getPixel(x, y);
 				for (int k = 0; k < 3; k++) {
 					avg[k] += rgb[k];
 				}
@@ -223,7 +228,9 @@ public class BezierCurve extends Curve {
 	}
 
 	public int[] getRGB(int x, int y) {
-		return BezierCurve.getRGB(frame.getDisplayedImageStack(), x, y);
+		ImagePlus imp = frame.getDisplayedImageStack();
+		return new int[] { 55, 23, 78 };
+		// return BezierCurve.getRGB(frame.getDisplayedImageStack(), x, y);
 	}
 
 	public void evaluateThresholdedPixels() {
@@ -265,8 +272,6 @@ public class BezierCurve extends Curve {
 			}
 		}
 	}
-
-	;
 
 	public void drawThresholdedPixels(Graphics2D g, double scale) {
 		g.setColor(Color.MAGENTA);
@@ -833,8 +838,10 @@ public class BezierCurve extends Curve {
 
 	public void updateIntensities() {
 		RGBvals = new ArrayList<int[]>();
+		int[] pixels;
 		for (Point2D p : curvePoints) {
-			RGBvals.add(getRGB((int) p.getX(), (int) p.getY()));
+			pixels = getRGB((int) p.getX(), (int) p.getY());
+			RGBvals.add(pixels);
 		}
 	}
 

@@ -116,23 +116,8 @@ public class ControlPanel extends JPanel {
 			channelButtons[i].setToolTipText(CHANNEL_TOOLTIPS[i]);
 			channelButtons[i].addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent event) {
-
-					// Determines which channels are displayed. red=4, green=2, blue=1. Composites
-					// are
-					// determined by summing the 3 values.
-					int displayRange = 0;
-					if (channelButtons[0].isSelected()) {
-						displayRange += 4;
-					}
-					if (channelButtons[1].isSelected()) {
-						displayRange += 2;
-					}
-					if (channelButtons[2].isSelected()) {
-						displayRange += 1;
-					}
-
-					// Updates the displayed Image based on what channels are selected
-					frame.setDisplayedChannels(displayRange);
+					frame.setDisplayedChannels(channelButtons[0].isSelected(), channelButtons[1].isSelected(),
+							channelButtons[2].isSelected());
 				}
 			});
 		}
