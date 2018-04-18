@@ -566,14 +566,6 @@ public class KappaMenuBar extends JMenuBar {
 		// Sets the displayed Image Stack to all the channels to begin with.
 		frame.setDisplayedImageStack(frame.getImageStack());
 
-		log.info(frame.getDisplayedImageStack().getType());
-		log.info(frame.getNFrames());
-		log.info(frame.getDisplayedImageStack().getNFrames());
-		log.info(frame.getDisplayedImageStack().getNChannels());
-		log.info(ImagePlus.GRAY8);
-		log.info(ImagePlus.GRAY16);
-		log.info(ImagePlus.COLOR_RGB);
-
 		frame.setMaxLayer(frame.getNFrames());
 		frame.setMaxLayerDigits(Integer.toString(frame.getMaxLayer()).length());
 		frame.getControlPanel().getCurrentLayerSlider().setValue(frame.getINIT_LAYER());
