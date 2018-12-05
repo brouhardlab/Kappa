@@ -483,8 +483,7 @@ public class BezierCurve extends Curve {
 		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 
 		if (scaleCurveStrokes) {
-			double strokeThickness = frame.getStrokeThickness(scale);
-			g.setStroke(new BasicStroke((int) strokeThickness));
+			g.setStroke(new BasicStroke((int) frame.getStrokeThickness(scale)));
 		} else {
 			g.setStroke(new BasicStroke(0));
 		}

@@ -23,6 +23,7 @@
  * THE SOFTWARE.
  * #L%
  */
+
 package sc.fiji.kappa.curve;
 
 import java.awt.Graphics2D;
@@ -38,11 +39,10 @@ import sc.fiji.kappa.gui.KappaFrame;
 
 public abstract class Curve {
 
-	public static final int DEFAULT_STROKE_THICKNESS = 1;
-	public static final int CTRL_PT_SIZE = 1;
 	public static final double DEFAULT_MICRON_PIXEL_FACTOR = 0.16;
 
-	// The number of threshold pixels we'll allow when selecting a curve, or control
+	// The number of threshold pixels we'll allow when selecting a curve, or
+	// control
 	// point
 	// (ie we'll allow a tolerance of this number of pixels)
 	public static final int THRESHOLD_RADIUS = 5;
@@ -56,6 +56,8 @@ public abstract class Curve {
 	protected double minimumLocalError;
 
 	// Drawing constants
+	public static final int DEFAULT_STROKE_THICKNESS = 1;
+	public static final int CTRL_PT_SIZE = 1;
 	public static final int SELECTED_CTRL_PT_SIZE = 2;
 	public static final int PT_INDICATOR_SIZE = 2;
 	public static final int STRETCH_FACTOR = 1;
@@ -82,7 +84,9 @@ public abstract class Curve {
 
 	protected KappaFrame frame;
 
-	public Curve(List<Point2D> ctrlPts, int t, int noCtrlPts, String name, int dataRadius, KappaFrame frame) {
+	public Curve(List<Point2D> ctrlPts, int t, int noCtrlPts, String name, int dataRadius,
+		KappaFrame frame)
+	{
 		this.frame = frame;
 
 		this.selected = true;
@@ -117,14 +121,16 @@ public abstract class Curve {
 				return true;
 			}
 
-			// If an element at the same t already exists, we just exchange it with the new
+			// If an element at the same t already exists, we just exchange it with
+			// the new
 			// one.
 			this.set(index, element);
 			return true;
 		}
 
 		public BControlPoints getInclusivePrev(int t) {
-			// Finds the previous defined keyframe. If no previous defined keyframe exists,
+			// Finds the previous defined keyframe. If no previous defined keyframe
+			// exists,
 			// it'll return the first one.
 			// Returns the current keyframe if it is one.
 			int index = Collections.binarySearch(this, t);
@@ -134,13 +140,15 @@ public abstract class Curve {
 					return this.get(index);
 				}
 				return this.get(index - 1);
-			} else {
+			}
+			else {
 				return this.get(index);
 			}
 		}
 
 		public BControlPoints getInclusiveNext(int t) {
-			// Finds the next defined keyframe. Returns the current keyframe if it is one.
+			// Finds the next defined keyframe. Returns the current keyframe if it is
+			// one.
 			int index = Collections.binarySearch(this, t);
 			if (index < 0) {
 				index = -1 * (index + 1);
@@ -148,7 +156,8 @@ public abstract class Curve {
 					return this.get(index - 1);
 				}
 				return this.get(index);
-			} else {
+			}
+			else {
 				return this.get(index);
 			}
 		}
@@ -156,8 +165,7 @@ public abstract class Curve {
 		/**
 		 * Gets the Bounds for a certain time t by translating keyframe layers
 		 *
-		 * @param t
-		 *            The time t we are interested in
+		 * @param t The time t we are interested in
 		 * @return The bounds at that time t.
 		 */
 		public Rectangle2D.Double getBounds(int t) {
@@ -167,16 +175,18 @@ public abstract class Curve {
 			BControlPoints prev = getKeyframes().getInclusivePrev(t);
 			BControlPoints next = getKeyframes().getInclusiveNext(t);
 			if (prev.t == next.t) {
-				return new Rectangle2D.Double(prev.minX, prev.minY, prev.maxX - prev.minX, prev.maxY - prev.minY);
+				return new Rectangle2D.Double(prev.minX, prev.minY, prev.maxX - prev.minX, prev.maxY -
+					prev.minY);
 			}
 
-			// Our scale factor is t1-t0/(t2 - t0), where t1 = t, and t0 and t2 are the
+			// Our scale factor is t1-t0/(t2 - t0), where t1 = t, and t0 and t2 are
+			// the
 			// preceding and succeeding keyframe times
 			double scaleFactor = (t - prev.t) / ((next.t - prev.t) * 1.0);
-			return new Rectangle2D.Double(prev.minX + (next.minX - prev.minX) * scaleFactor,
-					prev.minY + (next.minY - prev.minY) * scaleFactor,
-					scaleFactor * (next.maxX - next.minX) - (prev.maxX - prev.minX) * (scaleFactor - 1),
-					scaleFactor * (next.maxY - next.minY) - (prev.maxY - prev.minY) * (scaleFactor - 1));
+			return new Rectangle2D.Double(prev.minX + (next.minX - prev.minX) * scaleFactor, prev.minY +
+				(next.minY - prev.minY) * scaleFactor, scaleFactor * (next.maxX - next.minX) - (prev.maxX -
+					prev.minX) * (scaleFactor - 1), scaleFactor * (next.maxY - next.minY) - (prev.maxY -
+						prev.minY) * (scaleFactor - 1));
 		}
 	}
 
@@ -199,12 +209,14 @@ public abstract class Curve {
 			for (int i = 1; i < defPoints.length; i++) {
 				if (defPoints[i].getX() < minX) {
 					minX = defPoints[i].getX();
-				} else if (defPoints[i].getX() > maxX) {
+				}
+				else if (defPoints[i].getX() > maxX) {
 					maxX = defPoints[i].getX();
 				}
 				if (defPoints[i].getY() < minY) {
 					minY = defPoints[i].getY();
-				} else if (defPoints[i].getY() > maxY) {
+				}
+				else if (defPoints[i].getY() > maxY) {
 					maxY = defPoints[i].getY();
 				}
 			}
@@ -220,8 +232,7 @@ public abstract class Curve {
 	 * Translates the curve points with respect to the previous and subsequent
 	 * keyframes
 	 *
-	 * @param t
-	 *            The layer we are currently at
+	 * @param t The layer we are currently at
 	 */
 	public void translateCurve(int t) {
 		// Obtains the previous and subsequent keyframes for the Bezier Curve
@@ -243,9 +254,9 @@ public abstract class Curve {
 		// preceding and succeeding keyframe times
 		double scaleFactor = (t - prev.t) / ((next.t - prev.t) * 1.0);
 		for (int i = 0; i < noCtrlPts; i++) {
-			ctrlPts.set(i, new Point2D.Double(
-					prev.defPoints[i].getX() + ((next.defPoints[i].getX() - prev.defPoints[i].getX()) * scaleFactor),
-					prev.defPoints[i].getY() + ((next.defPoints[i].getY() - prev.defPoints[i].getY()) * scaleFactor)));
+			ctrlPts.set(i, new Point2D.Double(prev.defPoints[i].getX() + ((next.defPoints[i].getX() -
+				prev.defPoints[i].getX()) * scaleFactor), prev.defPoints[i].getY() + ((next.defPoints[i]
+					.getY() - prev.defPoints[i].getY()) * scaleFactor)));
 		}
 		fillPoints(ctrlPts, t);
 		this.boundingBox = getKeyframes().getBounds(t);
@@ -283,10 +294,11 @@ public abstract class Curve {
 		// Sees if the point is within any of the control point boxes, and sets the
 		// selected control pt index if one is selected
 		for (int i = 0; i < ctrlPts.size(); i++) {
-			if (p.getX() >= ((ctrlPts.get(i).getX() - SELECTED_CTRL_PT_SIZE) * scale - CTRL_PT_TOL)
-					&& p.getX() <= ((ctrlPts.get(i).getX() + SELECTED_CTRL_PT_SIZE) * scale + CTRL_PT_TOL)
-					&& p.getY() >= ((ctrlPts.get(i).getY() - SELECTED_CTRL_PT_SIZE) * scale - CTRL_PT_TOL)
-					&& p.getY() <= ((ctrlPts.get(i).getY() + SELECTED_CTRL_PT_SIZE) * scale + CTRL_PT_TOL)) {
+			if (p.getX() >= ((ctrlPts.get(i).getX() - SELECTED_CTRL_PT_SIZE) * scale - CTRL_PT_TOL) && p
+				.getX() <= ((ctrlPts.get(i).getX() + SELECTED_CTRL_PT_SIZE) * scale + CTRL_PT_TOL) && p
+					.getY() >= ((ctrlPts.get(i).getY() - SELECTED_CTRL_PT_SIZE) * scale - CTRL_PT_TOL) && p
+						.getY() <= ((ctrlPts.get(i).getY() + SELECTED_CTRL_PT_SIZE) * scale + CTRL_PT_TOL))
+			{
 				if (clicked) {
 					selectedCtrlPtIndex = i;
 				}
@@ -296,7 +308,8 @@ public abstract class Curve {
 		return -1;
 	}
 
-	// Shifts the control point indices by 1 pixel to account for the fact that the
+	// Shifts the control point indices by 1 pixel to account for the fact that
+	// the
 	// image is 0 indexed in java
 	public void shiftControlPoints(int t) {
 		for (int i = 0; i < noCtrlPts; i++) {
@@ -319,8 +332,8 @@ public abstract class Curve {
 	// Scales the coordinates of the control points in the curve by a value
 	public void scale(double scaleFactor, int t) {
 		for (int i = 0; i < noCtrlPts; i++) {
-			ctrlPts.set(i,
-					new Point2D.Double(ctrlPts.get(i).getX() * scaleFactor, ctrlPts.get(i).getY() * scaleFactor));
+			ctrlPts.set(i, new Point2D.Double(ctrlPts.get(i).getX() * scaleFactor, ctrlPts.get(i).getY() *
+				scaleFactor));
 		}
 		addKeyframe(ctrlPts, t);
 		fillPoints(ctrlPts, t);
@@ -332,8 +345,8 @@ public abstract class Curve {
 
 	abstract List<Point2D> generateOffsetBounds(List<Point2D> bounds, int radius);
 
-	abstract void draw(double scale, Graphics2D g, int currentPoint, boolean showBoundingBox, boolean scaleCurveStrokes,
-			boolean showTangent, boolean showThresholdedRegion);
+	abstract void draw(double scale, Graphics2D g, int currentPoint, boolean showBoundingBox,
+		boolean scaleCurveStrokes, boolean showTangent, boolean showThresholdedRegion);
 
 	public abstract boolean isPointOnCurve(Point2D p, int t, double scale);
 
@@ -379,7 +392,8 @@ public abstract class Curve {
 
 	public abstract int getSign(int footpointIndex);
 
-	public abstract void printValues(PrintWriter out, double[][] averaged, boolean exportAllDataPoints);
+	public abstract void printValues(PrintWriter out, double[][] averaged,
+		boolean exportAllDataPoints);
 
 	public abstract double getMaximum(double start, double end);
 
@@ -400,8 +414,8 @@ public abstract class Curve {
 	}
 
 	public Rectangle2D.Double getScaledBounds(Rectangle2D rect, double imageScale) {
-		return new Rectangle2D.Double(rect.getX() * imageScale, rect.getY() * imageScale, rect.getWidth() * imageScale,
-				rect.getHeight() * imageScale);
+		return new Rectangle2D.Double(rect.getX() * imageScale, rect.getY() * imageScale, rect
+			.getWidth() * imageScale, rect.getHeight() * imageScale);
 	}
 
 	public void recalculateCurvature(int t) {
