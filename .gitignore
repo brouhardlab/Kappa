@@ -19,3 +19,6 @@ nb-configuration.xml
 ## MacOSX ##
 .DS_Store
 pom.xml.releaseBackup
+
+.vscode
+.factorypath
