@@ -46,10 +46,13 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -149,6 +152,7 @@ public class KappaFrame extends JFrame {
 	private boolean[][] thresholded;
 	private ScrollDrawingPane scrollPane;
 	private double baseStrokeThickness = Curve.DEFAULT_STROKE_THICKNESS;
+	private BufferedImage combined;
 
 	// Panels
 	private InfoPanel infoPanel;
@@ -444,7 +448,7 @@ public class KappaFrame extends JFrame {
 			return;
 		}
 		double scale = this.getControlPanel().getScaleSlider().getValue() / 100.0;
-		BufferedImage combined = new BufferedImage(getScaled().getWidth(), getScaled().getHeight(),
+		this.combined = new BufferedImage(getScaled().getWidth(), getScaled().getHeight(),
 			BufferedImage.TYPE_INT_RGB);
 		Graphics2D g2 = (Graphics2D) combined.getGraphics();
 		g2.drawImage(getScaled(), 0, 0, null);
@@ -493,10 +497,11 @@ public class KappaFrame extends JFrame {
 			g2.setColor(Curve.CTRL_PT_COLOR);
 			for (int i = 0; i < getCurrCtrlPt(); i++) {
 				g2.fillRect((int) ((getPoints().get(i).getX() - this.getCtrlPointSize()) * scale),
-					(int) ((getPoints().get(i).getY() - this.getCtrlPointSize()) * scale), (int) (2 *
-							this.getCtrlPointSize() * scale), (int) (2 * this.getCtrlPointSize() * scale));
+					(int) ((getPoints().get(i).getY() - this.getCtrlPointSize()) * scale), (int) (2 * this
+						.getCtrlPointSize() * scale), (int) (2 * this.getCtrlPointSize() * scale));
 			}
 		}
+
 		getCurrImageLabel().setIcon(new ImageIcon(combined));
 	}
 
@@ -1413,11 +1418,11 @@ public class KappaFrame extends JFrame {
 	public void setBaseStrokeThickness(double strokeThickness) {
 		this.baseStrokeThickness = strokeThickness;
 	}
-	
+
 	public double getCtrlPointSize() {
 		return Curve.CTRL_PT_SIZE * this.baseStrokeThickness;
 	}
-	
+
 	public double getSelectedCtrlPointSize() {
 		return Curve.SELECTED_CTRL_PT_SIZE * this.baseStrokeThickness;
 	}
