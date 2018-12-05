@@ -345,6 +345,7 @@ public class InfoPanel extends JPanel {
 			@Override
 			public void stateChanged(ChangeEvent c) {
 				frame.setBaseStrokeThickness((double) strokeThicknessSpinner.getValue());
+				frame.drawImageOverlay();
 			}
 		});
 		this.add(strokeThicknessSpinner);

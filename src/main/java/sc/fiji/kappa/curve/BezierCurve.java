@@ -49,7 +49,7 @@ public class BezierCurve extends Curve {
 	// The range of values sampled around each Bezier Point to determine an average
 	// intensity per Bezier Region
 	public static final int RECURSE_DEPTH = 7;
-	public static final Color DEFAULT_CURVE_COLOR = Color.RED;
+	public static final Color DEFAULT_CURVE_COLOR = Color.CYAN;
 
 	// The number of points is 2^n + 1, where n is the recurse depth.
 	// Can be seen by solving the recurrence T(n) = 2T(n-1) - 1, T0 = 2
@@ -528,32 +528,30 @@ public class BezierCurve extends Curve {
 			for (Point2D p : dataFittingBounds) {
 				scaledDataBounds.addPoint((int) (p.getX() * scale), (int) (p.getY() * scale));
 			}
-			g.setStroke(new BasicStroke(0));
-			g.setColor(new Color(140, 220, 255));
-			g.drawPolygon(scaledDataBounds);
 			if (scaleCurveStrokes) {
-				g.setStroke(new BasicStroke((int) frame.getStrokeThickness(scale)));
+				g.setStroke(new BasicStroke((int) (frame.getStrokeThickness(scale) * 0.75)));
+				g.setColor(Curve.THRESHOLD_DATA_CONTOUR_COLOR);
+				g.drawPolygon(scaledBounds);
 			}
 		}
 
 		// Draws in the control points if selected as well.
 		if (selected) {
-			g.setColor(new Color(230, 230, 230));
+			g.setColor(Curve.CTRL_PT_COLOR);
 			for (int i = 0; i < ctrlPts.size(); i++) {
 				if (i == selectedCtrlPtIndex) {
-					g.setColor(Color.WHITE);
-					g.fillRect((int) ((ctrlPts.get(i).getX() - 1.5 * SELECTED_CTRL_PT_SIZE) * scale),
-							(int) ((ctrlPts.get(i).getY() - 1.5 * SELECTED_CTRL_PT_SIZE) * scale),
-							(int) (3 * SELECTED_CTRL_PT_SIZE * scale), (int) (3 * SELECTED_CTRL_PT_SIZE * scale));
+					g.fillRect((int) ((ctrlPts.get(i).getX() - 1.5 * frame.getSelectedCtrlPointSize()) * scale),
+							(int) ((ctrlPts.get(i).getY() - 1.5 * frame.getSelectedCtrlPointSize()) * scale),
+							(int) (3 * frame.getSelectedCtrlPointSize() * scale), (int) (3 * frame.getSelectedCtrlPointSize() * scale));
 					g.setColor(new Color(230, 230, 230));
 				} else if (i == hoveredCtrlPt) {
-					g.fillRect((int) ((ctrlPts.get(i).getX() - SELECTED_CTRL_PT_SIZE) * scale),
-							(int) ((ctrlPts.get(i).getY() - SELECTED_CTRL_PT_SIZE) * scale),
-							(int) (2 * SELECTED_CTRL_PT_SIZE * scale), (int) (2 * SELECTED_CTRL_PT_SIZE * scale));
+					g.fillRect((int) ((ctrlPts.get(i).getX() - frame.getSelectedCtrlPointSize()) * scale),
+							(int) ((ctrlPts.get(i).getY() - frame.getSelectedCtrlPointSize()) * scale),
+							(int) (2 * frame.getSelectedCtrlPointSize() * scale), (int) (2 * frame.getSelectedCtrlPointSize() * scale));
 				} else {
-					g.fillRect((int) ((ctrlPts.get(i).getX() - CTRL_PT_SIZE) * scale),
-							(int) ((ctrlPts.get(i).getY() - CTRL_PT_SIZE) * scale), (int) (2 * CTRL_PT_SIZE * scale),
-							(int) (2 * CTRL_PT_SIZE * scale));
+					g.fillRect((int) ((ctrlPts.get(i).getX() - frame.getCtrlPointSize()) * scale),
+							(int) ((ctrlPts.get(i).getY() - frame.getCtrlPointSize()) * scale), (int) (2 * frame.getCtrlPointSize() * scale),
+							(int) (2 * frame.getCtrlPointSize() * scale));
 				}
 			}
 			Point2D p = this.getPoint(currentPoint);
@@ -577,8 +575,8 @@ public class BezierCurve extends Curve {
 			}
 
 			g.setColor(Color.YELLOW);
-			g.fillRect((int) ((p.getX() - CTRL_PT_SIZE) * scale), (int) ((p.getY() - CTRL_PT_SIZE) * scale),
-					(int) (2 * CTRL_PT_SIZE * scale), (int) (2 * CTRL_PT_SIZE * scale));
+			g.fillRect((int) ((p.getX() - frame.getCtrlPointSize()) * scale), (int) ((p.getY() - frame.getCtrlPointSize()) * scale),
+					(int) (2 * frame.getCtrlPointSize() * scale), (int) (2 * frame.getCtrlPointSize() * scale));
 		}
 	}
 

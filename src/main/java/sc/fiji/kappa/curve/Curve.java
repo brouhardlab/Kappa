@@ -26,6 +26,7 @@
 
 package sc.fiji.kappa.curve;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.geom.Point2D;
@@ -61,6 +62,8 @@ public abstract class Curve {
 	public static final int SELECTED_CTRL_PT_SIZE = 2;
 	public static final int PT_INDICATOR_SIZE = 2;
 	public static final int STRETCH_FACTOR = 1;
+	public static final Color CTRL_PT_COLOR = Color.GREEN;
+	public static final Color THRESHOLD_DATA_CONTOUR_COLOR = Color.CYAN;
 
 	// The index of the selected control point. -1 if no control point is selected
 	protected int selectedCtrlPtIndex;
@@ -294,10 +297,11 @@ public abstract class Curve {
 		// Sees if the point is within any of the control point boxes, and sets the
 		// selected control pt index if one is selected
 		for (int i = 0; i < ctrlPts.size(); i++) {
-			if (p.getX() >= ((ctrlPts.get(i).getX() - SELECTED_CTRL_PT_SIZE) * scale - CTRL_PT_TOL) && p
-				.getX() <= ((ctrlPts.get(i).getX() + SELECTED_CTRL_PT_SIZE) * scale + CTRL_PT_TOL) && p
-					.getY() >= ((ctrlPts.get(i).getY() - SELECTED_CTRL_PT_SIZE) * scale - CTRL_PT_TOL) && p
-						.getY() <= ((ctrlPts.get(i).getY() + SELECTED_CTRL_PT_SIZE) * scale + CTRL_PT_TOL))
+			if (p.getX() >= ((ctrlPts.get(i).getX() - frame.getSelectedCtrlPointSize()) * scale -
+				CTRL_PT_TOL) && p.getX() <= ((ctrlPts.get(i).getX() + frame.getSelectedCtrlPointSize()) *
+					scale + CTRL_PT_TOL) && p.getY() >= ((ctrlPts.get(i).getY() - frame
+						.getSelectedCtrlPointSize()) * scale - CTRL_PT_TOL) && p.getY() <= ((ctrlPts.get(i)
+							.getY() + frame.getSelectedCtrlPointSize()) * scale + CTRL_PT_TOL))
 			{
 				if (clicked) {
 					selectedCtrlPtIndex = i;

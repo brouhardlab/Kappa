@@ -490,11 +490,11 @@ public class KappaFrame extends JFrame {
 						.get(getPoints().size() - 1).getY() * scale));
 			}
 
-			g2.setColor(Color.WHITE);
+			g2.setColor(Curve.CTRL_PT_COLOR);
 			for (int i = 0; i < getCurrCtrlPt(); i++) {
-				g2.fillRect((int) ((getPoints().get(i).getX() - Curve.CTRL_PT_SIZE) * scale),
-					(int) ((getPoints().get(i).getY() - Curve.CTRL_PT_SIZE) * scale), (int) (2 *
-						Curve.CTRL_PT_SIZE * scale), (int) (2 * Curve.CTRL_PT_SIZE * scale));
+				g2.fillRect((int) ((getPoints().get(i).getX() - this.getCtrlPointSize()) * scale),
+					(int) ((getPoints().get(i).getY() - this.getCtrlPointSize()) * scale), (int) (2 *
+							this.getCtrlPointSize() * scale), (int) (2 * this.getCtrlPointSize() * scale));
 			}
 		}
 		getCurrImageLabel().setIcon(new ImageIcon(combined));
@@ -1412,6 +1412,14 @@ public class KappaFrame extends JFrame {
 
 	public void setBaseStrokeThickness(double strokeThickness) {
 		this.baseStrokeThickness = strokeThickness;
+	}
+	
+	public double getCtrlPointSize() {
+		return Curve.CTRL_PT_SIZE * this.baseStrokeThickness;
+	}
+	
+	public double getSelectedCtrlPointSize() {
+		return Curve.SELECTED_CTRL_PT_SIZE * this.baseStrokeThickness;
 	}
 
 }
