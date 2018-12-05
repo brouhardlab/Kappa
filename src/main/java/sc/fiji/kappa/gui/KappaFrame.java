@@ -46,13 +46,10 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -1425,6 +1422,10 @@ public class KappaFrame extends JFrame {
 
 	public double getSelectedCtrlPointSize() {
 		return Curve.SELECTED_CTRL_PT_SIZE * this.baseStrokeThickness;
+	}
+
+	public BufferedImage getCombinedImage() {
+		return this.combined;
 	}
 
 }
