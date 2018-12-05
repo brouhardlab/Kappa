@@ -440,7 +440,7 @@ public class KappaFrame extends JFrame {
 	/**
 	 * Draws everything on top of the scaled image
 	 */
-	protected void drawImageOverlay() {
+	public void drawImageOverlay() {
 		if (getCurrImage() == null) {
 			return;
 		}
