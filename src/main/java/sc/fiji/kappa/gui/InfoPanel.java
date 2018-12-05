@@ -55,7 +55,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -98,9 +100,11 @@ public class InfoPanel extends JPanel {
 
 	// Constants for curve input parameter bounds
 	final static Rectangle INPUT_OPTION_LABEL_BOUNDS = new Rectangle(10, 25, 200, 25);
-	final static Rectangle CURVE_COMBO_BOX_BOUNDS = new Rectangle(112, 27, 100, 20);
+	final static Rectangle CURVE_COMBO_BOX_BOUNDS = new Rectangle(122, 27, 100, 20);
 	final static Rectangle BSPLINE_OPTION_LABEL_BOUNDS = new Rectangle(10, 47, 200, 25);
-	final static Rectangle BSPLINE_COMBO_BOX_BOUNDS = new Rectangle(112, 50, 100, 20);
+	final static Rectangle BSPLINE_COMBO_BOX_BOUNDS = new Rectangle(122, 50, 100, 20);
+	final static Rectangle STROKE_THICKNESS_LABEL_BOUNDS = new Rectangle(10, 69, 200, 25);
+	final static Rectangle STROKE_THICKNESS_SPINNER_BOUNDS = new Rectangle(122, 72, 100, 20);
 
 	// Constants for thresholding parameters
 	final static Rectangle THRESHOLD_CHANNEL_LABEL_BOUNDS = new Rectangle(10, 25, 200, 25);
@@ -193,18 +197,19 @@ public class InfoPanel extends JPanel {
 		this.addMouseListener(new MouseHandler());
 
 		this.setLayout(null);
-		setBackground(frame.PANEL_COLOR);
-		setPreferredSize(new Dimension(frame.PANEL_WIDTH, 0));
+		setBackground(KappaFrame.PANEL_COLOR);
+		setPreferredSize(new Dimension(KappaFrame.PANEL_WIDTH, 0));
 		setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 
 		// Internal JScrollPane for our list of curves
 		setListData(new Vector<String>());
-		setList(new JList<String>(getListData()));
+		setList(new JList<>(getListData()));
 
 		// List Selection Listener to match list selection to curve selection (and
 		// whether the delete curve option is enabled)
 		getList().addListSelectionListener(new ListSelectionListener() {
+			@Override
 			public void valueChanged(ListSelectionEvent event) {
 				if (event.getSource() == getList() && !event.getValueIsAdjusting()) {
 					int[] selectedIndices = getList().getSelectedIndices();
@@ -239,8 +244,8 @@ public class InfoPanel extends JPanel {
 		});
 
 		setCurvesList(new JScrollPane(getList()));
-		getCurvesList().setBounds(0, 22, frame.PANEL_WIDTH - 2, 75);
-		getCurvesList().setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		getCurvesList().setBounds(0, 22, KappaFrame.PANEL_WIDTH - 2, 75);
+		getCurvesList().setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		this.add(getCurvesList());
 		Panel curvesListPanel = new Panel(0, 0, 95, "CURVES");
 		curvesListPanel.setExpanded(false);
@@ -248,7 +253,7 @@ public class InfoPanel extends JPanel {
 		curvesListPanel.addComponent(getCurvesList());
 
 		// Slider and Label for traversal of Points along a Bezier Curve
-		setPointSlider(new JSlider(JSlider.HORIZONTAL, 0, frame.getNumberOfPointsPerCurve(), 0));
+		setPointSlider(new JSlider(SwingConstants.HORIZONTAL, 0, frame.getNumberOfPointsPerCurve(), 0));
 		getPointSlider().addChangeListener(new PointChanger());
 		getPointSlider().setBounds(POINT_SLIDER_BOUNDS);
 		getPointSlider().setEnabled(false);
@@ -265,6 +270,7 @@ public class InfoPanel extends JPanel {
 		setConversionField(new JTextField(5));
 		getConversionField().setText(Double.toString(Curve.DEFAULT_MICRON_PIXEL_FACTOR));
 		getConversionField().addKeyListener(new KeyAdapter() {
+			@Override
 			public void keyTyped(KeyEvent e) {
 				char c = e.getKeyChar();
 				if (((c < '0') || (c > '9')) && (c != '.') && (c != KeyEvent.VK_ENTER)
@@ -278,30 +284,31 @@ public class InfoPanel extends JPanel {
 		});
 		getConversionField().setBounds(CONVERSION_FIELD_BOUNDS);
 
-		Panel inputOptionsPanel = new Panel(75, "CURVE INPUT OPTIONS");
+		Panel inputOptionsPanel = new Panel(100, "CURVE INPUT OPTIONS");
 		panels.addPanel(inputOptionsPanel);
 		addLabelComponent("Curve Input Type: ", inputOptionsPanel, INPUT_OPTION_LABEL_BOUNDS);
 
-		setCurveComboBox(new JComboBox<String>(frame.CURVE_TYPES));
+		setCurveComboBox(new JComboBox<>(KappaFrame.CURVE_TYPES));
 		getCurveComboBox().setSelectedIndex(1);
 		frame.setInputType(getCurveComboBox().getSelectedIndex());
 		getCurveComboBox().addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				// Bezier Curves are viable with 3 control points but Cubic B-Splines need at
 				// least 4.
 				frame.setInputType(getCurveComboBox().getSelectedIndex());
 
-				getBsplineComboBox().setEnabled(frame.getInputType() == frame.B_SPLINE);
-				getBsplineOptionLabel().setEnabled(frame.getInputType() == frame.B_SPLINE);
+				getBsplineComboBox().setEnabled(frame.getInputType() == KappaFrame.B_SPLINE);
+				getBsplineOptionLabel().setEnabled(frame.getInputType() == KappaFrame.B_SPLINE);
 				if (frame.getCurrCtrlPt() == 3) {
-					frame.getKappaMenubar().getEnter().setEnabled(frame.getInputType() == frame.BEZIER_CURVE);
+					frame.getKappaMenubar().getEnter().setEnabled(frame.getInputType() == KappaFrame.BEZIER_CURVE);
 				}
 				frame.getScrollPane().requestFocusInWindow();
 			}
 		});
 		getCurveComboBox().setBounds(CURVE_COMBO_BOX_BOUNDS);
 		if (System.getProperty("os.name").equals("Mac OS X")) {
-			getCurveComboBox().setSize(getCurveComboBox().getWidth(), frame.COMBO_BOX_HEIGHT_OSX);
+			getCurveComboBox().setSize(getCurveComboBox().getWidth(), KappaFrame.COMBO_BOX_HEIGHT_OSX);
 		}
 		this.add(getCurveComboBox());
 		inputOptionsPanel.addComponent(getCurveComboBox());
@@ -309,26 +316,39 @@ public class InfoPanel extends JPanel {
 		setBsplineOptionLabel(new JLabel("B-Spline Type: "));
 		getBsplineOptionLabel().setBounds(BSPLINE_OPTION_LABEL_BOUNDS);
 		getBsplineOptionLabel().setFont(getBsplineOptionLabel().getFont().deriveFont(Font.PLAIN));
-		getBsplineOptionLabel().setEnabled(frame.getInputType() == frame.B_SPLINE);
+		getBsplineOptionLabel().setEnabled(frame.getInputType() == KappaFrame.B_SPLINE);
 		this.add(getBsplineOptionLabel());
 		inputOptionsPanel.addComponent(getBsplineOptionLabel());
 
-		setBsplineComboBox(new JComboBox<String>(frame.BSPLINE_TYPES));
+		setBsplineComboBox(new JComboBox<>(KappaFrame.BSPLINE_TYPES));
 		getBsplineComboBox().setSelectedIndex(0);
 		getBsplineComboBox().addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				frame.setBsplineType(getBsplineComboBox().getSelectedIndex());
 				frame.getScrollPane().requestFocusInWindow();
 				frame.drawImageOverlay();
 			}
 		});
-		getBsplineComboBox().setEnabled(frame.getInputType() == frame.B_SPLINE);
+		getBsplineComboBox().setEnabled(frame.getInputType() == KappaFrame.B_SPLINE);
 		getBsplineComboBox().setBounds(BSPLINE_COMBO_BOX_BOUNDS);
 		if (System.getProperty("os.name").equals("Mac OS X")) {
-			getBsplineComboBox().setSize(getBsplineComboBox().getWidth(), frame.COMBO_BOX_HEIGHT_OSX);
+			getBsplineComboBox().setSize(getBsplineComboBox().getWidth(), KappaFrame.COMBO_BOX_HEIGHT_OSX);
 		}
 		this.add(getBsplineComboBox());
 		inputOptionsPanel.addComponent(getBsplineComboBox());
+		
+		addLabelComponent("Stroke Thickness: ", inputOptionsPanel, STROKE_THICKNESS_LABEL_BOUNDS);
+		JSpinner strokeThicknessSpinner = new JSpinner(new SpinnerNumberModel(frame.getBaseStrokeThickness(), 0.1, 10, 1));
+		strokeThicknessSpinner.setBounds(STROKE_THICKNESS_SPINNER_BOUNDS);
+		strokeThicknessSpinner.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent c) {
+				frame.setBaseStrokeThickness((double) strokeThicknessSpinner.getValue());
+			}
+		});
+		this.add(strokeThicknessSpinner);
+		inputOptionsPanel.addComponent(strokeThicknessSpinner);
 
 		Panel statisticsPanel = new Panel(210, "DATA AND STATISTICS");
 		panels.addPanel(statisticsPanel);
@@ -378,8 +398,9 @@ public class InfoPanel extends JPanel {
 		addLabelComponent("Global Error Threshold: ", curveFittingPanel, GLOBAL_ERROR_LABEL_BOUNDS);
 		addLabelComponent("Local Error Threshold: ", curveFittingPanel, LOCAL_ERROR_LABEL_BOUNDS);
 
-		setDataThresholdSlider(new JSlider(JSlider.HORIZONTAL, 0, 256, DEFAULT_DATA_THRESHOLD));
+		setDataThresholdSlider(new JSlider(SwingConstants.HORIZONTAL, 0, 256, DEFAULT_DATA_THRESHOLD));
 		getDataThresholdSlider().addChangeListener(new ChangeListener() {
+			@Override
 			public void stateChanged(ChangeEvent c) {
 				if (frame.isImageRGBColor()) {
 					getDataThresholdLabel().setText(getDataThresholdSlider().getValue() + " / " + "256");
@@ -404,9 +425,10 @@ public class InfoPanel extends JPanel {
 		this.add(getDataThresholdLabel());
 		curveFittingPanel.addComponent(getDataThresholdLabel());
 
-		setFittingChannelsComboBox(new JComboBox<String>(FITTING_CHANNELS));
+		setFittingChannelsComboBox(new JComboBox<>(FITTING_CHANNELS));
 		getFittingChannelsComboBox().setSelectedIndex(3);
 		getFittingChannelsComboBox().addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				// Reevaluate all the thresholded pixels
 				for (Curve c : frame.getCurves()) {
@@ -418,29 +440,31 @@ public class InfoPanel extends JPanel {
 		});
 		getFittingChannelsComboBox().setBounds(FITTING_CHANNEL_COMBO_BOX_BOUNDS);
 		if (System.getProperty("os.name").equals("Mac OS X")) {
-			getFittingChannelsComboBox().setSize(getFittingChannelsComboBox().getWidth(), frame.COMBO_BOX_HEIGHT_OSX);
+			getFittingChannelsComboBox().setSize(getFittingChannelsComboBox().getWidth(), KappaFrame.COMBO_BOX_HEIGHT_OSX);
 		}
 		this.add(getFittingChannelsComboBox());
 		curveFittingPanel.addComponent(getFittingChannelsComboBox());
 
-		setFittingComboBox(new JComboBox<String>(frame.FITTING_ALGORITHMS));
-		getFittingComboBox().setSelectedIndex(frame.DEFAULT_FITTING_ALGORITHM);
+		setFittingComboBox(new JComboBox<>(KappaFrame.FITTING_ALGORITHMS));
+		getFittingComboBox().setSelectedIndex(KappaFrame.DEFAULT_FITTING_ALGORITHM);
 		getFittingComboBox().addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
-				frame.setFittingAlgorithm(frame.FITTING_ALGORITHMS[getFittingComboBox().getSelectedIndex()]);
+				frame.setFittingAlgorithm(KappaFrame.FITTING_ALGORITHMS[getFittingComboBox().getSelectedIndex()]);
 				frame.getScrollPane().requestFocusInWindow();
 			}
 		});
 		getFittingComboBox().setBounds(FITTING_COMBO_BOX_BOUNDS);
 		if (System.getProperty("os.name").equals("Mac OS X")) {
-			getFittingComboBox().setSize(getFittingComboBox().getWidth(), frame.COMBO_BOX_HEIGHT_OSX);
+			getFittingComboBox().setSize(getFittingComboBox().getWidth(), KappaFrame.COMBO_BOX_HEIGHT_OSX);
 		}
 		this.add(getFittingComboBox());
 		curveFittingPanel.addComponent(getFittingComboBox());
 
-		setDataRangeComboBox(new JComboBox<String>(DATA_RANGE_OPTIONS));
+		setDataRangeComboBox(new JComboBox<>(DATA_RANGE_OPTIONS));
 		getDataRangeComboBox().setSelectedIndex(0);
 		getDataRangeComboBox().addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				for (Curve c : frame.getCurves()) {
 					c.evaluateThresholdedPixels();
@@ -450,7 +474,7 @@ public class InfoPanel extends JPanel {
 		});
 		getDataRangeComboBox().setBounds(DATA_RANGE_COMBO_BOX_BOUNDS);
 		if (System.getProperty("os.name").equals("Mac OS X")) {
-			getDataRangeComboBox().setSize(getDataRangeComboBox().getWidth(), frame.COMBO_BOX_HEIGHT_OSX);
+			getDataRangeComboBox().setSize(getDataRangeComboBox().getWidth(), KappaFrame.COMBO_BOX_HEIGHT_OSX);
 		}
 		this.add(getDataRangeComboBox());
 		curveFittingPanel.addComponent(getDataRangeComboBox());
@@ -458,6 +482,7 @@ public class InfoPanel extends JPanel {
 		setThresholdRadiusSpinner(new JSpinner(new SpinnerNumberModel(5, 1, 200, 1)));
 		getThresholdRadiusSpinner().setBounds(THRESHOLD_RADIUS_SPINNER_BOUNDS);
 		getThresholdRadiusSpinner().addChangeListener(new ChangeListener() {
+			@Override
 			public void stateChanged(ChangeEvent c) {
 				for (Curve curve : frame.getCurves()) {
 					curve.setDataRadius((Integer) getThresholdRadiusSpinner().getValue());
@@ -471,6 +496,7 @@ public class InfoPanel extends JPanel {
 		JSpinner globalErrorSpinner = new JSpinner(new SpinnerNumberModel(frame.getGlobalThreshold(), 0, 1, 0.01));
 		globalErrorSpinner.setBounds(GLOBAL_ERROR_SPINNER_BOUNDS);
 		globalErrorSpinner.addChangeListener(new ChangeListener() {
+			@Override
 			public void stateChanged(ChangeEvent c) {
 				frame.setGlobalThreshold((double) globalErrorSpinner.getValue());
 			}
@@ -481,6 +507,7 @@ public class InfoPanel extends JPanel {
 		JSpinner localErrorSpinner = new JSpinner(new SpinnerNumberModel(frame.getLocalThreshold(), 0, 1, 0.01));
 		localErrorSpinner.setBounds(LOCAL_ERROR_SPINNER_BOUNDS);
 		localErrorSpinner.addChangeListener(new ChangeListener() {
+			@Override
 			public void stateChanged(ChangeEvent c) {
 				frame.setLocalThreshold((double) localErrorSpinner.getValue());
 			}
@@ -491,6 +518,7 @@ public class InfoPanel extends JPanel {
 		setShowRadiusCheckBox(new JCheckBox());
 		getShowRadiusCheckBox().setBounds(SHOW_RADIUS_CHECKBOX_BOUNDS);
 		getShowRadiusCheckBox().addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				frame.drawImageOverlay();
 			}
@@ -501,6 +529,7 @@ public class InfoPanel extends JPanel {
 		setShowDatapointsCheckBox(new JCheckBox());
 		getShowDatapointsCheckBox().setBounds(SHOW_DATAPOINTS_CHECKBOX_BOUNDS);
 		getShowDatapointsCheckBox().addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				frame.drawImageOverlay();
 			}
@@ -514,24 +543,25 @@ public class InfoPanel extends JPanel {
 		panels.addPanel(thresholdingPanel);
 
 		addLabelComponent("Evaluate Background Pixels Using: ", thresholdingPanel, THRESHOLD_CHANNEL_LABEL_BOUNDS);
-		setThresholdChannelsComboBox(new JComboBox<String>(FITTING_CHANNELS));
+		setThresholdChannelsComboBox(new JComboBox<>(FITTING_CHANNELS));
 		getThresholdChannelsComboBox().setSelectedIndex(0);
 		getThresholdChannelsComboBox().setBounds(THRESHOLD_CHANNEL_COMBO_BOX_BOUNDS);
 		if (System.getProperty("os.name").equals("Mac OS X")) {
 			getThresholdChannelsComboBox().setSize(getThresholdChannelsComboBox().getWidth(),
-					frame.COMBO_BOX_HEIGHT_OSX);
+					KappaFrame.COMBO_BOX_HEIGHT_OSX);
 		}
 		this.add(getThresholdChannelsComboBox());
 		thresholdingPanel.addComponent(getThresholdChannelsComboBox());
 
-		setBgThresholdLabel(new JLabel("Background Threshold: " + frame.DEFAULT_BG_THRESHOLD + " / " + "256"));
+		setBgThresholdLabel(new JLabel("Background Threshold: " + KappaFrame.DEFAULT_BG_THRESHOLD + " / " + "256"));
 		getBgThresholdLabel().setBounds(THRESHOLD_LABEL_BOUNDS);
 		getBgThresholdLabel().setFont(getBgThresholdLabel().getFont().deriveFont(Font.PLAIN));
 		this.add(getBgThresholdLabel());
 		thresholdingPanel.addComponent(getBgThresholdLabel());
 
-		setThresholdSlider(new JSlider(JSlider.HORIZONTAL, 0, 256, frame.DEFAULT_BG_THRESHOLD));
+		setThresholdSlider(new JSlider(SwingConstants.HORIZONTAL, 0, 256, KappaFrame.DEFAULT_BG_THRESHOLD));
 		getThresholdSlider().addChangeListener(new ChangeListener() {
+			@Override
 			public void stateChanged(ChangeEvent c) {
 				getBgThresholdLabel().setText("Background Threshold: " + getThresholdSlider().getValue() + "/" + "256");
 			}
@@ -569,13 +599,15 @@ public class InfoPanel extends JPanel {
 		thresholdingPanel.addComponent(getApply());
 		thresholdingPanel.addComponent(getRevert());
 		getApply().addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				frame.updateThresholded();
 			}
 		});
 		getRevert().addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
-				getThresholdSlider().setValue(frame.DEFAULT_BG_THRESHOLD);
+				getThresholdSlider().setValue(KappaFrame.DEFAULT_BG_THRESHOLD);
 				getBgCheckBox().setSelected(false);
 				getRangeAveragingSpinner().setValue(3);
 				frame.setScaledImage(frame.getControlPanel().getScaleSlider().getValue() / 100.0);
@@ -585,7 +617,7 @@ public class InfoPanel extends JPanel {
 
 		curvaturePanel = new Panel(110, "Curvature Distribution (absolute values)");
 		curvatureChart = new Chart(new ArrayList<Point2D>());
-		if (frame.DEBUG_MODE) {
+		if (KappaFrame.DEBUG_MODE) {
 			debugCurvatureChart = new Chart(new ArrayList<Point2D>());
 			curvaturePanel.addComponent(debugCurvatureChart);
 		}
@@ -640,7 +672,7 @@ public class InfoPanel extends JPanel {
 		intensityChartGreen.setData(greenIntensities);
 		intensityChartBlue.setData(blueIntensities);
 
-		if (frame.DEBUG_MODE) {
+		if (KappaFrame.DEBUG_MODE) {
 			debugCurvatureChart.setData(currEditedCurve.getDebugCurveData());
 		}
 		frame.getInfoPanel().repaint();
@@ -670,6 +702,7 @@ public class InfoPanel extends JPanel {
 	 * @param g
 	 *            The Graphics context
 	 */
+	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		BezierGroup curves = frame.getCurves();
@@ -718,19 +751,19 @@ public class InfoPanel extends JPanel {
 		// Draws the curvature chart.
 		if (curvatureChart.isVisible()) {
 			curvatureChart.draw(curvaturePanel.getX(), curvaturePanel.getY() + Panel.TITLEBAR_DEFAULT_HEIGHT,
-					frame.PANEL_WIDTH, curvaturePanel.getH(), g, Color.BLUE);
-			if (frame.DEBUG_MODE) {
+					KappaFrame.PANEL_WIDTH, curvaturePanel.getH(), g, Color.BLUE);
+			if (KappaFrame.DEBUG_MODE) {
 				debugCurvatureChart.draw(curvaturePanel.getX(), curvaturePanel.getY() + Panel.TITLEBAR_DEFAULT_HEIGHT,
-						frame.PANEL_WIDTH, curvaturePanel.getH(), g, Color.PINK);
+						KappaFrame.PANEL_WIDTH, curvaturePanel.getH(), g, Color.PINK);
 			}
 		}
 
 		intensityChartRed.draw(intensityPanel.getX(), intensityPanel.getY() + Panel.TITLEBAR_DEFAULT_HEIGHT,
-				frame.PANEL_WIDTH, intensityPanel.getH(), g, Color.RED);
+				KappaFrame.PANEL_WIDTH, intensityPanel.getH(), g, Color.RED);
 		intensityChartGreen.draw(intensityPanel.getX(), intensityPanel.getY() + Panel.TITLEBAR_DEFAULT_HEIGHT,
-				frame.PANEL_WIDTH, intensityPanel.getH(), g, Color.GREEN);
+				KappaFrame.PANEL_WIDTH, intensityPanel.getH(), g, Color.GREEN);
 		intensityChartBlue.draw(intensityPanel.getX(), intensityPanel.getY() + Panel.TITLEBAR_DEFAULT_HEIGHT,
-				frame.PANEL_WIDTH, intensityPanel.getH(), g, Color.BLUE);
+				KappaFrame.PANEL_WIDTH, intensityPanel.getH(), g, Color.BLUE);
 	}
 
 	public JList<String> getList() {
@@ -936,6 +969,7 @@ public class InfoPanel extends JPanel {
 	// Refreshes the info panel value when the point slider changes
 	private class PointChanger implements ChangeListener {
 
+		@Override
 		public void stateChanged(ChangeEvent ce) {
 			pointLabel.setText(
 					"Point " + frame.formatNumber(getPointSlider().getValue(), BezierCurve.NO_CURVE_POINTS_DIGITS)
@@ -948,6 +982,7 @@ public class InfoPanel extends JPanel {
 	// Inner class to handle mouse events
 	private class MouseHandler extends MouseAdapter {
 
+		@Override
 		public void mousePressed(MouseEvent event) {
 			// Updates visibility of the panels
 			panels.toggleVisibility(event.getPoint());

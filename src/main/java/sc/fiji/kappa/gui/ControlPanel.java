@@ -41,6 +41,7 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JSlider;
 import javax.swing.JToggleButton;
+import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -95,7 +96,7 @@ public class ControlPanel extends JPanel {
 		this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 
 		// Create the slider and a label for it
-		setCurrentLayerSlider(new JSlider(JSlider.HORIZONTAL, 1, 200, frame.getINIT_LAYER()));
+		setCurrentLayerSlider(new JSlider(SwingConstants.HORIZONTAL, 1, 200, frame.getINIT_LAYER()));
 		layerLabel = new JLabel("");
 		layerLabel.setPreferredSize(new Dimension(65, Short.MAX_VALUE));
 		getCurrentLayerSlider().addChangeListener(new LayerChanger());
@@ -115,6 +116,7 @@ public class ControlPanel extends JPanel {
 			channelButtons[i].setEnabled(false);
 			channelButtons[i].setToolTipText(CHANNEL_TOOLTIPS[i]);
 			channelButtons[i].addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					frame.setDisplayedChannels(channelButtons[0].isSelected(), channelButtons[1].isSelected(),
 							channelButtons[2].isSelected());
@@ -123,7 +125,7 @@ public class ControlPanel extends JPanel {
 		}
 
 		// Adds another slider for the scale factor
-		setScaleSlider(new JSlider(JSlider.HORIZONTAL, MIN_SCALE, MAX_SCALE, DEFAULT_SCALE));
+		setScaleSlider(new JSlider(SwingConstants.HORIZONTAL, MIN_SCALE, MAX_SCALE, DEFAULT_SCALE));
 		getScaleSlider().setMajorTickSpacing(100);
 		getScaleSlider().setMinorTickSpacing(50);
 		getScaleSlider().setPaintTicks(true);
@@ -154,6 +156,7 @@ public class ControlPanel extends JPanel {
 	 * @param g
 	 *            The Graphics context
 	 */
+	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
@@ -181,7 +184,7 @@ public class ControlPanel extends JPanel {
 
 	private void addSpacer(int spaceSize) {
 		this.add(Box.createRigidArea(new Dimension(spaceSize, 0)));
-		JSeparator spacer = new JSeparator(JSeparator.VERTICAL);
+		JSeparator spacer = new JSeparator(SwingConstants.VERTICAL);
 		spacer.setMaximumSize(new Dimension(10, 35));
 		this.add(spacer);
 		this.add(Box.createRigidArea(new Dimension(spaceSize, 0)));
@@ -190,6 +193,7 @@ public class ControlPanel extends JPanel {
 	// Modifies the TIFF layer in response to the value on the slider
 	private class LayerChanger implements ChangeListener {
 
+		@Override
 		public void stateChanged(ChangeEvent ce) {
 			layerLabel.setText(frame.formatNumber(getCurrentLayerSlider().getValue(), frame.getMaxLayerDigits()) + " / "
 					+ frame.getMaxLayer());
@@ -205,6 +209,7 @@ public class ControlPanel extends JPanel {
 
 	private class ScaleChanger implements ChangeListener {
 
+		@Override
 		public void stateChanged(ChangeEvent ce) {
 			scaleLabel.setText(frame.formatNumber(getScaleSlider().getValue(), DIGITS_MAX_SCALE) + "%");
 			frame.setScaledImage(getScaleSlider().getValue() / 100.0);

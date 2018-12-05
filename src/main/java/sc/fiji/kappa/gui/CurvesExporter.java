@@ -94,7 +94,7 @@ public class CurvesExporter {
 		CSVWriter writer = new CSVWriter(new FileWriter(file.getAbsoluteFile()));
 
 		// Write headers
-		List<String> headers = new ArrayList<String>();
+		List<String> headers = new ArrayList<>();
 		headers.add("Curve Name");
 
 		headers.add("Curve Length (um)");

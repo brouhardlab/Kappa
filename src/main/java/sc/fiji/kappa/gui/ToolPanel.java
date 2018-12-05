@@ -43,6 +43,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JToggleButton;
+import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 
 public class ToolPanel extends JPanel {
@@ -97,6 +98,7 @@ public class ToolPanel extends JPanel {
 			toolButtons[i].setEnabled(false);
 			final int j = i;
 			toolButtons[i].addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(ActionEvent a) {
 					frame.getScrollPane().setCursor(TOOL_CURSORS[j]);
 				}
@@ -145,7 +147,7 @@ public class ToolPanel extends JPanel {
 	 */
 	private void addSpacer(int spaceSize) {
 		this.add(Box.createRigidArea(new Dimension(spaceSize, 0)));
-		JSeparator spacer = new JSeparator(JSeparator.VERTICAL);
+		JSeparator spacer = new JSeparator(SwingConstants.VERTICAL);
 		spacer.setMaximumSize(new Dimension(10, 35));
 		this.add(spacer);
 		this.add(Box.createRigidArea(new Dimension(spaceSize, 0)));
@@ -164,6 +166,7 @@ public class ToolPanel extends JPanel {
 
 	private class ExportListener implements ActionListener {
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			CurvesExporter exporter = new CurvesExporter(frame);
 			try {
@@ -176,6 +179,7 @@ public class ToolPanel extends JPanel {
 
 	private class ExportAverageListener implements ActionListener {
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			CurvesExporter exporter = new CurvesExporter(frame);
 			try {
@@ -188,6 +192,7 @@ public class ToolPanel extends JPanel {
 
 	private class InspectorListener implements ActionListener {
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (inspector.isSelected()) {
 				frame.add(frame.getInfoPanel(), BorderLayout.EAST);

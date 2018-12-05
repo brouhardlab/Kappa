@@ -48,6 +48,7 @@ public class Overlay extends JComponent {
 		this.frame = frame;
 	}
 
+	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 	}
@@ -101,6 +102,7 @@ public class Overlay extends JComponent {
 			this.timeMillis = timeMillis;
 		}
 
+		@Override
 		public void run() {
 			try {
 				Thread.sleep(timeMillis);

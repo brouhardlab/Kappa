@@ -61,6 +61,7 @@ public class BezierPoint extends Point2D.Double {
 	 *
 	 * @return The string representing the Bezier Point
 	 */
+	@Override
 	public String toString() {
 		return String.format("x = %f, y = %f, k = %f", x, y, k);
 	}

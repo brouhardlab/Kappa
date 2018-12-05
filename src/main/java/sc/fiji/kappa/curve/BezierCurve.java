@@ -49,7 +49,7 @@ public class BezierCurve extends Curve {
 	// The range of values sampled around each Bezier Point to determine an average
 	// intensity per Bezier Region
 	public static final int RECURSE_DEPTH = 7;
-	public static final Color DEFAULT_CURVE_COLOR = Color.CYAN;
+	public static final Color DEFAULT_CURVE_COLOR = Color.RED;
 
 	// The number of points is 2^n + 1, where n is the recurse depth.
 	// Can be seen by solving the recurrence T(n) = 2T(n-1) - 1, T0 = 2
@@ -67,16 +67,19 @@ public class BezierCurve extends Curve {
 		evaluateThresholdedPixels();
 	}
 
+	@Override
 	public void addKeyFrame(Point2D newCtrlPt, int t) {
 		super.addKeyFrame(newCtrlPt, t);
 		evaluateThresholdedPixels();
 	}
 
+	@Override
 	public void translateCurve(int t) {
 		super.translateCurve(t);
 		evaluateThresholdedPixels();
 	}
 
+	@Override
 	public void printValues(PrintWriter out, double[][] averaged, boolean exportAllDataPoints) {
 
 		// We export all the unique pixel data points if this is the case.
@@ -197,12 +200,13 @@ public class BezierCurve extends Curve {
 		return rev;
 	}
 
+	@Override
 	public void evaluateThresholdedPixels() {
 		int pixelThreshold = frame.getInfoPanel().getDataThresholdSlider().getValue();
 		boolean isBrighter = frame.getInfoPanel().getDataRangeComboBox().getSelectedIndex() == 0;
 
 		// Finds all pixels nearby the curve that are higher than a threshold intensity.
-		thresholdedPixels = new ArrayList<Point2D>();
+		thresholdedPixels = new ArrayList<>();
 		scaledDataBounds.reset();
 		for (Point2D p : dataFittingBounds) {
 			scaledDataBounds.addPoint((int) (p.getX()), (int) (p.getY()));
@@ -240,6 +244,7 @@ public class BezierCurve extends Curve {
 		}
 	}
 
+	@Override
 	public void drawThresholdedPixels(Graphics2D g, double scale) {
 		g.setColor(Color.MAGENTA);
 		for (Point2D p : thresholdedPixels) {
@@ -248,10 +253,11 @@ public class BezierCurve extends Curve {
 		}
 	}
 
+	@Override
 	protected void fillPoints(List<Point2D> ctrlPtsList, int t) {
-		curvePoints = new ArrayList<BezierPoint>(NO_CURVE_POINTS);
-		RGBvals = new ArrayList<int[]>(NO_CURVE_POINTS);
-		hodographPoints = new ArrayList<BezierPoint>(NO_CURVE_POINTS);
+		curvePoints = new ArrayList<>(NO_CURVE_POINTS);
+		RGBvals = new ArrayList<>(NO_CURVE_POINTS);
+		hodographPoints = new ArrayList<>(NO_CURVE_POINTS);
 
 		Point2D[] ctrlPts = new Point2D[noCtrlPts];
 		for (int i = 0; i < ctrlPtsList.size(); i++) {
@@ -354,8 +360,9 @@ public class BezierCurve extends Curve {
 		}
 	}
 
+	@Override
 	protected List<Point2D> generateOffsetBounds(List<Point2D> bounds, int radius) {
-		bounds = new ArrayList<Point2D>();
+		bounds = new ArrayList<>();
 		generateRightOffsetCurve(bounds, radius);
 		generateRightCap(bounds, radius);
 		generateLeftOffsetCurve(bounds, radius);
@@ -454,6 +461,7 @@ public class BezierCurve extends Curve {
 	 *
 	 * @return The string representing the Bezier Curve
 	 */
+	@Override
 	public String toString() {
 		StringBuffer curveString = new StringBuffer();
 		curveString.append(name + "\n");
@@ -469,12 +477,14 @@ public class BezierCurve extends Curve {
 	 * @param g
 	 *            Graphics context to draw the Bezier Curve in
 	 */
+	@Override
 	public void draw(double scale, Graphics2D g, int currentPoint, boolean showBoundingBox, boolean scaleCurveStrokes,
 			boolean showTangent, boolean showThresholdRegion) {
 		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 
 		if (scaleCurveStrokes) {
-			g.setStroke(new BasicStroke((int) (DEFAULT_STROKE_THICKNESS * scale)));
+			double strokeThickness = frame.getStrokeThickness(scale);
+			g.setStroke(new BasicStroke((int) strokeThickness));
 		} else {
 			g.setStroke(new BasicStroke(0));
 		}
@@ -523,7 +533,7 @@ public class BezierCurve extends Curve {
 			g.setColor(new Color(140, 220, 255));
 			g.drawPolygon(scaledDataBounds);
 			if (scaleCurveStrokes) {
-				g.setStroke(new BasicStroke((int) (DEFAULT_STROKE_THICKNESS * scale)));
+				g.setStroke(new BasicStroke((int) frame.getStrokeThickness(scale)));
 			}
 		}
 
@@ -577,7 +587,7 @@ public class BezierCurve extends Curve {
 		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 
 		if (scaleCurveStrokes) {
-			g.setStroke(new BasicStroke((int) (DEFAULT_STROKE_THICKNESS * scale)));
+			g.setStroke(new BasicStroke((int) frame.getStrokeThickness(scale)));
 		} else {
 			g.setStroke(new BasicStroke(0));
 		}
@@ -606,6 +616,7 @@ public class BezierCurve extends Curve {
 		}
 	}
 
+	@Override
 	public double getPointCurvature(int percentage) {
 		int n = (int) ((BezierCurve.NO_CURVE_POINTS - 1) * percentage / frame.getNumberOfPointsPerCurve());
 		return getExactPointCurvature(n);
@@ -622,6 +633,7 @@ public class BezierCurve extends Curve {
 		return curvePoints.get(n).k * curvePoints.get(n).sign;
 	}
 
+	@Override
 	public boolean isPointOnCurve(Point2D p, int t, double scale) {
 		// To Speed this up, if the point is outside the bounding box of the curve, we
 		// automatically return false
@@ -644,6 +656,7 @@ public class BezierCurve extends Curve {
 	 *
 	 * @return The Average Curvature along the Bezier Curve
 	 */
+	@Override
 	public double getAverageCurvature() {
 		double total = 0;
 		for (BezierPoint point : curvePoints) {
@@ -668,6 +681,7 @@ public class BezierCurve extends Curve {
 		return length * micronPixelFactor;
 	}
 
+	@Override
 	public double getApproxCurveLength() {
 		return getApproxCurveLength(curvePoints.size() - 1);
 	}
@@ -677,6 +691,7 @@ public class BezierCurve extends Curve {
 	 *
 	 * @return The Standard Deviation of all curvature values along the Bezier Curve
 	 */
+	@Override
 	public double getCurvatureStdDev() {
 		double variance = 0;
 		double mu = getAverageCurvature();
@@ -697,7 +712,7 @@ public class BezierCurve extends Curve {
 		// Averages subpixel values into a single pixel coordinate
 		// We bin all points on the curve that evaluate to the same pixel coordinate
 		// into one averaged point
-		ArrayList<BezierPoint> digitizedPoints = new ArrayList<BezierPoint>();
+		ArrayList<BezierPoint> digitizedPoints = new ArrayList<>();
 		int i = 0;
 
 		// When we export the data, we augment both the x and y coordinate by 1. This is
@@ -729,7 +744,7 @@ public class BezierCurve extends Curve {
 
 	@Override
 	public List<Point2D> getIntensityDataRed() {
-		ArrayList<Point2D> intensityData = new ArrayList<Point2D>(NO_CURVE_POINTS);
+		ArrayList<Point2D> intensityData = new ArrayList<>(NO_CURVE_POINTS);
 		for (int i = 0; i < curvePoints.size(); i++) {
 			// Displays curvature with respect to the x-coordinate
 			if (KappaMenuBar.distributionDisplay == 0) {
@@ -747,7 +762,7 @@ public class BezierCurve extends Curve {
 
 	@Override
 	public List<Point2D> getIntensityDataGreen() {
-		ArrayList<Point2D> intensityData = new ArrayList<Point2D>(NO_CURVE_POINTS);
+		ArrayList<Point2D> intensityData = new ArrayList<>(NO_CURVE_POINTS);
 		for (int i = 0; i < curvePoints.size(); i++) {
 			// Displays curvature with respect to the x-coordinate
 			if (KappaMenuBar.distributionDisplay == 0) {
@@ -765,7 +780,7 @@ public class BezierCurve extends Curve {
 
 	@Override
 	public List<Point2D> getIntensityDataBlue() {
-		ArrayList<Point2D> intensityData = new ArrayList<Point2D>(NO_CURVE_POINTS);
+		ArrayList<Point2D> intensityData = new ArrayList<>(NO_CURVE_POINTS);
 		for (int i = 0; i < curvePoints.size(); i++) {
 			// Displays curvature with respect to the x-coordinate
 			if (KappaMenuBar.distributionDisplay == 0) {
@@ -783,7 +798,7 @@ public class BezierCurve extends Curve {
 
 	@Override
 	public List<Point2D> getCurveData() {
-		ArrayList<Point2D> curveData = new ArrayList<Point2D>(NO_CURVE_POINTS);
+		ArrayList<Point2D> curveData = new ArrayList<>(NO_CURVE_POINTS);
 		for (int i = 0; i < curvePoints.size(); i++) {
 			// Displays curvature with respect to the x-coordinate
 			if (KappaMenuBar.distributionDisplay == 0) {
@@ -801,7 +816,7 @@ public class BezierCurve extends Curve {
 
 	@Override
 	public List<Point2D> getDebugCurveData() {
-		ArrayList<Point2D> debugCurveData = new ArrayList<Point2D>(NO_CURVE_POINTS);
+		ArrayList<Point2D> debugCurveData = new ArrayList<>(NO_CURVE_POINTS);
 		for (Point2D p : curvePoints) {
 			debugCurveData.add(new Point2D.Double(p.getX(), frame.computeCurvature(p.getX(),
 					6000 / (Curve.getMicronPixelFactor() * 1000.0), (2 * Math.PI) / frame.getCurrImage().getWidth())));
@@ -809,8 +824,9 @@ public class BezierCurve extends Curve {
 		return debugCurveData;
 	}
 
+	@Override
 	public void updateIntensities() {
-		RGBvals = new ArrayList<int[]>();
+		RGBvals = new ArrayList<>();
 		int[] pixels;
 		ImageUtils imgUtils = new ImageUtils<>();
 		for (Point2D p : curvePoints) {
@@ -819,18 +835,22 @@ public class BezierCurve extends Curve {
 		}
 	}
 
+	@Override
 	public int getNoPoints() {
 		return NO_CURVE_POINTS;
 	}
 
+	@Override
 	public void setSelected(boolean selected) {
 		this.selected = selected;
 	}
 
+	@Override
 	public boolean isSelected() {
 		return selected;
 	}
 
+	@Override
 	public BezierPoint getPoint(int percentage) {
 		int n = (int) ((BezierCurve.NO_CURVE_POINTS - 1) * percentage / frame.getNumberOfPointsPerCurve());
 		return getExactPoint(n);
@@ -840,6 +860,7 @@ public class BezierCurve extends Curve {
 		return curvePoints.get(n);
 	}
 
+	@Override
 	public Point2D.Double getUnitTangent(int n) {
 		double dx = hodographPoints.get(n).getX();
 		double dy = hodographPoints.get(n).getY();
@@ -847,6 +868,7 @@ public class BezierCurve extends Curve {
 		return new Point2D.Double(dx / normalizationFactor, dy / normalizationFactor);
 	}
 
+	@Override
 	public Point2D.Double getUnitNormal(int n) {
 		double dx = hodographPoints.get(n).getX();
 		double dy = hodographPoints.get(n).getY();
@@ -856,6 +878,7 @@ public class BezierCurve extends Curve {
 		return new Point2D.Double(-dy / normalizationFactor, dx / normalizationFactor);
 	}
 
+	@Override
 	public int getSign(int n) {
 		return curvePoints.get(n).sign;
 	}
@@ -885,19 +908,20 @@ public class BezierCurve extends Curve {
 		if (Math.sqrt(squared(p.getX() - x.getX() + (C.getX() - p.getX()))
 				+ squared(p.getY() - x.getY() + (C.getY() - p.getY()))) > (1 / p.k)) {
 			return 1;
-		} else {
-			return -1;
 		}
+		return -1;
 	}
 
 	public Point2D.Double getHodographPoint(int n) {
 		return hodographPoints.get(n);
 	}
 
+	@Override
 	public List<Point2D> getThresholdedPixels() {
 		return thresholdedPixels;
 	}
 
+	@Override
 	public double getMaximum(double start, double end) {
 		double max = Double.MIN_VALUE;
 		for (BezierPoint p : curvePoints) {

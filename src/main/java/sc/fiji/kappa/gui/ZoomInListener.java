@@ -33,6 +33,7 @@ public class ZoomInListener extends ZoomListener {
 		super(controlPanel);
 	}
 
+	@Override
 	public void actionPerformed(ActionEvent e) {
 		double scale = controlPanel.getScaleSlider().getValue() / 100.0;
 

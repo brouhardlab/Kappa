@@ -95,8 +95,8 @@ public class Panel {
 		this.title = title;
 		this.expanded = true;
 		this.visible = true;
-		components = new ArrayList<Component>();
-		separatorHeights = new ArrayList<Integer>();
+		components = new ArrayList<>();
+		separatorHeights = new ArrayList<>();
 	}
 
 	public Panel(int h, String title) {

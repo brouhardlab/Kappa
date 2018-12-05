@@ -36,7 +36,7 @@ public class PanelGroup extends Component {
 	private ArrayList<Panel> panels;
 
 	public PanelGroup() {
-		panels = new ArrayList<Panel>();
+		panels = new ArrayList<>();
 	}
 
 	public void addPanel(Panel panel) {

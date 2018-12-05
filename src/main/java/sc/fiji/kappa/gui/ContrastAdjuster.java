@@ -135,6 +135,7 @@ public class ContrastAdjuster extends PlugInFrame
 		this.frame = frame;
 	}
 
+	@Override
 	public void run(String arg) {
 		windowLevel = arg.equals("wl");
 		balance = arg.equals("balance");
@@ -321,6 +322,7 @@ public class ContrastAdjuster extends PlugInFrame
 		}
 	}
 
+	@Override
 	public synchronized void adjustmentValueChanged(AdjustmentEvent e) {
 		Object source = e.getSource();
 		if (source == minSlider) {
@@ -335,6 +337,7 @@ public class ContrastAdjuster extends PlugInFrame
 		notify();
 	}
 
+	@Override
 	public synchronized void actionPerformed(ActionEvent e) {
 		Button b = (Button) e.getSource();
 		if (b == null) {
@@ -855,6 +858,7 @@ public class ContrastAdjuster extends PlugInFrame
 	static final int RESET = 0, AUTO = 1, THRESHOLD = 4, MIN = 5, MAX = 6, BRIGHTNESS = 7, CONTRAST = 8, UPDATE = 9;
 
 	// Separate thread that does the potentially time-consuming processing
+	@Override
 	public void run() {
 		while (!done) {
 			synchronized (this) {
@@ -954,6 +958,7 @@ public class ContrastAdjuster extends PlugInFrame
 	/**
 	 * Overrides close() in PlugInFrame.
 	 */
+	@Override
 	public void close() {
 		super.close();
 		instance = null;
@@ -964,6 +969,7 @@ public class ContrastAdjuster extends PlugInFrame
 		}
 	}
 
+	@Override
 	public void windowActivated(WindowEvent e) {
 		super.windowActivated(e);
 		if (IJ.isMacro()) {
@@ -978,6 +984,7 @@ public class ContrastAdjuster extends PlugInFrame
 		WindowManager.setWindow(this);
 	}
 
+	@Override
 	public synchronized void itemStateChanged(ItemEvent e) {
 		int index = choice.getSelectedIndex();
 		channels = channelConstants[index];
@@ -1039,6 +1046,7 @@ class ContrastPlot extends Canvas implements MouseListener {
 	 * Overrides Component getPreferredSize(). Added to work around a bug in Java
 	 * 1.4.1 on Mac OS X.
 	 */
+	@Override
 	public Dimension getPreferredSize() {
 		return new Dimension(WIDTH + 1, HEIGHT + 1);
 	}
@@ -1075,10 +1083,12 @@ class ContrastPlot extends Canvas implements MouseListener {
 		os = null;
 	}
 
+	@Override
 	public void update(Graphics g) {
 		paint(g);
 	}
 
+	@Override
 	public void paint(Graphics g) {
 		int x1, y1, x2, y2;
 		double scale = (double) WIDTH / (defaultMax - defaultMin);
@@ -1133,18 +1143,23 @@ class ContrastPlot extends Canvas implements MouseListener {
 		g.drawRect(0, 0, WIDTH, HEIGHT);
 	}
 
+	@Override
 	public void mousePressed(MouseEvent e) {
 	}
 
+	@Override
 	public void mouseReleased(MouseEvent e) {
 	}
 
+	@Override
 	public void mouseExited(MouseEvent e) {
 	}
 
+	@Override
 	public void mouseClicked(MouseEvent e) {
 	}
 
+	@Override
 	public void mouseEntered(MouseEvent e) {
 	}
 
@@ -1159,10 +1174,12 @@ class TrimmedLabel extends Label {
 		super(title);
 	}
 
+	@Override
 	public Dimension getMinimumSize() {
 		return new Dimension(super.getMinimumSize().width, super.getMinimumSize().height - trim);
 	}
 
+	@Override
 	public Dimension getPreferredSize() {
 		return getMinimumSize();
 	}

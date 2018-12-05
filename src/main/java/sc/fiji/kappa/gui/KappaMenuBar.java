@@ -207,6 +207,7 @@ public class KappaMenuBar extends JMenuBar {
 			toolMenuItems[i].setAccelerator(KeyStroke.getKeyStroke(ToolPanel.TOOL_MNEMONICS[i], 0));
 			final int j = i;
 			toolMenuItems[i].addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					frame.getToolPanel().setSelected(j, true);
 					frame.getScrollPane().setCursor(ToolPanel.TOOL_CURSORS[j]);
@@ -219,6 +220,7 @@ public class KappaMenuBar extends JMenuBar {
 		setDelete(new JMenuItem("Delete Curves"));
 		getDelete().addActionListener(new ActionListener() {
 
+			@Override
 			public void actionPerformed(ActionEvent event) {
 				frame.deleteCurve();
 			}
@@ -230,6 +232,7 @@ public class KappaMenuBar extends JMenuBar {
 
 		setEnter(new JMenuItem("Enter Curve"));
 		getEnter().addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent event) {
 				frame.enterCurve();
 			}
@@ -240,6 +243,7 @@ public class KappaMenuBar extends JMenuBar {
 
 		fit = new JMenuItem("Fit Curve");
 		fit.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent event) {
 				frame.fitCurves();
 			}
@@ -261,6 +265,7 @@ public class KappaMenuBar extends JMenuBar {
 		JCheckBoxMenuItem toggleCtrlPtAdjustment = new JCheckBoxMenuItem("Enable Control Point Adjustment");
 		toggleCtrlPtAdjustment.setState(frame.isEnableCtrlPtAdjustment());
 		toggleCtrlPtAdjustment.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				frame.setEnableCtrlPtAdjustment(!frame.isEnableCtrlPtAdjustment());
 				;
@@ -283,6 +288,7 @@ public class KappaMenuBar extends JMenuBar {
 		prevKeyframe.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, DEFAULT_MASK));
 		nextKeyframe.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, DEFAULT_MASK));
 		prevFrame.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent event) {
 				frame.getControlPanel().getCurrentLayerSlider()
 						.setValue(Math.max(frame.getControlPanel().getCurrentLayerSlider().getValue() - 1,
@@ -290,6 +296,7 @@ public class KappaMenuBar extends JMenuBar {
 			}
 		});
 		nextFrame.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent event) {
 				frame.getControlPanel().getCurrentLayerSlider()
 						.setValue(Math.min(frame.getControlPanel().getCurrentLayerSlider().getValue() + 1,
@@ -297,10 +304,12 @@ public class KappaMenuBar extends JMenuBar {
 			}
 		});
 		prevKeyframe.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent event) {
 			}
 		});
 		nextKeyframe.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent event) {
 			}
 		});
@@ -321,6 +330,7 @@ public class KappaMenuBar extends JMenuBar {
 		adjustBrightnessContrast = new JMenuItem("Adjust Brightness/Contrast");
 		adjustBrightnessContrast.setEnabled(false);
 		adjustBrightnessContrast.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				ContrastAdjuster c = new ContrastAdjuster(frame);
 				c.run("Brightness/Contrast...[C]");
@@ -344,6 +354,7 @@ public class KappaMenuBar extends JMenuBar {
 		setBoundingBoxMenu(new JCheckBoxMenuItem("Show Bounding Boxes"));
 		getBoundingBoxMenu().setState(false);
 		getBoundingBoxMenu().addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent a) {
 				frame.drawImageOverlay();
 			}
@@ -368,18 +379,21 @@ public class KappaMenuBar extends JMenuBar {
 		xAxisSubmenu.add(curveLength);
 		xAxisSubmenu.add(pointIndex);
 		xValue.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent a) {
 				distributionDisplay = 0;
 				frame.getInfoPanel().updateHistograms();
 			}
 		});
 		curveLength.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent a) {
 				distributionDisplay = 1;
 				frame.getInfoPanel().updateHistograms();
 			}
 		});
 		pointIndex.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent a) {
 				distributionDisplay = 2;
 				frame.getInfoPanel().updateHistograms();
@@ -397,6 +411,7 @@ public class KappaMenuBar extends JMenuBar {
 		setScaleCurvesMenu(new JCheckBoxMenuItem("Scale Curve Strokes"));
 		getScaleCurvesMenu().setState(true);
 		getScaleCurvesMenu().addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent a) {
 				frame.drawImageOverlay();
 			}
@@ -407,6 +422,7 @@ public class KappaMenuBar extends JMenuBar {
 		setAntialiasingMenu(new JCheckBoxMenuItem("Enable Antialiasing"));
 		getAntialiasingMenu().setState(false);
 		getAntialiasingMenu().addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent a) {
 				frame.setScaledImage(frame.getControlPanel().getScaleSlider().getValue() / 100.0);
 				frame.drawImageOverlay();
@@ -418,6 +434,7 @@ public class KappaMenuBar extends JMenuBar {
 		setTangentMenu(new JCheckBoxMenuItem("Show Tangent and Normal Vectors"));
 		getTangentMenu().setState(false);
 		getTangentMenu().addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent a) {
 				frame.drawImageOverlay();
 			}
@@ -445,7 +462,7 @@ public class KappaMenuBar extends JMenuBar {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				JOptionPane.showMessageDialog(frame, "Developed by the Brouhard lab, 2016-2017.",
-						frame.APPLICATION_NAME, JOptionPane.INFORMATION_MESSAGE);
+						KappaFrame.APPLICATION_NAME, JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
 
@@ -507,13 +524,13 @@ public class KappaMenuBar extends JMenuBar {
 				}
 
 				// Enters a new Bezier Curve or B-Spline when the user presses ENTER
-				if (frame.getInputType() == frame.B_SPLINE) {
+				if (frame.getInputType() == KappaFrame.B_SPLINE) {
 					frame.getCurves().addCurve(points, frame.getControlPanel().getCurrentLayerSlider().getValue(),
-							points.size(), frame.B_SPLINE, (frame.getBsplineType() == BSpline.OPEN),
+							points.size(), KappaFrame.B_SPLINE, (frame.getBsplineType() == BSpline.OPEN),
 							(Integer) (frame.getInfoPanel().getThresholdRadiusSpinner().getValue()));
 				} else {
 					frame.getCurves().addCurve(points, frame.getControlPanel().getCurrentLayerSlider().getValue(),
-							points.size(), frame.BEZIER_CURVE, true,
+							points.size(), KappaFrame.BEZIER_CURVE, true,
 							(Integer) (frame.getInfoPanel().getThresholdRadiusSpinner().getValue()));
 				}
 
@@ -642,7 +659,7 @@ public class KappaMenuBar extends JMenuBar {
 		adjustBrightnessContrast.setEnabled(true);
 
 		// Adds file name to the frame.
-		this.frame.setTitle(frame.APPLICATION_NAME + "- " + imp.getTitle());
+		this.frame.setTitle(KappaFrame.APPLICATION_NAME + "- " + imp.getTitle());
 
 		// Load Kappa file if available
 		if (imp.getOriginalFileInfo() != null) {
@@ -678,7 +695,7 @@ public class KappaMenuBar extends JMenuBar {
 
 				// If the curve is a B-Spline, there is an extra parameter determining whether
 				// it's open or closed
-				if (curveType == frame.B_SPLINE) {
+				if (curveType == KappaFrame.B_SPLINE) {
 					bsplineType = Integer.parseInt(in.readLine());
 				}
 
@@ -689,12 +706,12 @@ public class KappaMenuBar extends JMenuBar {
 							new Point2D.Double(Double.parseDouble(in.readLine()), Double.parseDouble(in.readLine())));
 				}
 
-				if (curveType == frame.B_SPLINE) {
-					frame.getCurves().addCurve(frame.getPoints(), currentKeyframe, noCtrlPts, frame.B_SPLINE,
+				if (curveType == KappaFrame.B_SPLINE) {
+					frame.getCurves().addCurve(frame.getPoints(), currentKeyframe, noCtrlPts, KappaFrame.B_SPLINE,
 							bsplineType == BSpline.OPEN,
 							(Integer) (frame.getInfoPanel().getThresholdRadiusSpinner().getValue()));
 				} else {
-					frame.getCurves().addCurve(frame.getPoints(), currentKeyframe, noCtrlPts, frame.BEZIER_CURVE, true,
+					frame.getCurves().addCurve(frame.getPoints(), currentKeyframe, noCtrlPts, KappaFrame.BEZIER_CURVE, true,
 							(Integer) (frame.getInfoPanel().getThresholdRadiusSpinner().getValue()));
 				}
 				frame.getInfoPanel().getListData().addElement("  CURVE " + frame.getCurves().getCount());
@@ -754,9 +771,9 @@ public class KappaMenuBar extends JMenuBar {
 				// Outputs the curve properties: it's type, the number of keyframes, the number
 				// of control points, etc.
 				if (c instanceof BSpline) {
-					out.println(frame.B_SPLINE);
+					out.println(KappaFrame.B_SPLINE);
 				} else {
-					out.println(frame.BEZIER_CURVE);
+					out.println(KappaFrame.BEZIER_CURVE);
 				}
 				out.println(c.getNoKeyframes());
 

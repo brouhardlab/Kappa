@@ -36,6 +36,7 @@ import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
+import javax.swing.WindowConstants;
 
 import org.scijava.command.Command;
 import org.scijava.log.LogService;
@@ -77,7 +78,7 @@ public class KappaPlugin implements Command {
 		try {
 			Image im = ImageIO.read(KappaFrame.class.getResource("/logo.png"));
 			frame.setIconImage(im);
-			frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			frame.setLocationRelativeTo(null);
 			frame.setVisible(true);
 

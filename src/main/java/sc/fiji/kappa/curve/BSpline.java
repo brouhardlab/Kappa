@@ -195,8 +195,9 @@ public class BSpline extends Curve {
 		getKeyframes().add(new BControlPoints(this.ctrlPts, t));
 	}
 
+	@Override
 	protected List<Point2D> generateOffsetBounds(List<Point2D> bounds, int radius) {
-		bounds = new ArrayList<Point2D>();
+		bounds = new ArrayList<>();
 
 		// Adds all the right offset curves. Then a cap from the last curve.
 		// Then all the left offset curves in reverse order, and then the cap from the
@@ -220,6 +221,7 @@ public class BSpline extends Curve {
 
 	// Conversion from an List to a Point2D array. This is necessary because of
 	// code changes to support variable control point quantities with B-Splines
+	@Override
 	protected void fillPoints(List<Point2D> bsplineCtrlPts, int t) {
 		Point2D[] arrayCtrlPts = new Point2D[bsplineCtrlPts.size()];
 		for (int i = 0; i < arrayCtrlPts.length; i++) {
@@ -273,7 +275,7 @@ public class BSpline extends Curve {
 			scaleFactor = (knotVector[i + 3] - knotVector[i + 2]) / (knotVector[i + 4] - knotVector[i + 2]);
 			bezierCtrlPts[3] = add(multiply(subtract(tempPoint, bezierCtrlPts[2]), scaleFactor), bezierCtrlPts[2]);
 
-			List<Point2D> bCtrlPtsArray = new ArrayList<Point2D>(bezierCtrlPts.length);
+			List<Point2D> bCtrlPtsArray = new ArrayList<>(bezierCtrlPts.length);
 			for (Point2D p : bezierCtrlPts) {
 				bCtrlPtsArray.add(p);
 			}
@@ -315,21 +317,23 @@ public class BSpline extends Curve {
 			// Nk)^2]. We know that 0<=d<k if d>= 0, since the minimum distance can
 			// not exceed the radius of curvature... otherwise the radius of curvature would
 			// be a counterexample for a more minimal distance!
-		else {
-			return squared(diff.getX() * N.getX() + diff.getY() * N.getY());
-		}
+	
+		return squared(diff.getX() * N.getX() + diff.getY() * N.getY());
 	}
 
+	@Override
 	public Point2D.Double getUnitTangent(int footpointIndex) {
 		int n = (int) (((noCurves * BezierCurve.NO_CURVE_POINTS - 1) * footpointIndex) / this.getNoPoints());
 		return spline[n / BezierCurve.NO_CURVE_POINTS].getUnitTangent(n % BezierCurve.NO_CURVE_POINTS);
 	}
 
+	@Override
 	public Point2D.Double getUnitNormal(int footpointIndex) {
 		int n = (int) (((noCurves * BezierCurve.NO_CURVE_POINTS - 1) * footpointIndex) / this.getNoPoints());
 		return spline[n / BezierCurve.NO_CURVE_POINTS].getUnitNormal(n % BezierCurve.NO_CURVE_POINTS);
 	}
 
+	@Override
 	public int getSign(int footpointIndex) {
 		int n = (int) (((noCurves * BezierCurve.NO_CURVE_POINTS - 1) * footpointIndex) / this.getNoPoints());
 		return spline[n / BezierCurve.NO_CURVE_POINTS].getSign(n % BezierCurve.NO_CURVE_POINTS);
@@ -438,7 +442,7 @@ public class BSpline extends Curve {
 
 		// Copies the old control points in case the iteration provides poor results and
 		// we want to revert.
-		List<Point2D> oldCtrlPts = new ArrayList<Point2D>(ctrlPts.size());
+		List<Point2D> oldCtrlPts = new ArrayList<>(ctrlPts.size());
 		for (Point2D p : ctrlPts) {
 			oldCtrlPts.add(p);
 		}
@@ -556,7 +560,7 @@ public class BSpline extends Curve {
 		ATA = ATA.plus((Matrix.identity(n, n)).times(SMOOTHNESS_FACTOR));
 		Matrix X1 = ATA.solve((A.transpose()).times(X));
 		Matrix Y1 = ATA.solve((A.transpose()).times(Y));
-		List<Point2D> newCtrlPts = new ArrayList<Point2D>(noCtrlPts);
+		List<Point2D> newCtrlPts = new ArrayList<>(noCtrlPts);
 
 		for (int i = 0; i < n; i++) {
 			newCtrlPts.add(new Point2D.Double(X1.get(i, 0), Y1.get(i, 0)));
@@ -630,7 +634,7 @@ public class BSpline extends Curve {
 			}
 
 			// Copies the old control points
-			oldCtrlPts = new ArrayList<Point2D>(ctrlPts.size());
+			oldCtrlPts = new ArrayList<>(ctrlPts.size());
 			for (Point2D p : ctrlPts) {
 				oldCtrlPts.add(p);
 			}
@@ -668,7 +672,7 @@ public class BSpline extends Curve {
 			double reducedError;
 			for (int i = 1; i < this.getNoCtrlPts() - 1; i++) {
 				// Copies the old control points
-				oldCtrlPts = new ArrayList<Point2D>(ctrlPts.size());
+				oldCtrlPts = new ArrayList<>(ctrlPts.size());
 				for (Point2D p : ctrlPts) {
 					oldCtrlPts.add(p);
 				}
@@ -865,6 +869,7 @@ public class BSpline extends Curve {
 		return coefficients;
 	}
 
+	@Override
 	public void addKeyFrame(Point2D newCtrlPt, int t) {
 		if (isOpen) {
 			super.addKeyFrame(newCtrlPt, t);
@@ -890,6 +895,7 @@ public class BSpline extends Curve {
 		}
 	}
 
+	@Override
 	public void printValues(PrintWriter out, double[][] averaged, boolean exportAllDataPoints) {
 		// Exports in CSV format for import into Excel
 		int i = 0;
@@ -918,10 +924,11 @@ public class BSpline extends Curve {
 		}
 	}
 
+	@Override
 	void draw(double scale, Graphics2D g, int currentPoint, boolean showBoundingBox, boolean scaleCurveStrokes,
 			boolean showTangent, boolean showThresholdedRegion) {
 		if (scaleCurveStrokes) {
-			g.setStroke(new BasicStroke((int) (DEFAULT_STROKE_THICKNESS * scale)));
+			g.setStroke(new BasicStroke((int) frame.getStrokeThickness(scale)));
 		} else {
 			g.setStroke(new BasicStroke(0));
 		}
@@ -957,7 +964,7 @@ public class BSpline extends Curve {
 			g.setColor(new Color(140, 220, 255));
 			g.drawPolygon(scaledBounds);
 			if (scaleCurveStrokes) {
-				g.setStroke(new BasicStroke((int) (DEFAULT_STROKE_THICKNESS * scale)));
+				g.setStroke(new BasicStroke((int) frame.getStrokeThickness(scale)));
 			}
 		}
 
@@ -982,8 +989,8 @@ public class BSpline extends Curve {
 				}
 			}
 			Point2D p = this.getPoint(currentPoint);
-			int n = (int) (((noCurves * BezierCurve.NO_CURVE_POINTS - 1) * currentPoint)
-					/ frame.getNumberOfPointsPerCurve());
+			int n = ((noCurves * BezierCurve.NO_CURVE_POINTS - 1) * currentPoint)
+					/ frame.getNumberOfPointsPerCurve();
 			Point2D dp = spline[n / BezierCurve.NO_CURVE_POINTS].getHodographPoint(n % BezierCurve.NO_CURVE_POINTS);
 
 			if (showTangent) {
@@ -1118,7 +1125,7 @@ public class BSpline extends Curve {
 
 	@Override
 	public List<Point2D> getIntensityDataGreen() {
-		List<Point2D> splineData = new ArrayList<Point2D>();
+		List<Point2D> splineData = new ArrayList<>();
 		double currentPt = 0;
 		for (BezierCurve c : spline) {
 			List<Point2D> curveData = c.getIntensityDataGreen();
@@ -1247,13 +1254,13 @@ public class BSpline extends Curve {
 	// Gets a point a certain percentage along the way.
 	@Override
 	public Point2D.Double getPoint(int percentage) {
-		int n = (int) (((noCurves * BezierCurve.NO_CURVE_POINTS - 1) * percentage) / frame.getNumberOfPointsPerCurve());
+		int n = ((noCurves * BezierCurve.NO_CURVE_POINTS - 1) * percentage) / frame.getNumberOfPointsPerCurve();
 		return spline[n / BezierCurve.NO_CURVE_POINTS].getExactPoint(n % BezierCurve.NO_CURVE_POINTS);
 	}
 
 	// Gets a point at a certain index along the B-Spline
 	public BezierPoint getSpecificPoint(int index) {
-		int n = (int) (((noCurves * BezierCurve.NO_CURVE_POINTS - 1) * index) / this.getNoPoints());
+		int n = ((noCurves * BezierCurve.NO_CURVE_POINTS - 1) * index) / this.getNoPoints();
 		return spline[n / BezierCurve.NO_CURVE_POINTS].getExactPoint(n % BezierCurve.NO_CURVE_POINTS);
 	}
 
@@ -1266,6 +1273,7 @@ public class BSpline extends Curve {
 		return isOpen;
 	}
 
+	@Override
 	public void evaluateThresholdedPixels() {
 		for (BezierCurve c : spline) {
 			c.setDataRadius(dataRadius);
