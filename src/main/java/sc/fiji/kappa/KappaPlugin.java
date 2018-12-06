@@ -25,9 +25,6 @@
  */
 package sc.fiji.kappa;
 
-import static sc.fiji.kappa.gui.KappaFrame.APP_MIN_HEIGHT;
-import static sc.fiji.kappa.gui.KappaFrame.APP_MIN_WIDTH;
-
 import java.awt.Dimension;
 import java.awt.Image;
 import java.io.IOException;
@@ -35,26 +32,19 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
-import javax.swing.JFrame;
 import javax.swing.WindowConstants;
+
+import net.imagej.ImageJ;
 
 import org.scijava.command.Command;
 import org.scijava.log.LogService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
-import net.imagej.ImageJ;
-import net.imagej.patcher.LegacyInjector;
 import sc.fiji.kappa.gui.KappaFrame;
 
 @Plugin(type = Command.class, menuPath = "Plugins>Analyze>Kappa - Curvature Analysis")
 public class KappaPlugin implements Command {
-
-	static {
-		// NB: Needed if you mix-and-match IJ1 and IJ2 in this class.
-		// And even then: do not use IJ1 classes in the API!
-		LegacyInjector.preinit();
-	}
 
 	@Parameter
 	private ImageJ ij;
@@ -72,7 +62,7 @@ public class KappaPlugin implements Command {
 
 		// Launch old IJ1 and not integrated Kappa GUI
 		KappaFrame frame = new KappaFrame(ij.context());
-		frame.setMinimumSize(new Dimension(APP_MIN_WIDTH, APP_MIN_HEIGHT));
+		frame.setMinimumSize(new Dimension(KappaFrame.APP_MIN_WIDTH, KappaFrame.APP_MIN_HEIGHT));
 		frame.setTitle(PLUGIN_NAME + " version " + VERSION);
 
 		try {
