@@ -117,7 +117,7 @@ public class KappaFrame extends JFrame {
 	private String fittingAlgorithm;
 
 	// The global percent increase in error we allow to simplify the fitted curve.
-	private double globalThreshold = 0.04;
+	private double globalThreshold = 0.05;
 	private double localThreshold = 0.05;
 
 	private static final int DEFAULT_NUMBER_POINTS = 1000;
