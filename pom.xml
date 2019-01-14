@@ -10,7 +10,7 @@
 	</parent>
 
 	<artifactId>Kappa</artifactId>
-	<version>1.6.11-SNAPSHOT</version>
+	<version>1.6.12-SNAPSHOT</version>
 
 	<name>Kappa</name>
 	<description>A Fiji plugin for Curvature Analysis.</description>
