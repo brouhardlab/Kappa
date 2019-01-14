@@ -10,7 +10,7 @@
 	</parent>
 
 	<artifactId>Kappa</artifactId>
-	<version>1.6.11-SNAPSHOT</version>
+	<version>1.6.11</version>
 
 	<name>Kappa</name>
 	<description>A Fiji plugin for Curvature Analysis.</description>
@@ -87,7 +87,7 @@
 	<scm>
 		<connection>scm:git:git://github.com/brouhardlab/kappa</connection>
 		<developerConnection>scm:git:git@github.com:brouhardlab/kappa</developerConnection>
-		<tag>HEAD</tag>
+		<tag>Kappa-1.6.11</tag>
 		<url>https://github.com/brouhardlab/kappa</url>
 	</scm>
 	<issueManagement>
