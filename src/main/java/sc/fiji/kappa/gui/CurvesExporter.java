@@ -104,6 +104,7 @@ public class CurvesExporter {
 		headers.add("X-Coordinate (um)");
 		headers.add("Y-Coordinate (um)");
 		headers.add("Point Curvature (um-1)");
+		headers.add("Point Curvature Sign");
 
 		headers.add("Red Intensity");
 		headers.add("Green Intensity");
@@ -115,10 +116,10 @@ public class CurvesExporter {
 		int h = frame.getCurrImage().getHeight();
 		double[][] averaged = new double[w][h];
 
-		StringWriter out = new StringWriter();
-		PrintWriter printWriter = new PrintWriter(out);
-
 		for (Curve c : curves) {
+			StringWriter out = new StringWriter();
+			PrintWriter printWriter = new PrintWriter(out);
+			
 			c.printValues(printWriter, averaged, !exportAveragePerCurve);
 			writer.flush();
 			String[] lines = out.toString().split("\n");

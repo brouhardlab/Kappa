@@ -89,47 +89,38 @@ public class BezierCurve extends Curve {
 
 			for (int i = 0; i < curvePoints.size(); i++) {
 				BezierPoint p = curvePoints.get(i);
-				int n = 1;
-				double totalX = p.getX();
-				double totalY = p.getY();
-				double totalK = p.k;
-				double totalRed = RGBvals.get(i)[0];
-				double totalGreen = RGBvals.get(i)[1];
-				double totalBlue = RGBvals.get(i)[2];
-
-				// Keeps adding to the total while successive points in our curve round to the
-				// same pixel coordinate.
-				// while (i + 1 < curvePoints.size() && (int) curvePoints.get(i + 1).getX() ==
-				// (int) p.getX()
-				// && (int) curvePoints.get(i + 1).getY() == (int) p.getY()) {
-				// n++;
-				// p = curvePoints.get(++i);
-				// totalX += p.getX();
-				// totalY += p.getY();
-				// totalK += p.sign * p.k;
-				// totalRed += RGBvals.get(i)[0];
-				// totalGreen += RGBvals.get(i)[1];
-				// totalBlue += RGBvals.get(i)[2];
-				// }
+				double x = p.getX();
+				double y = p.getY();
+				double k = p.k;
+				int sign = p.sign;
+				double red = RGBvals.get(i)[0];
+				double green = RGBvals.get(i)[1];
+				double blue = RGBvals.get(i)[2];
 
 				// Now we print out the averaged point.
-				out.print("," + (totalX / n) * micronPixelFactor);
-				out.print("," + (totalY / n) * micronPixelFactor);
-				out.print("," + totalK / n);
+				out.print("," + x * micronPixelFactor);
+				out.print("," + y * micronPixelFactor);
+				out.print("," + k);
+				out.print("," + sign);
 
-				out.print("," + totalRed / n);
-				out.print("," + totalGreen / n);
-				out.print("," + totalBlue / n);
+				out.print("," + red);
+				out.print("," + green);
+				out.print("," + blue);
 
 			}
 		} // Otherwise, we only export averages
 		else {
-			double totalX = 0, totalY = 0, totalK = 0, totalAveraged = 0, totalRed = 0, totalGreen = 0, totalBlue = 0;
+			double totalX = 0;
+			double totalY = 0;
+			double totalK = 0;
+			double totalRed = 0;
+			double totalGreen = 0;
+			double totalBlue = 0;
 
 			for (int i = 0; i < curvePoints.size(); i++) {
 				BezierPoint p = curvePoints.get(i);
-				totalX += p.getX() + 1;
-				totalY += p.getY() + 1;
+				totalX += p.getX();
+				totalY += p.getY();
 				totalK += p.sign * p.k;
 				totalRed += RGBvals.get(i)[0];
 				totalGreen += RGBvals.get(i)[1];
@@ -149,29 +140,13 @@ public class BezierCurve extends Curve {
 	public void printValuesAll(PrintWriter out, double curveLength, double curvature, double curvatureStd) {
 		for (int i = 0; i < curvePoints.size(); i++) {
 			BezierPoint p = curvePoints.get(i);
-			int n = 1;
-			double totalX = p.getX();
-			double totalY = p.getY();
-			double totalK = p.k;
-			double totalRed = RGBvals.get(i)[0];
-			double totalGreen = RGBvals.get(i)[1];
-			double totalBlue = RGBvals.get(i)[2];
-
-			// // Keeps adding to the total while successive points in our curve round to
-			// the
-			// // same pixel coordinate.
-			// while (i + 1 < curvePoints.size() && (int) curvePoints.get(i + 1).getX() ==
-			// (int) p.getX()
-			// && (int) curvePoints.get(i + 1).getY() == (int) p.getY()) {
-			// n++;
-			// p = curvePoints.get(++i);
-			// totalX += p.getX();
-			// totalY += p.getY();
-			// totalK += p.sign * p.k;
-			// totalRed += RGBvals.get(i)[0];
-			// totalGreen += RGBvals.get(i)[1];
-			// totalBlue += RGBvals.get(i)[2];
-			// }
+			double x = p.getX();
+			double y = p.getY();
+			double k = p.k;
+			int sign = p.sign;
+			double red = RGBvals.get(i)[0];
+			double green = RGBvals.get(i)[1];
+			double blue = RGBvals.get(i)[2];
 
 			out.print(this.name);
 
@@ -180,13 +155,14 @@ public class BezierCurve extends Curve {
 			out.print("," + curvatureStd);
 
 			// Now we print out the averaged point.
-			out.print("," + (totalX / n) * micronPixelFactor);
-			out.print("," + (totalY / n) * micronPixelFactor);
-			out.print("," + totalK / n);
+			out.print("," + x * micronPixelFactor);
+			out.print("," + y * micronPixelFactor);
+			out.print("," + k);
+			out.print("," + sign);
 
-			out.print("," + totalRed / n);
-			out.print("," + totalGreen / n);
-			out.print("," + totalBlue / n);
+			out.print("," + red);
+			out.print("," + green);
+			out.print("," + blue);
 
 			out.println();
 		}
