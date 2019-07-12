@@ -87,7 +87,7 @@ public class BezierCurve extends Curve {
 			// We bin all points on the curve that evaluate to the same pixel coordinate
 			// into one averaged point
 
-			for (int i = 0; i < curvePoints.size(); i++) {
+			for (int i = 0; i < curvePoints.size() - 1; i++) {
 				BezierPoint p = curvePoints.get(i);
 				double x = p.getX();
 				double y = p.getY();
@@ -117,7 +117,7 @@ public class BezierCurve extends Curve {
 			double totalGreen = 0;
 			double totalBlue = 0;
 
-			for (int i = 0; i < curvePoints.size(); i++) {
+			for (int i = 0; i < curvePoints.size() - 1; i++) {
 				BezierPoint p = curvePoints.get(i);
 				totalX += p.getX();
 				totalY += p.getY();
@@ -138,7 +138,7 @@ public class BezierCurve extends Curve {
 	}
 
 	public void printValuesAll(PrintWriter out, double curveLength, double curvature, double curvatureStd) {
-		for (int i = 0; i < curvePoints.size(); i++) {
+		for (int i = 0; i < curvePoints.size() - 1; i++) {
 			BezierPoint p = curvePoints.get(i);
 			double x = p.getX();
 			double y = p.getY();
