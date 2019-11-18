@@ -22,3 +22,6 @@ pom.xml.releaseBackup
 
 .vscode
 .factorypath
+*.pyc
+.ipynb_checkpoints
+__pycache__

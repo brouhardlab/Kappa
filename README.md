@@ -1,6 +1,7 @@
 ![Kappa logo](logo.png)
 
 [![](https://travis-ci.org/brouhardlab/Kappa.svg?branch=master)](https://travis-ci.org/brouhardlab/Kappa)
+[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/brouhardlab/Kappa/master?urlpath=lab/tree/Analysis/Notebooks)
 
 # Kappa
 
@@ -11,6 +12,12 @@ It allows a user to measure curvature in images in a convenient way. You can tra
 ![Kappa Screenshot](screenshot.png)
 
 See also the [ImageJ Wiki page](https://imagej.net/Kappa).
+
+## Publication
+
+Analysis done for the paper is available and can be reproduced from this older. See [`Analysis`](./Analysis).
+
+You can fire a remote Jupyter notebook server and reproduce the analysis using Binder: <https://mybinder.org/v2/gh/brouhardlab/Kappa/master?urlpath=lab/tree/Analysis/Notebooks.>
 
 ## Installation
 
