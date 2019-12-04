@@ -61,6 +61,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
+import ij.io.FileInfo;
 import ij.plugin.ChannelSplitter;
 import ij.plugin.frame.RoiManager;
 import net.imagej.display.ImageDisplay;
@@ -175,12 +176,18 @@ public class KappaMenuBar extends JMenuBar {
 		saveMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, DEFAULT_MASK));
 		saveMenu.addActionListener(e -> {
 
-			String dirPath = frame.getImageStack().getOriginalFileInfo().directory;
-			if (dirPath != null) {
-				String kappaPath = FilenameUtils.removeExtension(frame.getImageStack().getOriginalFileInfo().fileName);
-				kappaPath += ".kapp";
-				File fullPath = new File(dirPath, kappaPath);
-				kappaSave.setSelectedFile(fullPath);
+			FileInfo fileInfo = frame.getImageStack().getOriginalFileInfo();
+			String dirPath = null;
+
+			if (fileInfo != null) {
+				dirPath = fileInfo.directory;
+				if (dirPath != null) {
+					String kappaPath = FilenameUtils
+							.removeExtension(frame.getImageStack().getOriginalFileInfo().fileName);
+					kappaPath += ".kapp";
+					File fullPath = new File(dirPath, kappaPath);
+					kappaSave.setSelectedFile(fullPath);
+				}
 			}
 
 			// Handles save button action.
@@ -711,8 +718,8 @@ public class KappaMenuBar extends JMenuBar {
 							bsplineType == BSpline.OPEN,
 							(Integer) (frame.getInfoPanel().getThresholdRadiusSpinner().getValue()));
 				} else {
-					frame.getCurves().addCurve(frame.getPoints(), currentKeyframe, noCtrlPts, KappaFrame.BEZIER_CURVE, true,
-							(Integer) (frame.getInfoPanel().getThresholdRadiusSpinner().getValue()));
+					frame.getCurves().addCurve(frame.getPoints(), currentKeyframe, noCtrlPts, KappaFrame.BEZIER_CURVE,
+							true, (Integer) (frame.getInfoPanel().getThresholdRadiusSpinner().getValue()));
 				}
 				frame.getInfoPanel().getListData().addElement("  CURVE " + frame.getCurves().getCount());
 				frame.getInfoPanel().getList().setListData(frame.getInfoPanel().getListData());

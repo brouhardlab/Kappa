@@ -25,3 +25,6 @@ pom.xml.releaseBackup
 *.pyc
 .ipynb_checkpoints
 __pycache__
+
+ release.properties
+ 

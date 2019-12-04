@@ -40,6 +40,7 @@ import org.apache.commons.io.FilenameUtils;
 
 import com.opencsv.CSVWriter;
 
+import ij.io.FileInfo;
 import sc.fiji.kappa.curve.BezierGroup;
 import sc.fiji.kappa.curve.Curve;
 
@@ -59,12 +60,17 @@ public class CurvesExporter {
 
 		JFileChooser kappaExport = new JFileChooser();
 
-		String dirPath = frame.getImageStack().getOriginalFileInfo().directory;
-		if (dirPath != null) {
-			String kappaPath = FilenameUtils.removeExtension(frame.getImageStack().getOriginalFileInfo().fileName);
-			kappaPath += ".csv";
-			File fullPath = new File(dirPath, kappaPath);
-			kappaExport.setSelectedFile(fullPath);
+		FileInfo fileInfo = frame.getImageStack().getOriginalFileInfo();
+		String dirPath = null;
+
+		if (fileInfo != null) {
+			dirPath = fileInfo.directory;
+			if (dirPath != null) {
+				String kappaPath = FilenameUtils.removeExtension(frame.getImageStack().getOriginalFileInfo().fileName);
+				kappaPath += ".csv";
+				File fullPath = new File(dirPath, kappaPath);
+				kappaExport.setSelectedFile(fullPath);
+			}
 		}
 
 		kappaExport.setFileFilter(new FileNameExtensionFilter("CSV File", "csv"));
@@ -119,7 +125,7 @@ public class CurvesExporter {
 		for (Curve c : curves) {
 			StringWriter out = new StringWriter();
 			PrintWriter printWriter = new PrintWriter(out);
-			
+
 			c.printValues(printWriter, averaged, !exportAveragePerCurve);
 			writer.flush();
 			String[] lines = out.toString().split("\n");
