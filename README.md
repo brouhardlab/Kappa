@@ -1,3 +1,7 @@
+**IMPORTANT: THIS REPOSITORY HAS MOVED under the Fiji organization umbrella. Please visit https://github.com/fiji/Kappa for contributions or report a bug. You can also visit [the ImageJ forum](https://forum.image.sc/tag/kappa).**
+
+---
+
 ![Kappa logo](logo.png)
 
 [![](https://travis-ci.org/brouhardlab/Kappa.svg?branch=master)](https://travis-ci.org/brouhardlab/Kappa)
