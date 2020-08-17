@@ -1,4 +1,4 @@
-**IMPORTANT: THIS REPOSITORY HAS MOVED under the Fiji organization umbrella. Please visit https://github.com/fiji/Kappa for contributions or report a bug. You can also visit [the ImageJ forum](https://forum.image.sc/tag/kappa).**
+**IMPORTANT: THIS REPOSITORY HAS MOVED under the Fiji organization umbrella. Please visit https://github.com/fiji/Kappa for contributions or report a bug. You can also visit [the Image.sc forum](https://forum.image.sc/tag/kappa).**
 
 ---
 
